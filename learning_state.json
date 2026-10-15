@@ -1,15 +1,87 @@
 {
   "schema": 2,
   "kind": "SOURCE_GATED_NO_AUTOMATED_TRADE_OR_PNL",
+  "updated_utc": "2026-10-15T16:19:51.928664Z",
   "strategy_version": "source_guard_v3",
-  "updated_utc": "2026-10-15T16:14:00Z",
+  "approval": {
+    "rule_version": "source_guard_v3",
+    "status": "SOURCE_RULES_AWAITING_VERIFICATION",
+    "source": "EFLOUD 44-lesson atlas, editorial collection (2026-10-13)",
+    "approved_auto_setup_count": 0,
+    "validated_trading_edge_count": 0,
+    "real_orders_enabled": false,
+    "concepts": [
+      {
+        "key": "range_rh_rl_eq",
+        "lesson": 3,
+        "concept": "RH, RL, EQ; range anchored to identified structure",
+        "classification": "SOURCE_CONCEPT_NOT_AUTOMATED_TRADE"
+      },
+      {
+        "key": "sweep_deviation",
+        "lesson": 4,
+        "concept": "Wick sweep versus close-based breakout",
+        "classification": "SOURCE_CONCEPT_NOT_AUTOMATED_TRADE"
+      },
+      {
+        "key": "breakout_origin",
+        "lesson": 6,
+        "concept": "Breakout, retest, return-to-origin concepts",
+        "classification": "SOURCE_CONCEPT_NOT_AUTOMATED_TRADE"
+      },
+      {
+        "key": "ote",
+        "lesson": 10,
+        "concept": "OTE 0.618–0.786 area, not automatic entry",
+        "classification": "SOURCE_CONCEPT_NOT_AUTOMATED_TRADE"
+      },
+      {
+        "key": "fvg",
+        "lesson": 13,
+        "concept": "Distinguish three-candle FVG, real gap and liquidity void",
+        "classification": "SOURCE_CONCEPT_NOT_AUTOMATED_TRADE"
+      },
+      {
+        "key": "swing_structure",
+        "lesson": 14,
+        "concept": "Major/minor confirmed swing; no future data",
+        "classification": "SOURCE_CONCEPT_NOT_AUTOMATED_TRADE"
+      },
+      {
+        "key": "order_blocks",
+        "lesson": 18,
+        "concept": "Order block conceptual study, needs annotated source confirmation",
+        "classification": "SOURCE_CONCEPT_NOT_AUTOMATED_TRADE"
+      },
+      {
+        "key": "htf_ltf",
+        "lesson": 1,
+        "concept": "Context and lower-timeframe confirmation requirements",
+        "classification": "SOURCE_CONCEPT_NOT_AUTOMATED_TRADE"
+      }
+    ],
+    "disallowed_assumptions": [
+      "48/180 fixed-bar range selection",
+      "3-left/3-right pivot auto-confirmation and 8%-range clustering tolerance",
+      "two pivot touches automatically constituting a range",
+      "FVG-touch or OTE-band directional candle as standalone trade entry",
+      "stochastic recent-3 flip, RSI 50 bias, CCI/MACD slope as entry filters",
+      "0.5R minimum or 72-bar forced exit",
+      "7.5bp fee, 5bp slippage/spread assumed to equal true net returns",
+      "25-observation shrinkage weight and 30-trade release preselection",
+      "six RedK arms times 1280 variants promoted as validated models"
+    ],
+    "reason": "Video/source evidence does not specify a complete reproducible pivot selection + HTF/LTF trigger + entry + stop + target + fill contract. Do not manufacture parameters or trades.",
+    "redk": "RedK Pine Script oscillator sources are distinct user-supplied indicator material; oscillator signals were NOT established as EFLOUD teacher's trade-entry rules."
+  },
   "pending": [],
   "closed": [],
   "models": {},
+  "new_closed_this_cycle": 0,
   "tracked_open": 0,
   "tracked_closed": 0,
-  "new_closed_this_cycle": 0,
+  "failed_feeds": [],
   "auto_trade": false,
   "validated_edge_count": 0,
-  "reason": "No teacher-source-verified full trade algorithm; do not create synthetic orders or claim learning."
+  "reason": "Complete source-confirmed signal, entry, structural stop and target rule not yet verified."
 }
