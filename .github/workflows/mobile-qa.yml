@@ -1,0 +1,40 @@
+name: EFLOUD V2 Mobile Layout QA
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "index.html"
+      - "app.css"
+      - "mobile.css"
+      - "setup-chart.js"
+      - "app-chart-v2.js"
+      - "scripts/mobile-smoke.mjs"
+      - ".github/workflows/mobile-qa.yml"
+permissions:
+  contents: read
+jobs:
+  mobile-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install browser test engine
+        run: npm install --no-save --ignore-scripts playwright-core@1.56.1
+      - name: Serve site as GitHub Pages would
+        run: |
+          python3 -m http.server 8777 --bind 127.0.0.1 > /tmp/efloud-mobile-http.log 2>&1 &
+          sleep 2
+      - name: Test 320, 375, 430, 768 and 1024px viewports
+        run: node scripts/mobile-smoke.mjs
+      - name: Upload mobile screenshots for inspection
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: efloud-mobile-screenshots
+          path: artifacts/mobile/*.png
+          if-no-files-found: ignore
+          retention-days: 3
