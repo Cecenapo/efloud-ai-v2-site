@@ -1,0 +1,42 @@
+name: EFLOUD V2 — Daily historical research and learning
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "23 2 * * *"
+permissions:
+  contents: write
+concurrency:
+  group: efloud-v2-daily-research
+  cancel-in-progress: false
+jobs:
+  historical_research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      RESEARCH_MAX_BARS: "3000"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Test causal hypotheses and exit accounting
+        run: PYTHONPATH=scripts python -m unittest discover -s scripts -p "test_*.py" -v
+      - name: Download CLOSED Binance Spot candles and calibrate historical models
+        id: run_research
+        continue-on-error: true
+        run: python scripts/research_engine.py
+      - name: Publish research/report health to GitHub Pages
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f model_results.json pipeline_status.json 2>/dev/null || true
+          if ! git diff --cached --quiet; then
+            git commit -m "research: update closed-candle studies and learning status [skip ci]"
+            git push
+          fi
+      - name: Fail if research had no fresh data
+        if: steps.run_research.outcome != 'success'
+        run: exit 1
