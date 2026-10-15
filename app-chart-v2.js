@@ -5,7 +5,7 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"
 const names={RANGE_DEVIATION:"Range Sweep",RANGE_BREAKOUT:"Range Breakout",EQUILIBRIUM_CROSS:"Range EQ",STRUCTURE_CONTINUATION:"BOS",TREND_RETRACEMENT:"Retracement",REVERSAL_MSB:"MSB Reversal",SWING_FAILURE:"SFP",EQUAL_LEVEL_LIQUIDITY:"Equal High/Low",CLASSICAL_ORDER_BLOCK:"Order Block",EFLOUD_ORDER_BLOCK:"Efloud OB",FAIR_VALUE_GAP:"FVG",BREAKER_RETEST:"Breaker",INDECISION_CANDLE:"Indecision",OTE_RETRACEMENT:"OTE",FIB_EXTENSION:"Fib Extension",WEEKLY_OPEN:"Weekly Open",RETURN_TO_ORIGIN:"Return to Origin",ACCUMULATION_DISTRIBUTION:"Accumulation / Distribution",SUPPLY_DEMAND:"Supply / Demand",HTF_PREMIUM_DISCOUNT:"HTF Premium / Discount"};
 const armNames={none:"Price Action · Filtresiz",rsi_bias:"RedK RSI yön",stoch_flip_recent:"RedK Stoch dönüş",cci_impulse:"RedK CCI ivme",macd_expansion:"RedK MACD ivme",rsi_macd_agree:"RedK RSI + MACD"};
 const pairs=["BTCUSDT","ETHUSDT","SOLUSDT","DODOUSDT"];
-let archived=null,latestResearch=null,prices={},stream=null,streamActive=false,stopRest=false,restTimer=0;
+let latestResearch=null,prices={},stream=null,streamActive=false,stopRest=false,restTimer=0;
 function trValue(p,v){return p+fmt(v,3)+"R"}
 function researchTimestamp(ts){const x=new Date(ts);return !isNaN(x.getTime())?x.toLocaleString("tr-TR",{timeZone:"Europe/Istanbul"}):String(ts||"—")}
 async function fetchJson(path){const r=await fetch(path,{cache:"no-store"});if(!r.ok)throw Error("HTTP "+r.status);return r.json()}
@@ -80,66 +80,51 @@ function displayResearch(){
  const report=latestResearch?.reports?.find(x=>x.symbol===symbol&&x.timeframe===tf);
  const tbody=$("#results"),cover=$("#coverage"),learner=$("#learning-results");
  const count=latestResearch?.actually_executed_backtests;
- if(latestResearch&&count) {
-  if(latestResearch.model_rule_version!=="pivot_range_research_v2"){
-    $("#pipeline-status").textContent="ESKİ METOT RAPORU: 48 mum ve ATR varsayımlarıyla yapılmış çalışma. Yeni pivot yapısı yeniden test edilmeden bu sonuçlar öğrenme/başarı kanıtı sayılamaz.";
-    $("#coverage").textContent="Yeni yapısal pivot range motoru için ilk günlük backtest çıktısı bekleniyor.";
-    $("#results").innerHTML='<tr><td colspan="6">ESKİ 48 MUM / ATR SONUCU ARŞİVLENDİ. YENİ MODEL İÇİN BAĞIMSIZ KANIT BEKLENİYOR — NO TRADE.</td></tr>';
-    const learning=$("#learning-results");
-    if(learning)learning.textContent="Eski backtest verileri yeni range modeline taşınmadı. Değerlendirme yeniden yapılacak.";
-    return;
-  }
-  $("#pipeline-status").textContent="SON GÜNLÜK ARAŞTIRMA: "+researchTimestamp(latestResearch.generated_utc)+" · çalıştırılan deney: "+fmt(count,0)+
-   " / "+fmt(latestResearch.candidate_model_timeframe_trials,0)+" planlı · öğrenme: kapanmış tarihsel sonuçlarla yeniden kalibrasyon · ileri paper: 0";
-  if(report?.status==="RESEARCH_ONLY_NO_TRADE"){
-   cover.textContent=symbol+" · "+tf+" · "+fmt(report.bars,0)+" kapanmış mum · "+researchTimestamp(report.first_open_utc)+
-    " — "+researchTimestamp(report.last_close_utc)+" · "+report.source;
-   const arms=report.results.filter(r=>r.family===family);
-   tbody.innerHTML=arms.map(a=>{
-     const t=a.test,positive=t.mean_net_r!==null&&t.mean_net_r>0;
-     return '<tr><td>'+esc(armNames[a.arm]||a.arm)+'</td><td>'+fmt(t.n,0)+'</td><td>'+
-      (t.win_rate===null?"—":fmt(t.win_rate*100,1)+"%")+'</td><td class="'+(positive?"positive":"negative")+'">'+
-      (t.mean_net_r===null?"—":trValue(positive?"+":"",t.mean_net_r))+'</td><td>'+fmt(t.max_drawdown_r,2)+
-      '</td><td><span class="tag">NO TRADE</span></td></tr>';
-   }).join("");
-   const best=report.best_by_training_only;
-   learner.innerHTML="<strong>Günlük kapanmış işlem araştırması</strong><p>Bu parite/periyotta "+fmt(report.executed_hypotheses,0)+
-    " filtreli araştırma koşusu tamamlandı. En yüksek eğitim-dönemi konservatif skor: "+
-    (best?esc(best.family+" / "+best.arm)+" · "+fmt(best.train_lower_shrunk_r,3)+"R":"Yeterli pozitif eğitim kanıtı yok")+
-    ". Örneklem dışı test, sonuçları raporlamak içindir; model seçimi eğitim verisiyle sınırlıdır. İleri paper kayıt: 0. Otomatik emir: kapalı.</p>";
+ if(latestResearch?.model_rule_version!=="pivot_range_research_v2"||!count){
+   $("#pipeline-status").textContent="Yalnız yapısal pivot araştırmasının sonuçları gösterilir. İlk geçerli rapor bekleniyor.";
+   cover.textContent=symbol+" · "+tf+" · henüz yeni yöntem raporu bulunmuyor";
+   tbody.innerHTML='<tr><td colspan="6">YENİ PİVOT RAPORU BEKLENİYOR — NO TRADE</td></tr>';
+   learner.textContent="Yeni metodun bağımsız ileri performans kanıtı bulunmuyor.";
    return;
-  }
-  cover.textContent=symbol+" · "+tf+" · "+(report?.status||"DATA_UNAVAILABLE")+" · yeterli tarihsel veri veya kaynak yok";
-  tbody.innerHTML='<tr><td colspan="6">Bu periyotta araştırma sonucu yok. NO TRADE.</td></tr>';
-  learner.textContent="Bu parite/periyotta ölçülebilir öğrenme kaydı yok.";
-  return;
  }
- $("#pipeline-status").textContent="GÜNLÜK ARAŞTIRMA: İlk otomatik işin tamamlanması bekleniyor. Şimdilik 14 Ekim tarihli arşiv gösteriliyor.";
- if(tf!=="4h"||family!=="RANGE_SWEEP_EQ"){
-  cover.textContent=symbol+" · "+tf+" · yeni periyot/model raporu henüz yayımlanmadı";
-  tbody.innerHTML='<tr><td colspan="6">DATA INSUFFICIENT / NOT YET TESTED · NO TRADE</td></tr>';
-  learner.textContent="İlk günlük eğitim koşusu bekleniyor; doğrulanmış başarı yok.";
-  return;
+ $("#pipeline-status").textContent="YAPISAL PİVOT V2 · Son araştırma: "+
+   researchTimestamp(latestResearch.generated_utc)+" · tamamlanan deney: "+fmt(count,0)+
+   " · bağımsız ileri doğrulama: bekleniyor · NO TRADE";
+ if(report?.status!=="RESEARCH_ONLY_NO_TRADE"){
+   cover.textContent=symbol+" · "+tf+" · "+(report?.status||"DATA_UNAVAILABLE")+
+     " · yeterli kapanmış mum veya güvenilir kaynak yok";
+   tbody.innerHTML='<tr><td colspan="6">BU PERİYOTTA DEĞERLENDİRİLEBİLİR VERİ YOK — NO TRADE</td></tr>';
+   learner.textContent="Bu parite/periyotta henüz yeni modelin ölçülebilir sonucu bulunmuyor.";
+   return;
  }
- const row=archived?.rows?.find(r=>r.symbol===symbol);
- if(!row){cover.textContent="Kaynak sonuç verisi henüz mevcut değil.";tbody.innerHTML='<tr><td colspan="6">NO DATA</td></tr>';return}
- const t=row.baseline.test;
- cover.textContent=symbol+" · yalnız eski 1000 kapanmış 4h mum · "+row.first+" — "+row.last+" · TARİHSEL";
- tbody.innerHTML='<tr><td>Range Sweep EQ · Filtresiz (eski ön araştırma)</td><td>'+fmt(t.n,0)+'</td><td>'+
-  (t.win_rate===null?"—":fmt(t.win_rate*100,1)+"%")+'</td><td class="'+(t.mean_net_r>0?"positive":"negative")+'">'+
-  trValue(t.mean_net_r>0?"+":"",t.mean_net_r)+'</td><td>'+fmt(t.max_drawdown_r,2)+'</td><td><span class="tag">NO TRADE</span></td></tr>'+
-  '<tr><td colspan="6">5 RedK filtresi henüz bu arşivde geriye dönük ölçülmedi; sonuç uydurulmadı.</td></tr>';
- learner.textContent="Günlük kapanmış işlem sonuçlarına dayanan otomatik yeniden kalibrasyon henüz başlamadı.";
+ cover.textContent=symbol+" · "+tf+" · "+fmt(report.bars,0)+" kapanmış mum · "+
+   researchTimestamp(report.first_open_utc)+" — "+researchTimestamp(report.last_close_utc)+
+   " · "+report.source;
+ const arms=report.results.filter(r=>r.family===family);
+ tbody.innerHTML=arms.length?arms.map(a=>{
+   const t=a.test,positive=t.mean_net_r!==null&&t.mean_net_r>0;
+   return '<tr><td>'+esc(armNames[a.arm]||a.arm)+'</td><td>'+fmt(t.n,0)+'</td><td>'+
+    (t.win_rate===null?"—":fmt(t.win_rate*100,1)+"%")+'</td><td class="'+
+    (positive?"positive":"negative")+'">'+(t.mean_net_r===null?"—":trValue(positive?"+":"",t.mean_net_r))+
+    '</td><td>'+fmt(t.max_drawdown_r,2)+'</td><td><span class="tag">NO TRADE</span></td></tr>';
+ }).join(""):'<tr><td colspan="6">Bu aile için değerlendirme bulunmuyor.</td></tr>';
+ const best=report.best_by_training_only;
+ learner.innerHTML="<strong>Yapısal pivot araştırması</strong><p>"+
+   fmt(report.executed_hypotheses,0)+" farklı model/filtre çalışması raporlandı. Eğitim dönemi skoru: "+
+   (best?esc(best.family+" / "+best.arm)+" · "+fmt(best.train_lower_shrunk_r,3)+"R":
+    "Yeterli pozitif eğitim kanıtı yok")+
+   ". Değerlendirme, kapanmış tarihsel işlemlere dayanır; bağımsız ileri onay yoktur. Otomatik emir kapalı.</p>";
 }
 async function refreshStudies(){
- const outcomes=await Promise.allSettled([fetchJson("./research.json"),fetchJson("./model_results.json"),fetchJson("./pipeline_status.json")]);
- archived=outcomes[0].status==="fulfilled"?outcomes[0].value:archived;
- latestResearch=outcomes[1].status==="fulfilled"?outcomes[1].value:latestResearch;
- if(outcomes[2].status==="fulfilled"){
-  const p=outcomes[2].value;
-  if(p.status!=="FINISHED")$("#pipeline-status").textContent="SON İŞ DURUMU: "+esc(p.status)+" · kaynak/API uyarısı. Son başarılı rapor varsa tarihine dikkat edin.";
- }
+ const outcomes=await Promise.allSettled([
+   fetchJson("./model_results.json"),fetchJson("./pipeline_status.json")]);
+ latestResearch=outcomes[0].status==="fulfilled"?outcomes[0].value:null;
  displayResearch();
+ if(outcomes[1].status==="fulfilled"){
+   const p=outcomes[1].value;
+   if(p.status!=="FINISHED")$("#pipeline-status").textContent=
+     "Yapısal pivot araştırması uyarısı: "+esc(p.status)+". Sonuç güncelliğini kontrol edin.";
+ }
 }
 function renderFamilyCatalogue(){
  $("#families").innerHTML=Object.entries(names).map(([name,label],i)=>
@@ -180,38 +165,28 @@ function groupSetupItems(raw){
  return Array.from(map.values()).sort((a,b)=>Date.parse(b.observed_utc)-Date.parse(a.observed_utc));
 }
 function setupNarrative(p){
- const legacy=!p.strategy_version||p.strategy_version!=="pivot_range_research_v2";
- if(legacy)return {
-   event:"ESKİ PROTOTİP · 48 mum sabit range varsayımı EFLOUD dersinden alınmamıştır. Eski işlem arşivlenerek gösterilir, yeni stratejinin kanıtı sayılmaz.",
-   stop:"ESKİ PROTOTİP · 0,15 × ATR stop tamponu araştırma için sonradan eklenmiştir; eğitmenin doğrulanmış kuralı değildir. Bu model yeni sinyal üretiminden çıkarıldı.",
-   target:"ESKİ PROTOTİP · 0,55 × range veya sabit geçmiş dönemden türetilen hedefler eğitmenin kesin otomasyon kuralı değil; yeni modelle karıştırılmaz."
+ if(p.family==="RANGE_SWEEP_EQ")return {
+   event:"Daha önce onaylanan üst ve alt swing pivotlarıyla belirlenen range sınırı süpürüldü; sinyal mumu range içine yeniden kapandı.",
+   stop:"Süpürme fitilinin ekstrem fiyatı yapısal geçersizlik noktasıdır. ATR eklenmez.",
+   target:"Yapısal RH/RL seviyelerinin orta noktası, Equilibrium (EQ)."
  };
- const e=p.evidence||{};
- if(p.family==="RANGE_SWEEP_EQ")
-   return {
-     event:"Önceden onaylanmış yapısal tepe/dip pivotlardan RH / RL ve EQ seçildi. Fiyat sınırı fitille aştı ve range içine kapandı. Pivot onay anı ve sınır temasları saklanır.",
-     stop:"Sinyal süpürme mumunun fitil ucu. Yapı bozulduğu yerde geçersiz olur; ATR tamponu eklenmez.",
-     target:"Onaylı pivot sınırlarının orta noktası EQ = (RH + RL) / 2. Hedefin ulaşılacağı garanti edilmez."
-   };
- if(p.family==="RANGE_BREAKOUT")
-   return {
-     event:"Önceden onaylanan pivot sınırı mum kapanışıyla kırıldı. Fitil taşması tek başına breakout sayılmaz.",
-     stop:"Son onaylı karşı swing pivotunun yapısal geçersizlik noktası; sabit ATR tamponu yok.",
-     target:"Kırılım yönünde geçmişte önceden onaylanmış bir sonraki swing/likidite seviyesi. Bulunmazsa hedef uydurulmaz."
-   };
- if(p.family==="FVG_RETEST")
-   return {
-     event:"FVG dönüş geometrisine dair mühendislik hipotezi; eğitimden birebir otomatik sinyal kuralı değildir.",
-     stop:"FVG'nin karşı fiyat sınırı. ATR tamponu yok.",
-     target:"İşlemden önce onaylanmış karşı yapısal swing seviyesi."
-   };
- if(p.family==="OTE_RETRACEMENT")
-   return {
-     event:"Sinyalden önce onaylanmış iki yapısal swing pivotundan hesaplanan Fibonacci OTE bandı ve yönlü kapanış adayı.",
-     stop:"Onaylı swing yapısının geçersiz olduğu uç fiyat. ATR tamponu yok.",
-     target:"Karşı onaylı swing ucundaki fiyat seviyesi."
-   };
- return {event:"Doğrulanmış mum olayı araştırması.",stop:"Yapısal geçersizlik.",target:"Yapısal hedef."};
+ if(p.family==="RANGE_BREAKOUT")return {
+   event:"Daha önce onaylanan yapısal RH/RL sınırı, yönlü mum kapanışıyla kırıldı.",
+   stop:"Son onaylı karşı swing pivot seviyesi; ATR stop tamponu yok.",
+   target:"Yalnızca daha önce onaylanmış karşı yapısal swing/liquidite seviyesi varsa kullanılır."
+ };
+ if(p.family==="FVG_RETEST")return {
+   event:"Geçmiş kapanmış mumlarda FVG dönüşü ve yönlü kapanış tespit edildi. Test edilen bir araştırma hipotezidir.",
+   stop:"Kaydedilmiş FVG'nin karşı fiyat sınırı, ek ATR çarpanı içermez.",
+   target:"Önceden onaylanmış yapısal karşı swing seviyesi."
+ };
+ if(p.family==="OTE_RETRACEMENT")return {
+   event:"Daha önce onaylanan iki swing pivotundan hesaplanan Fibonacci OTE bölgesinde kapanış adayı.",
+   stop:"Onaylı swing uç noktasında yapısal geçersizlik.",
+   target:"Önceden onaylanan karşı swing uç noktası."
+ };
+ return {event:"Kapanmış mumlardan türetilen, henüz doğrulanmamış araştırma hipotezi.",
+    stop:"Yapısal geçersizlik noktası.",target:"Önceden onaylı fiyat yapısı."};
 }
 function estimatedNetR(p, exitPrice){
  const entry=Number(p.entry_exec),stop=Number(p.stop),spot=Number(exitPrice);
@@ -235,7 +210,7 @@ function renderSetupCard(p,tab,staleSource){
  const color=!isOpen&&Number.isFinite(finalResult)?(finalResult>=0?"positive":"negative"):Number.isFinite(netNow)?(netNow>=0?"positive":"negative"):"neutral";
  const narrative=setupNarrative(p);
  const model=(setupNames[p.family]||p.family);
- const legacy=!p.strategy_version||p.strategy_version!=="pivot_range_research_v2";
+
  const quoteStatus=isOpen?(isFresh?"Anlık işaretleme: "+money(nowPrice)+" USDT · "+esc(quote.source):"Fiyat canlı doğrulanamadı: güncel R hesaplanmadı"):"Sonuç: "+esc(p.outcome||"KAPANDI");
  const stateAge=setupState?.updated_utc?Date.now()-Date.parse(setupState.updated_utc):Infinity;
  const reportStale=isOpen&&stateAge>90*60000;
@@ -244,7 +219,7 @@ function renderSetupCard(p,tab,staleSource){
     ?" Fiyat stop/hedef sınırında ya da ötesinde; kesin kapanış durumu bir sonraki kapanmış-mum kontrolünde belirlenir.":"";
  const armList=p.arms.map(a=>'<span class="setup-arm">'+esc(armNames[a]||a)+'</span>').join("");
  const netTitle=isOpen?"Tahmini anlık net R":"Gerçekleşmiş gölge net R";
- const lastCheck=legacy?"ESKİ METOT · KANIT DEĞİL":(isOpen?(reportStale?"SON KONTROL GECİKMİŞ":"GÖLGE TAKİP"):"KAPANDI");
+ const lastCheck=isOpen?(reportStale?"SON KONTROL GECİKMİŞ":"GÖLGE TAKİP"):"KAPANDI";
  return '<article class="setup-card '+(dir>0?"side-long":"side-short")+'">'+
    '<div class="setup-head"><div><div class="setup-pair">'+esc(p.symbol.replace("USDT"," / USDT"))+
    '</div><div class="setup-heading-small">'+esc(p.timeframe)+" · "+esc(model)+
@@ -273,20 +248,21 @@ function renderSetupBoard(){
  const summary=$("#setup-summary"),list=$("#setup-list"),feed=$("#setup-feed-status");
  if(!summary||!list||!feed)return;
  if(!setupState){summary.textContent="Takipçi verisi bekleniyor.";list.innerHTML='<div class="setup-empty">Henüz setup verisi alınamadı. Son kayıtlar yükleniyor.</div>';feed.textContent="VERİ BEKLENİYOR";return;}
- const open=groupSetupItems(setupState.pending||[]);
- const closed=groupSetupItems(setupState.closed||[]);
+ const isCurrent=p=>p.strategy_version==="pivot_range_research_v2";
+ const open=groupSetupItems((setupState.pending||[]).filter(isCurrent));
+ const closed=groupSetupItems((setupState.closed||[]).filter(isCurrent));
  const checked=setupState.updated_utc,age=Date.now()-Date.parse(checked);
  const isFresh=Number.isFinite(age)&&age<90*60000;
  feed.textContent=isFresh?"SAATLİK TAKİP AKTİF":"SON KONTROL GECİKMİŞ";
  summary.innerHTML=[
-  ["AYRI AÇIK SETUP",open.length],["FİLTRE VARYANTI",(setupState.pending||[]).length],
+  ["AYRI AÇIK SETUP",open.length],["FİLTRE VARYANTI",(setupState.pending||[]).filter(p=>p.strategy_version==="pivot_range_research_v2").length],
   ["SONUÇLANAN SETUP",closed.length],["SON KONTROL",researchTimestamp(checked)]
  ].map(([k,v])=>'<div class="setup-metric"><small>'+esc(k)+'</small><strong>'+esc(v)+'</strong></div>').join("");
  const symbol=$("#setup-symbol").value,tf=$("#setup-tf").value;
  const data=(setupTab==="open"?open:closed).filter(p=>(symbol==="all"||p.symbol===symbol)&&(tf==="all"||p.timeframe===tf));
  setupShown=new Map(data.map(p=>[p.id,p]));
  list.innerHTML=data.length?data.map(p=>renderSetupCard(p,setupTab,!isFresh)).join(""):
-   '<div class="setup-empty">'+(setupTab==="open"?"Bu filtrede açık gölge setup bulunamadı. Sistem yeni kapanmış mumları taramayı sürdürüyor.":"Bu filtrede tamamlanmış gölge işlem henüz bulunmuyor.")+'</div>';
+   '<div class="setup-empty">'+(setupTab==="open"?"Yeni yapısal pivot modelinde henüz açık setup yok. Kapanmış mumlardan uygun koşul oluşması bekleniyor.":"Bu filtrede tamamlanmış gölge işlem henüz bulunmuyor.")+'</div>';
 }
 function queueSetupRender(){
  if(setupRerenderTimer)return;
@@ -321,10 +297,11 @@ async function loadShadowLearning(){
  if(!el)return;
  try{
   const d=await fetchJson("./learning_state.json");
+  if(d.strategy_version!=="pivot_range_research_v2")throw Error("Not current model state");
   setupState=d;
   renderSetupBoard();
-  const available=groupSetupItems(d.pending||[]);
-  const finished=groupSetupItems(d.closed||[]);
+  const available=groupSetupItems((d.pending||[]).filter(p=>p.strategy_version==="pivot_range_research_v2"));
+  const finished=groupSetupItems((d.closed||[]).filter(p=>p.strategy_version==="pivot_range_research_v2"));
   if(!setupSelectedId){
     const firstChoice=available[0]||finished[0];
     if(firstChoice)openSetupChart(firstChoice);
@@ -335,8 +312,7 @@ async function loadShadowLearning(){
       if(chart.currentStatus&&chart.currentStatus()!==updated.status)openSetupChart(updated);
     }
   }
-  const total=Number(d.tracked_closed||0), open=Number(d.tracked_open||0);
-  const legacyCount=Number(d.legacy_open_count||0)+Number(d.legacy_closed_count||0);
+  const total=finished.length, open=available.length;
   const weights=Object.keys(d.models||{}).length;
   el.innerHTML="<strong>SAATLİK GÖLGE ÖĞRENME GÜNLÜĞÜ</strong><p>"+
    "Kontrol: "+esc(researchTimestamp(d.updated_utc))+
