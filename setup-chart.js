@@ -328,7 +328,7 @@ async function getHistory(p){
  if(unique.length<25)throw Error("Grafik için yeterli kapanmış Binance mumu bulunamadı");
  return unique;
 }
-async function open(p,quote,armLabels){
+async function open(p,quote,armLabels,options={}){
  const panel=$("#setup-chart-panel");
  if(!panel)return;
  if(armLabels)window.EfloudArmNames=armLabels;
@@ -337,7 +337,7 @@ async function open(p,quote,armLabels){
  const f=getFields();f.status.textContent="MUM VERİSİ YÜKLENİYOR";
  f.candle.textContent=p.symbol+" · "+p.timeframe+" · Binance Spot kapanmış mumlar";
  render();
- panel.scrollIntoView({behavior:"smooth",block:"start"});
+ if(options.scrollToChart)panel.scrollIntoView({behavior:"smooth",block:"start"});
  const seq=++requestNumber;
  try{
    const fetched=await getHistory(p);
