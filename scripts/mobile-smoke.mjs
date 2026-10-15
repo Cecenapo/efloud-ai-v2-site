@@ -40,8 +40,20 @@ try{
   await page.route("**/api/v3/ticker/24hr?*",r=>r.fulfill({
    json:{lastPrice:"100",priceChangePercent:"0",volume:"100",quoteVolume:"10"}}));
   await page.goto(base,{waitUntil:"domcontentloaded",timeout:20000});
-  await page.waitForFunction(()=>document.querySelector("#chart-status")?.textContent==="KAPANMIŞ MUM VERİSİ",
-   undefined,{timeout:18000});
+  try {
+   await page.waitForFunction(()=>document.querySelector("#chart-status")?.textContent==="KAPANMIŞ MUM VERİSİ",
+    undefined,{timeout:9500});
+  } catch (e) {
+   const diagnostic=await page.evaluate(()=>({
+     status:document.querySelector("#chart-status")?.textContent,
+     source:document.querySelector("#chart-source-note")?.textContent,
+     results:document.querySelector("#coverage")?.textContent,
+     nav:document.querySelector("#live-status")?.textContent,
+     scriptCount:document.scripts.length
+   }));
+   console.error("Chart diagnostic",width,JSON.stringify(diagnostic),"errors",JSON.stringify(errors));
+   throw e;
+  }
   const result=await page.evaluate(()=>{
    const w=window.innerWidth;
    const selectors=["main",".panel",".chart-workspace",".chart-viewport",".ticker-card"];
