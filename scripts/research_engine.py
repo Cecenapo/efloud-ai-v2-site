@@ -137,9 +137,9 @@ def arm_pass(arm,direction,i,f):
     if arm=="rsi_macd_agree":return r is not None and i>26 and (r-50)*v>0 and m*v>0
     raise ValueError("Unknown filter")
 
-def signals(bars):
-    """Source-auditable research mechanics; NO fixed 48-bar range / ATR stop."""
-    return structural_events(bars)
+def signals(bars, only_last=False):
+    """Source-auditable research; hourly uses ONLY the final closed candle."""
+    return structural_events(bars, only_last=only_last)
 
 def run_trades(bars,events,arm,features):
     """Next-bar open; original-risk R; first TP/SL touch frozen; no overlap."""
