@@ -54,10 +54,10 @@ function draw(){
   ctx.fillStyle="#a0becd";ctx.fillText(fmt(level),m.left+m.width+5,at+4);
  }
  slice.forEach((b,i)=>{
-  const c=b.close>=b.open?"#49d8b2":"#fa858b",xx=x(i);
+  const c=b.close>=b.openPrice?"#49d8b2":"#fa858b",xx=x(i);
   ctx.strokeStyle=c;ctx.fillStyle=c;ctx.beginPath();
   ctx.moveTo(xx,y(b.low));ctx.lineTo(xx,y(b.high));ctx.stroke();
-  const top=Math.min(y(b.open),y(b.close)),bh=Math.max(1,Math.abs(y(b.open)-y(b.close)));
+  const top=Math.min(y(b.openPrice),y(b.close)),bh=Math.max(1,Math.abs(y(b.openPrice)-y(b.close)));
   const bw=Math.max(1,Math.min(step*.63,8));
   ctx.fillRect(xx-bw/2,top,bw,bh);
  });
@@ -100,8 +100,6 @@ async function showMarket(symbol,interval){
    .sort((a,b)=>a.open-b.open)
    .map(b=>({...b,openPrice:b.priceOpen}));
   if(id!==token)return;
-  bars=clean.map(b=>({open:b.open,high:b.high,low:b.low,openC:b.priceOpen,close:b.close,
-                      openPrice:b.priceOpen}));
   // Use separate open timestamp and real candle open, never conflate prices.
   bars=clean.map(b=>({open:b.open,high:b.high,low:b.low,openPrice:b.priceOpen,close:b.close}));
   visible=Math.min(90,bars.length);windowStart=Math.max(0,bars.length-visible);
