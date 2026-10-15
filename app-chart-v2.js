@@ -172,32 +172,38 @@ function groupSetupItems(raw){
  return Array.from(map.values()).sort((a,b)=>Date.parse(b.observed_utc)-Date.parse(a.observed_utc));
 }
 function setupNarrative(p){
- const dir=p.side==="LONG"?"yukarı":"aşağı";
+ const legacy=!p.strategy_version||p.strategy_version!=="pivot_range_research_v2";
+ if(legacy)return {
+   event:"ESKİ PROTOTİP · 48 mum sabit range varsayımı EFLOUD dersinden alınmamıştır. Eski işlem arşivlenerek gösterilir, yeni stratejinin kanıtı sayılmaz.",
+   stop:"ESKİ PROTOTİP · 0,15 × ATR stop tamponu araştırma için sonradan eklenmiştir; eğitmenin doğrulanmış kuralı değildir. Bu model yeni sinyal üretiminden çıkarıldı.",
+   target:"ESKİ PROTOTİP · 0,55 × range veya sabit geçmiş dönemden türetilen hedefler eğitmenin kesin otomasyon kuralı değil; yeni modelle karıştırılmaz."
+ };
+ const e=p.evidence||{};
+ if(p.family==="RANGE_SWEEP_EQ")
+   return {
+     event:"Önceden onaylanmış yapısal tepe/dip pivotlardan RH / RL ve EQ seçildi. Fiyat sınırı fitille aştı ve range içine kapandı. Pivot onay anı ve sınır temasları saklanır.",
+     stop:"Sinyal süpürme mumunun fitil ucu. Yapı bozulduğu yerde geçersiz olur; ATR tamponu eklenmez.",
+     target:"Onaylı pivot sınırlarının orta noktası EQ = (RH + RL) / 2. Hedefin ulaşılacağı garanti edilmez."
+   };
  if(p.family==="RANGE_BREAKOUT")
    return {
-    event:"Önceki 48 kapanmış mumun "+(p.side==="LONG"?"Range High":"Range Low")+" sınırı "+dir+" geçildi ve kırılım mumu bu yönde kapandı.",
-    stop:"Kırılan range sınırının diğer tarafında, ATR'nin %15'i kadar araştırma tamponuyla oluşturulmuş geçersizlik düzeyi.",
-    target:"Önceki 48 mumluk range boyunun %55'i kadar kırılım yönündeki teorik projeksiyon."
+     event:"Önceden onaylanan pivot sınırı mum kapanışıyla kırıldı. Fitil taşması tek başına breakout sayılmaz.",
+     stop:"Son onaylı karşı swing pivotunun yapısal geçersizlik noktası; sabit ATR tamponu yok.",
+     target:"Kırılım yönünde geçmişte önceden onaylanmış bir sonraki swing/likidite seviyesi. Bulunmazsa hedef uydurulmaz."
    };
  if(p.family==="FVG_RETEST")
    return {
-    event:"Üç mumun oluşturduğu Fair Value Gap dengesizlik bölgesine fiyat geri döndü ve "+dir+" kapanış koşulunu sağladı.",
-    stop:"FVG referans seviyesinin ötesine eklenen 0,15 ATR tamponu. Bu geometrik kurala dayanan deneysel stop.",
-    target:"Önceki 48 mumun "+(p.side==="LONG"?"Range High":"Range Low")+" seviyesi."
+     event:"FVG dönüş geometrisine dair mühendislik hipotezi; eğitimden birebir otomatik sinyal kuralı değildir.",
+     stop:"FVG'nin karşı fiyat sınırı. ATR tamponu yok.",
+     target:"İşlemden önce onaylanmış karşı yapısal swing seviyesi."
    };
  if(p.family==="OTE_RETRACEMENT")
    return {
-    event:"Son 20 kapanmış mumdan hesaplanan range içinde 0,618–0,786 Fibonacci düzeltme bandında "+dir+" mum kapanışı gözlendi.",
-    stop:"Son 20 mumun karşı swing ucunun ötesinde 0,15 ATR tamponu.",
-    target:"20 mumluk yapının karşı uç seviyesi."
+     event:"Sinyalden önce onaylanmış iki yapısal swing pivotundan hesaplanan Fibonacci OTE bandı ve yönlü kapanış adayı.",
+     stop:"Onaylı swing yapısının geçersiz olduğu uç fiyat. ATR tamponu yok.",
+     target:"Karşı onaylı swing ucundaki fiyat seviyesi."
    };
- if(p.family==="RANGE_SWEEP_EQ")
-   return {
-    event:"Son 48 mumun "+(p.side==="LONG"?"alt":"üst")+" sınırı fitille aşıldı, mum range içine geri kapandı (sweep/reclaim).",
-    stop:"Likidite süpürmesinin fitil ucunun 0,15 ATR ötesi.",
-    target:"48 mumluk fiyat aralığının Equilibrium (EQ, %50) seviyesi."
-   };
- return {event:"Tarihsel fiyat olayı ve kapanmış mum sinyali.",stop:"Önceden belirlenmiş invalidasyon seviyesi.",target:"Önceden belirlenmiş yapısal fiyat hedefi."};
+ return {event:"Doğrulanmış mum olayı araştırması.",stop:"Yapısal geçersizlik.",target:"Yapısal hedef."};
 }
 function estimatedNetR(p, exitPrice){
  const entry=Number(p.entry_exec),stop=Number(p.stop),spot=Number(exitPrice);
@@ -221,6 +227,7 @@ function renderSetupCard(p,tab,staleSource){
  const color=!isOpen&&Number.isFinite(finalResult)?(finalResult>=0?"positive":"negative"):Number.isFinite(netNow)?(netNow>=0?"positive":"negative"):"neutral";
  const narrative=setupNarrative(p);
  const model=(setupNames[p.family]||p.family);
+ const legacy=!p.strategy_version||p.strategy_version!=="pivot_range_research_v2";
  const quoteStatus=isOpen?(isFresh?"Anlık işaretleme: "+money(nowPrice)+" USDT · "+esc(quote.source):"Fiyat canlı doğrulanamadı: güncel R hesaplanmadı"):"Sonuç: "+esc(p.outcome||"KAPANDI");
  const stateAge=setupState?.updated_utc?Date.now()-Date.parse(setupState.updated_utc):Infinity;
  const reportStale=isOpen&&stateAge>90*60000;
@@ -229,7 +236,7 @@ function renderSetupCard(p,tab,staleSource){
     ?" Fiyat stop/hedef sınırında ya da ötesinde; kesin kapanış durumu bir sonraki kapanmış-mum kontrolünde belirlenir.":"";
  const armList=p.arms.map(a=>'<span class="setup-arm">'+esc(armNames[a]||a)+'</span>').join("");
  const netTitle=isOpen?"Tahmini anlık net R":"Gerçekleşmiş gölge net R";
- const lastCheck=isOpen?(reportStale?"SON KONTROL GECİKMİŞ":"SON KONTROLDE AÇIK"):"KAPANDI";
+ const lastCheck=legacy?"ESKİ METOT · KANIT DEĞİL":(isOpen?(reportStale?"SON KONTROL GECİKMİŞ":"GÖLGE TAKİP"):"KAPANDI");
  return '<article class="setup-card '+(dir>0?"side-long":"side-short")+'">'+
    '<div class="setup-head"><div><div class="setup-pair">'+esc(p.symbol.replace("USDT"," / USDT"))+
    '</div><div class="setup-heading-small">'+esc(p.timeframe)+" · "+esc(model)+
