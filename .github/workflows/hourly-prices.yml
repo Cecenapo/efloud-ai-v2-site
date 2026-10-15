@@ -1,6 +1,14 @@
 name: EFLOUD V2 — Hourly market snapshot
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/collect_live.py"
+      - "scripts/paper_forward.py"
+      - "scripts/research_engine.py"
+      - "scripts/test_*.py"
+      - ".github/workflows/hourly-prices.yml"
   schedule:
     - cron: "13 * * * *"
 permissions:
