@@ -13,6 +13,14 @@ const dateText=ts=>{let x=new Date(ts);return !Number.isFinite(x.getTime())?"—
 const abbreviate={RANGE_SWEEP_EQ:"Sweep / EQ",RANGE_BREAKOUT:"Range Breakout",FVG_RETEST:"FVG Retest",OTE_RETRACEMENT:"Fib OTE"};
 let active=null, candles=[], signalIndex=-1, proof=null, first=0, span=100, hoverIndex=null, requestNumber=0, dragging=null, latestPrice=null, liveAge=null;
 let ctx,canvas;
+function chartMetrics(width){
+ const mobile=width<650;
+ const left=mobile?(width<340?11:15):65;
+ const right=mobile?(width<340?91:105):Math.min(170,Math.max(126,width*.21));
+ return {mobile,left,right,top:mobile?29:36,bottom:mobile?31:36,
+   pxEnd:width-right,plotW:Math.max(30,width-left-right)};
+}
+
 const getFields=()=>({
   status:$("#chart-status"),candle:$("#chart-candle-status"),source:$("#chart-source-note"),
   pair:$("#chart-pair"),model:$("#chart-model"),side:$("#chart-side"),r:$("#chart-net-r"),
@@ -167,14 +175,16 @@ function nearestSignal(bars,p){
  return best<=tolerance?idx:-1;
 }
 function setSignalWindow(){
- if(signalIndex<0){first=Math.max(0,candles.length-125);span=Math.min(125,candles.length);return;}
- span=Math.min(128,candles.length);
+ const compact=canvas&&canvas.getBoundingClientRect().width<650;
+ const windowSize=compact?65:128;
+ if(signalIndex<0){first=Math.max(0,candles.length-windowSize);span=Math.min(windowSize,candles.length);return;}
+ span=Math.min(windowSize,candles.length);
  first=Math.max(0,Math.min(candles.length-span,signalIndex-Math.round(span*.65)));
 }
 function setViewport(delta){
  if(!candles.length)return;
  const old=span;
- span=Math.max(35,Math.min(candles.length,Math.round(span*delta)));
+ span=Math.max(canvas&&canvas.getBoundingClientRect().width<650?18:35,Math.min(candles.length,Math.round(span*delta)));
  const center=signalIndex>=0?signalIndex:Math.round(first+old/2);
  first=Math.max(0,Math.min(candles.length-span,center-Math.round(span*.6)));
  render();
@@ -190,8 +200,8 @@ function draw(){
  if(!candles.length){
    ctx.fillStyle="#aac5d3";ctx.font="13px system-ui";ctx.fillText("Grafiği görmek için bir setup seç.",20,35);return;
  }
- const left=65,right=Math.min(170,Math.max(126,w*.21)),top=36,bottom=36;
- const pxEnd=w-right,plotW=Math.max(30,pxEnd-left),plotH=h-top-bottom;
+ const {mobile,left,right,top,bottom,pxEnd,plotW}=chartMetrics(w);
+ const plotH=h-top-bottom;
  const start=Math.max(0,Math.min(first,candles.length-1)),end=Math.min(candles.length,start+span);
  const view=candles.slice(start,end);
  if(!view.length)return;
@@ -209,8 +219,9 @@ function draw(){
  const priceY=v=>top+(max-v)/(max-min)*plotH;
  const step=plotW/Math.max(1,view.length),posX=i=>left+(i-start+.5)*step;
  ctx.font="11px system-ui";ctx.textBaseline="middle";
- for(let j=0;j<=5;j++){
-   const price=max-(max-min)*j/5,y=priceY(price);
+ const gridTicks=mobile?4:5;
+ for(let j=0;j<=gridTicks;j++){
+   const price=max-(max-min)*j/gridTicks,y=priceY(price);
    ctx.strokeStyle=THEMES.grid;ctx.lineWidth=1;
    ctx.setLineDash([2,5]);ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(pxEnd,y);ctx.stroke();ctx.setLineDash([]);
    ctx.fillStyle="#8ca9ba";ctx.fillText(priceText(price),pxEnd+8,y);
@@ -250,11 +261,11 @@ function draw(){
    ctx.fillStyle="#f4ffff";ctx.font="bold 10px system-ui";ctx.fillText("SİNYAL MUMU",Math.min(pxEnd-85,Math.max(left+5,sx+8)),top+12);ctx.font="11px system-ui";
  }
  const levelSet=[
-  {v:Number(active.entry_exec),color:THEMES.entry,label:"GİRİŞ · gözlem",dashed:false},
-  {v:Number(active.stop),color:THEMES.stop,label:"STOP · geçersizlik",dashed:false},
-  {v:Number(active.target),color:THEMES.tp,label:"TP · hedef",dashed:false}
+  {v:Number(active.entry_exec),color:THEMES.entry,label:mobile?"GİRİŞ":"GİRİŞ · gözlem",dashed:false},
+  {v:Number(active.stop),color:THEMES.stop,label:mobile?"STOP":"STOP · geçersizlik",dashed:false},
+  {v:Number(active.target),color:THEMES.tp,label:mobile?"TP":"TP · hedef",dashed:false}
  ];
- if(Number.isFinite(quote))levelSet.push({v:quote,color:THEMES.live,label:"CANLI FİYAT",dashed:true});
+ if(Number.isFinite(quote))levelSet.push({v:quote,color:THEMES.live,label:mobile?"CANLI":"CANLI FİYAT",dashed:true});
  levelSet.forEach((l)=>{
    const y=priceY(l.v);
    if(y<top-4||y>h-bottom+4){
@@ -277,9 +288,12 @@ function draw(){
      ctx.font="bold 10px system-ui";ctx.fillText(active.outcome||"ÇIKIŞ",Math.min(pxEnd-46,x+8),y-12);
    }
  }
- const stepDate=Math.max(1,Math.floor(view.length/6));
+ const stepDate=Math.max(1,Math.floor(view.length/(mobile?2:6)));
  ctx.font="10px system-ui";ctx.fillStyle="#9bb2c2";
- for(let i=start;i<end;i+=stepDate)ctx.fillText(dateText(candles[i].openMs),Math.max(left,posX(i)-24),h-17);
+ for(let i=start;i<end;i+=stepDate){
+   const text=mobile?dateText(candles[i].openMs).replace(', ',' '):dateText(candles[i].openMs);
+   ctx.fillText(text,Math.max(left,posX(i)-(mobile?15:24)),h-17);
+ }
  ctx.strokeStyle="#355165";ctx.strokeRect(left,top,plotW,plotH);
  if(hoverIndex!==null&&hoverIndex>=start&&hoverIndex<end){
    const b=candles[hoverIndex],x=posX(hoverIndex);
@@ -364,15 +378,64 @@ function init(){
  canvas.addEventListener("wheel",e=>{if(!candles.length)return;e.preventDefault();setViewport(e.deltaY>0?1.13:.89)},{passive:false});
  canvas.addEventListener("mousemove",e=>{
    if(!candles.length)return;
-   const box=canvas.getBoundingClientRect(),w=box.width,left=65,right=Math.min(170,Math.max(126,w*.21));
+   const box=canvas.getBoundingClientRect(),w=box.width,{left,plotW}=chartMetrics(w);
    const end=Math.min(candles.length,first+span),count=end-first;
-   hoverIndex=Math.max(first,Math.min(end-1,Math.floor(first+(e.clientX-box.left-left)/(w-left-right)*count)));
+   hoverIndex=Math.max(first,Math.min(end-1,Math.floor(first+(e.clientX-box.left-left)/plotW*count)));
    if(dragging!==null){
-      const step=(w-left-right)/span,shift=Math.round((e.clientX-dragging)/step);
+      const step=plotW/span,shift=Math.round((e.clientX-dragging)/step);
       if(shift!==0){first=Math.max(0,Math.min(candles.length-span,first-shift));dragging=e.clientX}
    }
    draw();
  });
+
+ // One-finger horizontal drag pans through historical candles; vertical swipe
+ // still scrolls the page. Two-finger pinch zooms around the current view.
+ let touchStartX=null,touchStartY=null,touchLastX=null,pinchDistance=null;
+ const separation=touches=>Math.hypot(touches[0].clientX-touches[1].clientX,
+                                     touches[0].clientY-touches[1].clientY);
+ canvas.addEventListener("touchstart",e=>{
+   if(!candles.length)return;
+   if(e.touches.length===2){
+     pinchDistance=separation(e.touches);touchStartX=null;touchLastX=null;
+   }else if(e.touches.length===1){
+     touchStartX=e.touches[0].clientX;touchStartY=e.touches[0].clientY;
+     touchLastX=touchStartX;pinchDistance=null;
+   }
+ },{passive:true});
+ canvas.addEventListener("touchmove",e=>{
+   if(!candles.length)return;
+   if(e.touches.length===2){
+     const current=separation(e.touches);
+     if(pinchDistance>0 && current>0){
+       e.preventDefault();
+       const old=span,center=first+old/2;
+       const min=canvas.getBoundingClientRect().width<650?18:35;
+       span=Math.max(min,Math.min(candles.length,Math.round(old*pinchDistance/current)));
+       first=Math.max(0,Math.min(candles.length-span,Math.round(center-span/2)));
+       pinchDistance=current;draw();
+     }
+     return;
+   }
+   if(e.touches.length!==1 || touchStartX===null)return;
+   const dx=e.touches[0].clientX-touchStartX;
+   const dy=e.touches[0].clientY-touchStartY;
+   if(Math.abs(dx)>9 && Math.abs(dx)>Math.abs(dy)*1.1){
+     e.preventDefault();
+     const w=canvas.getBoundingClientRect().width;
+     const step=chartMetrics(w).plotW/Math.max(1,span);
+     const movement=e.touches[0].clientX-touchLastX;
+     const barsMoved=Math.round(movement/step);
+     if(barsMoved!==0){
+       first=Math.max(0,Math.min(candles.length-span,first-barsMoved));
+       touchLastX=e.touches[0].clientX;
+       draw();
+     }
+   }
+ },{passive:false});
+ canvas.addEventListener("touchend",e=>{
+   if(e.touches.length<2)pinchDistance=null;
+   if(e.touches.length===0){touchStartX=null;touchLastX=null}
+ },{passive:true});
  canvas.addEventListener("mousedown",e=>{dragging=e.clientX});
  window.addEventListener("mouseup",()=>{dragging=null});
  canvas.addEventListener("mouseleave",()=>{hoverIndex=null;$("#chart-tooltip").hidden=true;dragging=null;draw()});
