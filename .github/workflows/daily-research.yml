@@ -1,6 +1,14 @@
 name: EFLOUD V2 — Daily historical research and learning
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/source_policy.py"
+      - "scripts/source_range.py"
+      - "scripts/research_engine.py"
+      - "scripts/test_*.py"
+      - ".github/workflows/daily-research.yml"
   schedule:
     - cron: "23 2 * * *"
 permissions:
@@ -21,23 +29,23 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Test causal hypotheses and exit accounting
+      - name: Test data integrity and source-verification gate
         run: PYTHONPATH=scripts python -m unittest discover -s scripts -p "test_*.py" -v
-      - name: Download CLOSED Binance Spot candles and calibrate historical models
+      - name: Check real CLOSED Binance Spot candle availability only
         id: run_research
         continue-on-error: true
         run: python scripts/research_engine.py
-      - name: Publish research/report health to GitHub Pages
+      - name: Publish factual market-data availability report to GitHub Pages
         if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -f model_results.json pipeline_status.json 2>/dev/null || true
           if ! git diff --cached --quiet; then
-            git commit -m "research: update closed-candle studies and learning status [skip ci]"
+            git commit -m "data: update actual closed-candle coverage and source status [skip ci]"
             git pull --rebase origin main
             git push
           fi
-      - name: Fail if research had no fresh data
+      - name: Fail on unusable market data response
         if: steps.run_research.outcome != 'success'
         run: exit 1
