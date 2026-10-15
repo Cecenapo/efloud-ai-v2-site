@@ -106,6 +106,11 @@ def evidence_at_signal(bars, i, family, side):
             "top_touch_count":rg["top_touch_count"],
             "bottom_touch_count":rg["bottom_touch_count"],
             "first_pivot_i":rg["first_pivot_i"],
+            "range_age_bars_at_signal":i-rg["first_pivot_i"],
+            "top_pivot_closed_ms":bars[rg["top_pivot_i"]][5],
+            "bottom_pivot_closed_ms":bars[rg["bottom_pivot_i"]][5],
+            "top_confirmed_closed_ms":bars[rg["top_confirmed_i"]][5],
+            "bottom_confirmed_closed_ms":bars[rg["bottom_confirmed_i"]][5],
             "pivot_left":rg["pivot_left"],"pivot_right":rg["pivot_right"],
             "source_rule_status":rg["source_rule_status"]})
     if sw:
