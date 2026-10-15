@@ -64,7 +64,10 @@ def evaluate_pending(pending,bars,now):
             return {"id":pending["id"],"symbol":pending["symbol"],"timeframe":pending["timeframe"],
                 "family":pending["family"],"arm":pending["arm"],"side":pending["side"],
                 "observed_utc":pending["observed_utc"],
+                "signal_closed_utc":pending.get("signal_closed_utc"),
+                "entry_exec":entry,"stop":stop,"target":target,
                 "closed_utc":dt.datetime.fromtimestamp(b[5]/1000,UTC).isoformat(),
+                "exit_exec":round(exit_exec,12),
                 "net_r":round(net,8),"outcome":outcome,"status":"CLOSED_SHADOW_SIMULATION",
                 "no_real_order":True}
     return None
