@@ -20,6 +20,7 @@ import urllib.parse
 import urllib.request
 
 from collect_live import request_json
+from source_range import structural_events, VERSION as RULE_VERSION
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 SYMBOLS = ("BTCUSDT", "ETHUSDT", "SOLUSDT", "DODOUSDT")
@@ -137,41 +138,8 @@ def arm_pass(arm,direction,i,f):
     raise ValueError("Unknown filter")
 
 def signals(bars):
-    """Derive four different observable event families using historical bars."""
-    n=len(bars);out={name:[] for name in FAMILIES}
-    for i in range(START_LOOKBACK,n):
-        row=bars[i];prev=bars[i-1]
-        o,h,l,cl=row[1:5]; prevcl=prev[4]
-        window=bars[i-48:i]
-        rh=max(b[2] for b in window)
-        rl=min(b[3] for b in window)
-        eq=(rh+rl)/2
-        tr=[max(b[2]-b[3],abs(b[2]-bars[j-1][4]),abs(b[3]-bars[j-1][4]))
-            for j,b in ((j,bars[j]) for j in range(i-13,i+1))]
-        atr=sum(tr)/len(tr)
-        if atr<=0:continue
-        if rl<=prevcl<=rh and l<rl and rl<cl<rh:
-            out["RANGE_SWEEP_EQ"].append((i,1,l-0.15*atr,eq))
-        if rl<=prevcl<=rh and h>rh and rl<cl<rh:
-            out["RANGE_SWEEP_EQ"].append((i,-1,h+0.15*atr,eq))
-        if prevcl<=rh and cl>rh and cl>o:
-            out["RANGE_BREAKOUT"].append((i,1,rh-0.15*atr,rh+(rh-rl)*0.55))
-        if prevcl>=rl and cl<rl and cl<o:
-            out["RANGE_BREAKOUT"].append((i,-1,rl+0.15*atr,rl-(rh-rl)*0.55))
-        # Standard 3-candle FVG formed two candles ago, now first possible retest.
-        if bars[i-2][3] > bars[i-4][2] and l<=bars[i-2][3] and cl>bars[i-2][3]:
-            out["FVG_RETEST"].append((i,1,bars[i-4][2]-0.15*atr,rh))
-        if bars[i-2][2] < bars[i-4][3] and h>=bars[i-2][2] and cl<bars[i-2][2]:
-            out["FVG_RETEST"].append((i,-1,bars[i-4][3]+0.15*atr,rl))
-        swing=bars[i-20:i]
-        top=max(b[2] for b in swing); bot=min(b[3] for b in swing)
-        height=top-bot
-        if height>0:
-            if top-.786*height<=cl<=top-.618*height and cl>o:
-                out["OTE_RETRACEMENT"].append((i,1,bot-0.15*atr,top))
-            if bot+.618*height<=cl<=bot+.786*height and cl<o:
-                out["OTE_RETRACEMENT"].append((i,-1,top+0.15*atr,bot))
-    return out
+    """Source-auditable research mechanics; NO fixed 48-bar range / ATR stop."""
+    return structural_events(bars)
 
 def run_trades(bars,events,arm,features):
     """Next-bar open; original-risk R; first TP/SL touch frozen; no overlap."""
@@ -261,6 +229,8 @@ def research_one(bars,symbol,tf):
         "first_open_utc":dt.datetime.fromtimestamp(bars[0][0]/1000,UTC).isoformat(),
         "last_close_utc":dt.datetime.fromtimestamp(bars[-1][5]/1000,UTC).isoformat(),
         "source":"Binance Spot completed OHLC",
+        "model_rule_version":RULE_VERSION,
+        "rules_source_status":"Research implementation is an engineering hypothesis, NOT EFLOUD instructor's exact automation",
         "executed_hypotheses":len(outcomes),
         "results":outcomes,
         "best_by_training_only":({
@@ -301,6 +271,10 @@ def research_all(fetch=request_json, now=None, max_bars=MAX_BARS):
         "implemented_family_count":len(FAMILIES),
         "implemented_indicator_arms":len(ARMS),
         "actually_executed_backtests":completed,
+        "model_rule_version":RULE_VERSION,
+        "range_detection":"causal confirmed pivot swing candidates, not a fixed candle lookback",
+        "stops":"structural invalidation, no ATR stop multiplier",
+        "unvalidated_engineering_parameters":True,
         "symbols":list(SYMBOLS),"timeframes":list(TIMEFRAMES),
         "reports":reports,"errors":errors,
         "continuous_learning_mode":"scheduled daily full chronological recalibration from closed historical trades",
