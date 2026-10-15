@@ -12,7 +12,7 @@ const STREAM="wss://data-stream.binance.vision/ws/";
 const UP="#26a69a",DOWN="#ef5350";
 let chart=null,candles=null,volumes=null,started=false,ws=null,loadId=0;
 let symbol="BTCUSDT",interval="4h",lastTime=0,lastBar=null,currentBars=[],volumeVisible=true;
-let refreshTimer=0,tooltipTimer=0,canLive=false;
+let refreshTimer=0,canLive=false,markerView=null,priceLines=[],verifiedCount=0;
 const el=id=>document.getElementById(id);
 const fPrice=n=>{
  if(!Number.isFinite(Number(n)))return "—";
@@ -101,6 +101,7 @@ function createOnce(){
   lastValueVisible:false,priceLineVisible:false,color:"#28715f"
  },1);
  chart.panes()[1]?.setHeight(Math.round(el("tv-chart").clientHeight*.20));
+ markerView=L.createSeriesMarkers(candles,[]);
  chart.subscribeCrosshairMove(param=>{
    if(param?.time===undefined || !param.seriesData)return;
    const b=param.seriesData.get(candles);
@@ -157,6 +158,79 @@ function plot(bars,preserve=false){
    bars.length+" gerçek OHLC mumu ve hacmi. "+
    "Son mum oluşuyorsa kapanış değerleri değişebilir. Eğitmen kaynağıyla onaylı işlem bulunmadığı için giriş/stop/TP çizilmez.";
  setLoading(null);
+}
+function clearApprovedOverlays(){
+ if(candles)for(const line of priceLines){
+   try{candles.removePriceLine(line)}catch(e){}
+ }
+ priceLines=[];markerView?.setMarkers([]);verifiedCount=0;
+}
+function validSourceRecord(item){
+ if(!item||item.status!=="SOURCE_VERIFIED"||!item.source||
+    item.source.evidence_type!=="ORIGINAL_VIDEO_FRAME_VERIFIED" ||
+    typeof item.source.video_id!=="string"||!item.source.video_id.trim()||
+    typeof item.source.frame_id!=="string"||!item.source.frame_id.trim()||
+    !Number.isFinite(item.source.timecode_seconds)||
+    typeof item.reviewer!=="string"||!item.reviewer.trim()||
+    !["LONG","SHORT"].includes(item.side)||
+    typeof item.entry_reason!=="string"||!item.entry_reason.trim()||
+    typeof item.stop_reason!=="string"||!item.stop_reason.trim()||
+    typeof item.target_reason!=="string"||!item.target_reason.trim()
+ )return false;
+ const ent=Number(item.entry),st=Number(item.stop),tp=Number(item.target);
+ if(![ent,st,tp].every(Number.isFinite)||Math.min(ent,st,tp)<=0)return false;
+ if(item.side==="LONG" && !(st<ent&&ent<tp))return false;
+ if(item.side==="SHORT" && !(tp<ent&&ent<st))return false;
+ const stamp=Date.parse(item.confirmed_bar_open_utc);
+ if(!Number.isFinite(stamp)||stamp>Date.now()||
+    !currentBars.some(b=>b.time===Math.floor(stamp/1000)))return false;
+ return true;
+}
+async function loadApprovedSetups(id){
+ if(!candles)return;
+ clearApprovedOverlays();
+ let d;
+ try{
+  const r=await fetch("./verified_setups.json",{cache:"no-store"});
+  if(!r.ok)return;
+  d=await r.json();
+ }catch(e){return}
+ if(id!==loadId||d?.schema!==1||!Array.isArray(d.items))return;
+ const relevant=d.items.filter(x=>x.symbol===symbol&&x.timeframe===interval&&
+    validSourceRecord(x)).sort((a,b)=>Date.parse(b.confirmed_bar_open_utc)-Date.parse(a.confirmed_bar_open_utc));
+ if(!relevant.length)return;
+ const pick=relevant[0];
+ verifiedCount=relevant.length;
+ const levels=[
+  {price:Number(pick.entry),color:"#5799f9",title:"GİRİŞ · kaynak"},
+  {price:Number(pick.stop),color:DOWN,title:"STOP · geçersizlik"},
+  {price:Number(pick.target),color:UP,title:"TP · kaynak hedefi"}
+ ];
+ for(const v of levels)priceLines.push(candles.createPriceLine({
+   price:v.price,color:v.color,lineWidth:2,lineStyle:2,
+   axisLabelVisible:true,title:v.title
+ }));
+ const marks=relevant.map(x=>({
+   time:Math.floor(Date.parse(x.confirmed_bar_open_utc)/1000),
+   position:x.side==="LONG"?"belowBar":"aboveBar",
+   shape:x.side==="LONG"?"arrowUp":"arrowDown",
+   color:x.side==="LONG"?UP:DOWN,
+   text:"KAYNAK TEYİDİ"
+ })).sort((a,b)=>a.time-b.time);
+ markerView?.setMarkers(marks);
+ el("chart-side").textContent=pick.side+" · VIDEO/KARE TEYİTLİ";
+ el("chart-net-r").textContent="GERÇEK EMİR YOK";
+ el("chart-entry-price").textContent=fPrice(pick.entry);
+ el("chart-stop-price").textContent=fPrice(pick.stop);
+ el("chart-tp-price").textContent=fPrice(pick.target);
+ el("chart-entry-why").textContent=pick.entry_reason;
+ el("chart-stop-why").textContent=pick.stop_reason;
+ el("chart-tp-why").textContent=pick.target_reason;
+ el("chart-observation").textContent="Özgün video: "+pick.source.video_id+
+    " · saniye "+pick.source.timecode_seconds+" · kare "+pick.source.frame_id+
+    " · doğrulayan: "+pick.reviewer+". Borsa emri yok.";
+ el("chart-source-note").textContent+=
+   " · "+verifiedCount+" kaynağı belgeli setup çizildi; teorik çizgiler emir değildir.";
 }
 function setPoint(p){
  if(!p||!candles||!lastBar||p.time<lastTime)return;
@@ -223,6 +297,8 @@ async function showMarket(s,t,options={}){
   const parsed=loadPoints(data);
   if(!parsed.length)throw Error("Doğru biçimli mum bulunamadı");
   plot(parsed,same&&options.preserve!==false);
+  await loadApprovedSetups(id);
+  if(id!==loadId)return;
   changeStatus("GERÇEK OHLC HAZIR");
   openStream(id);
  }catch(e){
@@ -271,5 +347,5 @@ function init(){
 }
 window.EfloudSetupChart={init,showMarket,
  debugState:()=>({ready:!!chart,symbol,interval,bars:currentBars.length,
- live:canLive,engine:window.LightweightCharts?.version?.()||null,lastTime})};
+ live:canLive,engine:window.LightweightCharts?.version?.()||null,lastTime,verifiedCount})};
 })();
