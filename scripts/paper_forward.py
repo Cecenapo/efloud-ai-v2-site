@@ -148,7 +148,7 @@ def fresh_events(bars,price,symbol,tf,now):
     if int(now.timestamp()*1000)-latest[5]>2*86400000:
         return []
     feature=indicators(bars)
-    events=signals(bars)
+    events=signals(bars,only_last=True)
     candidate=[]
     for family,rows in events.items():
         for i,side,stop,target in rows:
