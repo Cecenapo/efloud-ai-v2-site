@@ -40,102 +40,94 @@ function signalAt(p){
  const timestamp=Date.parse(p.signal_closed_utc||p.observed_utc);
  return Number.isFinite(timestamp)?timestamp:null;
 }
+function isLegacy(p){
+ return !p.strategy_version || p.strategy_version!=="pivot_range_research_v2";
+}
 function evidenceFor(p,bars,index){
- if(index<49 || !bars[index])return null;
- let prior=bars.slice(index-48,index),high=Math.max(...prior.map(b=>b.high)),low=Math.min(...prior.map(b=>b.low));
- const trs=[];
- for(let j=index-13;j<=index;j++){
-   const b=bars[j],prev=bars[j-1];
-   if(!b||!prev)return null;
-   trs.push(Math.max(b.high-b.low,Math.abs(b.high-prev.close),Math.abs(b.low-prev.close)));
- }
- const atr=trs.reduce((a,b)=>a+b,0)/trs.length,eq=(high+low)/2;
- let info={source:"Kapanmış mumlardan yeniden hesaplanan fiyat yapısı",rangeHigh:high,rangeLow:low,eq,atr,signal:bars[index],zone:null,levels:[]};
- if(p.family==="RANGE_SWEEP_EQ"){
-   info.levels=[{price:high,label:"RANGE HIGH"},{price:low,label:"RANGE LOW"},{price:eq,label:"EQ %50"}];
-   info.zone={start:index-48,end:index,low,high,label:"ÖNCEKİ 48 MUM RANGE",color:"#7b97ab"};
- }
- if(p.family==="RANGE_BREAKOUT"){
-   info.levels=[{price:high,label:"RH"},{price:low,label:"RL"}];
-   info.zone={start:index-48,end:index,low,high,label:"48 MUM RANGE",color:"#6f9cab"};
- }
- if(p.family==="FVG_RETEST"){
-   const b4=bars[index-4],b2=bars[index-2];
-   if(b4&&b2){
-     let bottom=p.side==="LONG"?b4.high:b2.high,top=p.side==="LONG"?b2.low:b4.low;
-     if(top>bottom){
-       info.zone={start:index-4,end:bars.length-1,low:bottom,high:top,label:"FVG BÖLGESİ",color:"#9877e7"};
-       info.levels=[{price:bottom,label:"FVG ALT"},{price:top,label:"FVG ÜST"}];
-     }
-   }
-   info.levels.push({price:p.side==="LONG"?high:low,label:"KARŞI RANGE"});
- }
- if(p.family==="OTE_RETRACEMENT"){
-   const swing=bars.slice(index-20,index);
-   if(swing.length===20){
-     const hi=Math.max(...swing.map(x=>x.high)),lo=Math.min(...swing.map(x=>x.low)),height=hi-lo;
-     if(height>0){
-       const a=p.side==="LONG"?hi-.786*height:lo+.618*height;
-       const b=p.side==="LONG"?hi-.618*height:lo+.786*height;
-       info.zone={start:index-20,end:index,low:Math.min(a,b),high:Math.max(a,b),label:"OTE %61,8–%78,6",color:"#dfa469"};
-       info.levels=[{price:lo,label:"SWING LOW"},{price:hi,label:"SWING HIGH"}];
-     }
-   }
- }
- if(p.evidence && p.evidence.scope==="observed_closed_binance_spot_candles" &&
-   Number(p.evidence.as_of_close_ms)===bars[index].closeMs){
-    const audit=p.evidence;
-    const keys=[["range_high","rangeHigh"],["range_low","rangeLow"],["equilibrium","eq"],["atr14","atr"]];
-    keys.forEach(([src,dest])=>{if(Number.isFinite(Number(audit[src])))info[dest]=Number(audit[src])});
-    info.source="Sinyal oluştuğu anda kaydedilen mum verileri";
-    if(p.family==="RANGE_BREAKOUT"||p.family==="RANGE_SWEEP_EQ"){
-      info.zone={start:index-48,end:index,low:info.rangeLow,high:info.rangeHigh,
-                 label:"KAYDEDİLEN RANGE · 48 MUM",color:"#7b97ab"};
-      info.levels=[{price:info.rangeHigh,label:"RH"},{price:info.rangeLow,label:"RL"}];
-      if(p.family==="RANGE_SWEEP_EQ")info.levels.push({price:info.eq,label:"EQ %50"});
+ // Do NOT infer an arbitrary lookback range from current chart data.
+ // Only draw areas frozen when the setup was originally observed.
+ if(index<0 || !bars[index])return null;
+ const a=p.evidence;
+ if(!a || a.scope!=="observed_closed_binance_spot_candles" ||
+      Number(a.as_of_close_ms)!==bars[index].closeMs)return null;
+ const legacy=isLegacy(p),info={
+    source:legacy?"ESKİ ARAŞTIRMA: son 48 mum ve ATR varsayımları (EFLOUD kuralı değil)"
+      :"SİNYAL ANINDA KAYDEDİLEN ONAYLI PİVOT SEVİYELERİ (ARAŞTIRMA HİPOTEZİ)",
+    signal:bars[index],zone:null,levels:[],rangeHigh:null,rangeLow:null,
+    eq:null,legacy,record:a
+ };
+ const positive=x=>x!==undefined&&x!==null&&Number.isFinite(Number(x));
+ if(positive(a.range_high)&&positive(a.range_low)){
+    info.rangeHigh=Number(a.range_high);info.rangeLow=Number(a.range_low);
+    info.eq=positive(a.equilibrium)?Number(a.equilibrium):(info.rangeHigh+info.rangeLow)/2;
+    info.levels=[{price:info.rangeHigh,label:"RH"},{price:info.rangeLow,label:"RL"}];
+    if(p.family==="RANGE_SWEEP_EQ")info.levels.push({price:info.eq,label:"EQ %50"});
+    if(p.family==="RANGE_SWEEP_EQ"||p.family==="RANGE_BREAKOUT"){
+      const age=legacy?Number(a.lookback_range_bars||48):Number(a.range_age_bars_at_signal);
+      if(Number.isFinite(age)&&age>=1){
+       info.zone={start:Math.max(0,index-age),end:index,low:info.rangeLow,
+          high:info.rangeHigh,label:legacy?"ESKİ 48 MUM MODELİ":"ONAYLI PİVOT RANGE ADAYI",color:"#7b97ab"};
+      }
     }
-    if(p.family==="FVG_RETEST" && Number.isFinite(Number(audit.fvg_lower)) &&
-       Number.isFinite(Number(audit.fvg_upper))){
-      info.zone={start:index-4,end:bars.length-1,low:Number(audit.fvg_lower),
-        high:Number(audit.fvg_upper),label:"KAYDEDİLEN FVG",color:"#9877e7"};
-    }
-    if(p.family==="OTE_RETRACEMENT" && Number.isFinite(Number(audit.ote_lower)) &&
-       Number.isFinite(Number(audit.ote_upper))){
-      info.zone={start:index-20,end:index,low:Math.min(Number(audit.ote_lower),Number(audit.ote_upper)),
-        high:Math.max(Number(audit.ote_lower),Number(audit.ote_upper)),
-        label:"KAYDEDİLEN OTE %61,8–78,6",color:"#dfa469"};
-    }
+ }
+ if(p.family==="FVG_RETEST"&&positive(a.fvg_lower)&&positive(a.fvg_upper)){
+    info.zone={start:index-4,end:bars.length-1,low:Math.min(Number(a.fvg_lower),Number(a.fvg_upper)),
+       high:Math.max(Number(a.fvg_lower),Number(a.fvg_upper)),
+       label:legacy?"ESKİ FVG ADAYI":"KAYDEDİLMİŞ FVG ALANI",color:"#9877e7"};
+ }
+ if(p.family==="OTE_RETRACEMENT"&&positive(a.ote_lower)&&positive(a.ote_upper)){
+    const lo=Number(a.ote_lower),hi=Number(a.ote_upper);
+    info.zone={start:Math.max(0,index-22),end:index,low:Math.min(lo,hi),high:Math.max(lo,hi),
+       label:legacy?"ESKİ OTE VARSAYIMI":"ONAYLI PİVOTLARDAN OTE",color:"#dfa469"};
  }
  return info;
 }
 function reasons(p,ev){
- const n=v=>priceText(v), atr=ev?.atr,buffer=atr?atr*.15:null,range=ev?ev.rangeHigh-ev.rangeLow:null;
- const genericEntry="Sinyal mumu kapandıktan sonra botun veri kontrolünde gözlemlediği kamuya açık fiyatın maliyet varsayımıyla düzeltilmiş teorik girişi. Canlı fiyattan farklı olabilir.";
+ const n=priceText;
+ const entry="Giriş, sinyal mumunun kapanmasından sonra botun veri kontrolünde kaydettiği teorik fiyattır; gerçek borsa emri değildir.";
+ if(isLegacy(p)){
+   return {
+     entry:"ESKİ PROTOTİP — Bu sinyal, sabit 48 mum aralığıyla oluşturulan geçmiş araştırma kuralına aittir. Bu sayı EFLOUD eğitiminden alınmamıştır. "+entry,
+     stop:"ESKİ PROTOTİP — Kaydedilen stop "+n(p.stop)+". Eski motorun 0,15 × ATR tamponu EFLOUD eğitiminde zorunlu kural değildir; yeni stratejide kullanılmaz.",
+     tp:"ESKİ PROTOTİP — Kaydedilen hedef "+n(p.target)+". 0,55 × range gibi projeksiyonlar eğitimden doğrulanmış otomatik kurallar değildir. Eski sonuçlar yeni modele aktarılmaz."
+   };
+ }
+ const a=p.evidence||{};
  if(!ev){
-   return {entry:genericEntry+" Sinyalin özgün yapısı eksik mum verisi nedeniyle doğrulanamadı.",stop:"Kaydedilmiş yapısal stop: "+n(p.stop)+". Hesabı destekleyen eski mumlar henüz doğrulanamadı.",tp:"Kaydedilmiş hedef: "+n(p.target)+". Kaynak mumları olmadan oran/formül yeniden doğrulanamaz."};
+   return {entry:"Kaydedilmiş yapısal kanıt ve kapanmış mum eşleşmedi. "+entry,
+     stop:"Önceden kaydedilen stop: "+n(p.stop)+". Pivot bilgisi doğrulanamadı.",
+     tp:"Önceden kaydedilen hedef: "+n(p.target)+". Yapısal kanıt gösterilemedi."};
  }
- let entry="",stop="",tp="";
+ let reason="";
+ if(p.family==="RANGE_SWEEP_EQ"){
+   reason="Sinyal öncesinde onaylanan pivotlardan RH "+n(ev.rangeHigh)+", RL "+n(ev.rangeLow)+
+     " ve EQ "+n(ev.eq)+" seçildi. Üst/alt sınıra fitil taşması ve aynı mumun range içinde kapanışı izlendi."+
+     " Pivot uçları, kapanış teyitleri ve sınır temas sayıları olay anında kaydedildi.";
+   return {entry:reason+" "+entry,
+     stop:"Süpürme mumunun gerçek "+(p.side==="LONG"?"dibinin":"tepesinin")+
+      " ötesindeki yapısal geçersizlik: "+n(p.stop)+". ATR katsayısı eklenmedi.",
+     tp:"Onaylı range sınırlarından türetilen Equilibrium EQ: ("+
+       n(ev.rangeHigh)+" + "+n(ev.rangeLow)+") / 2 = "+n(ev.eq)+
+       ". Kaydedilen hedef "+n(p.target)+". Her EQ dönüş garantisi değildir."};
+ }
  if(p.family==="RANGE_BREAKOUT"){
-   const border=p.side==="LONG"?ev.rangeHigh:ev.rangeLow;
-   entry="Önceki 48 mumun "+(p.side==="LONG"?"üst":"alt")+" sınırı ("+n(border)+") yönlü mum kapanışıyla kırıldı. "+genericEntry;
-   stop="Kırılan sınır "+n(border)+(buffer===null?"":" ve 0,15 × ATR14 = "+n(buffer)+" tamponu")+". Mekanik stopun kaydedilen değeri: "+n(p.stop)+".";
-   tp="48 mumluk aralık ("+n(range)+") × 0,55 projeksiyon; kaydedilmiş TP "+n(p.target)+". Bu araştırma katsayısıdır, garanti hedef değil.";
- }else if(p.family==="RANGE_SWEEP_EQ"){
-   entry="Önceki 48 mumun "+(p.side==="LONG"?"Range Low "+n(ev.rangeLow):"Range High "+n(ev.rangeHigh))+" seviyesi fitille aşıldı, sinyal mumu yeniden range içine kapandı. "+genericEntry;
-   stop="Süpürme fitilinin ötesine 0,15 × ATR14 = "+n(buffer)+" tamponu konuldu. Kaydedilmiş stop: "+n(p.stop)+".";
-   tp="Range High "+n(ev.rangeHigh)+" ve Range Low "+n(ev.rangeLow)+" orta noktası EQ "+n(ev.eq)+". Kaydedilmiş TP: "+n(p.target)+".";
- }else if(p.family==="FVG_RETEST"){
-   entry="Üç mumluk FVG fiyat boşluğu test edildi, ardından "+(p.side==="LONG"?"yukarı":"aşağı")+" kapanış gözlendi. "+genericEntry;
-   stop="FVG referansının ötesinde 0,15 × ATR14 "+n(buffer)+" tamponuyla kaydedilmiş stop "+n(p.stop)+".";
-   tp="Önceki 48 mumun karşı sınırı ("+n(p.side==="LONG"?ev.rangeHigh:ev.rangeLow)+") hedef alındı. Kaydedilmiş TP: "+n(p.target)+".";
- }else if(p.family==="OTE_RETRACEMENT"){
-   entry="Önceki 20 mumun swing aralığında Fibonacci %61,8–%78,6 düzeltme bandında "+(p.side==="LONG"?"bullish":"bearish")+" kapanış oluştu. "+genericEntry;
-   stop="Karşı swing uç noktasına 0,15 × ATR14 = "+n(buffer)+" tampon. Kaydedilmiş stop: "+n(p.stop)+".";
-   tp="20 mumluk swing'in karşı ucu referans alındı. Kaydedilmiş TP: "+n(p.target)+".";
- }else{
-   entry=genericEntry;stop="Geçersizlik seviyesi "+n(p.stop);tp="Hedef "+n(p.target);
+   return {entry:"Önceden onaylanan pivot sınırının "+(p.side==="LONG"?"üstünde":"altında")+
+       " yönlü mum kapanışıyla kırılım gözlendi. "+entry,
+     stop:"Önceden onaylanmış karşı swing'in yapısal seviyesi: "+n(p.stop)+". ATR stop tamponu yok.",
+     tp:"Kırılım yönündeki daha eski, onaylanmış yapısal swing seviyesi: "+n(p.target)+
+       ". Önceden böyle bir seviye bulunmazsa bot hedef uydurmak yerine işlem adayından vazgeçer."};
  }
- return {entry,stop,tp};
+ if(p.family==="FVG_RETEST"){
+   return {entry:"Üç mumlu boşluğa dönüş/kapanış hipotezi (EFLOUD'un birebir emri değildir). "+entry,
+     stop:"FVG bölgesinin kaydedilen dış sınırı "+n(p.stop)+". ATR eklenmedi.",
+     tp:"Önceden onaylanmış karşı yapısal swing: "+n(p.target)+"."};
+ }
+ if(p.family==="OTE_RETRACEMENT"){
+   return {entry:"Önceden onaylanan karşı swing pivotlardan hesaplanan OTE %61,8–78,6 bandında kapanış hipotezi. "+entry,
+     stop:"Pivot swing'in yapısal geçersizlik ucu: "+n(p.stop)+". ATR eklenmedi.",
+     tp:"Karşı onaylı swing pivot seviyesi: "+n(p.target)+"."};
+ }
+ return {entry,stop:"Yapısal stop "+n(p.stop),tp:"Yapısal hedef "+n(p.target)};
 }
 function setupPriceState(quote){
  if(!quote)return null;
