@@ -1,0 +1,36 @@
+name: EFLOUD V2 — Hourly market snapshot
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "13 * * * *"
+permissions:
+  contents: write
+concurrency:
+  group: efloud-v2-market-snapshot
+  cancel-in-progress: false
+jobs:
+  publish_quotes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Check collector tests
+        run: python -m unittest scripts/test_research_engine.py
+        env:
+          PYTHONPATH: scripts
+      - name: Snapshot public read-only prices
+        run: python scripts/collect_live.py
+      - name: Publish only changed aggregate JSON
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add live.json
+          if ! git diff --cached --quiet; then
+            git commit -m "data: refresh read-only hourly market snapshot [skip ci]"
+            git push
+          fi
