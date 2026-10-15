@@ -1,340 +1,171 @@
 "use strict";
-const $=selector=>document.querySelector(selector);
-const fmt=(v,d=2)=>v===null||v===undefined||!Number.isFinite(Number(v))?"—":Number(v).toLocaleString("tr-TR",{minimumFractionDigits:d,maximumFractionDigits:d});
-const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const names={RANGE_DEVIATION:"Range Sweep",RANGE_BREAKOUT:"Range Breakout",EQUILIBRIUM_CROSS:"Range EQ",STRUCTURE_CONTINUATION:"BOS",TREND_RETRACEMENT:"Retracement",REVERSAL_MSB:"MSB Reversal",SWING_FAILURE:"SFP",EQUAL_LEVEL_LIQUIDITY:"Equal High/Low",CLASSICAL_ORDER_BLOCK:"Order Block",EFLOUD_ORDER_BLOCK:"Efloud OB",FAIR_VALUE_GAP:"FVG",BREAKER_RETEST:"Breaker",INDECISION_CANDLE:"Indecision",OTE_RETRACEMENT:"OTE",FIB_EXTENSION:"Fib Extension",WEEKLY_OPEN:"Weekly Open",RETURN_TO_ORIGIN:"Return to Origin",ACCUMULATION_DISTRIBUTION:"Accumulation / Distribution",SUPPLY_DEMAND:"Supply / Demand",HTF_PREMIUM_DISCOUNT:"HTF Premium / Discount"};
-const armNames={none:"Price Action · Filtresiz",rsi_bias:"RedK RSI yön",stoch_flip_recent:"RedK Stoch dönüş",cci_impulse:"RedK CCI ivme",macd_expansion:"RedK MACD ivme",rsi_macd_agree:"RedK RSI + MACD"};
-const pairs=["BTCUSDT","ETHUSDT","SOLUSDT","DODOUSDT"];
-let latestResearch=null,prices={},stream=null,streamActive=false,stopRest=false,restTimer=0;
-function trValue(p,v){return p+fmt(v,3)+"R"}
-function researchTimestamp(ts){const x=new Date(ts);return !isNaN(x.getTime())?x.toLocaleString("tr-TR",{timeZone:"Europe/Istanbul"}):String(ts||"—")}
-async function fetchJson(path){const r=await fetch(path,{cache:"no-store"});if(!r.ok)throw Error("HTTP "+r.status);return r.json()}
-function showQuoteStatus(status){$("#live-status").textContent=status}
-function updateQuote(symbol,price,source,at,percent=null){
- if(!pairs.includes(symbol)||!Number.isFinite(Number(price))||Number(price)<=0)return;
- const previous=prices[symbol];
- if(previous && Number(new Date(at)) < Number(new Date(previous.at))) return;
- prices[symbol]={price:Number(price),source,at,percent:percent===null?null:Number(percent)};
- drawTickers();
- if(window.EfloudSetupChart)window.EfloudSetupChart.updateQuote(symbol,prices[symbol]);
- queueSetupRender();
-}
-function drawTickers(){
- $("#ticker-grid").innerHTML=pairs.map(symbol=>{
-  const p=prices[symbol];
-  if(!p)return '<div class="ticker-card"><span class="ticker-symbol">'+esc(symbol)+'</span><strong>—</strong><small>VERİ YOK</small></div>';
-  const age=Date.now()-new Date(p.at).getTime(),fresh=age<90000;
-  const title=esc((p.source==="WEBSOCKET"?"Anlık WebSocket":p.source==="REST"?"REST canlı sorgu":"Saatlik arşiv")+(fresh?"":" · GECİKMİŞ"));
-  return '<div class="ticker-card"><span class="ticker-symbol">'+esc(symbol)+'</span><strong>$'+fmt(p.price,p.price<1?6:2)+'</strong><small>'+title+'</small>'+
-   '<small>'+esc(researchTimestamp(p.at))+(p.percent===null?"":" · 24s "+fmt(p.percent,2)+"%")+'</small></div>';
- }).join("");
- const times=pairs.map(p=>prices[p]?.at).filter(Boolean).sort().reverse();
- $("#live-updated").textContent="Fiyat kaynağı: Binance Spot, halka açık veri. Son mesaj: "+(times[0]?researchTimestamp(times[0]):"henüz alınamadı")+". Tarayıcı kapalıysa yalnız saatlik sunucu özeti güncellenir; gerçek emir yok.";
-}
-async function loadHourlyBackup(){
- try{
-  const d=await fetchJson("./live.json");
-  for(const symbol of pairs){
-   const row=d.symbols?.[symbol];
-   if(row?.status==="OK")updateQuote(symbol,row.last_price,"ARCHIVE",row.observed_utc,row.change_24h_percent);
-  }
-  if(!streamActive)showQuoteStatus("SAATLİK YEDEK / GECİKME OLABİLİR");
- }catch(e){if(!streamActive)showQuoteStatus("YEDEK VERİ BEKLENİYOR")}
-}
-async function pollRest(){
- if(streamActive||document.hidden)return;
- let received=0;
- await Promise.all(pairs.map(async symbol=>{
-  try{
-   const r=await fetch("https://data-api.binance.vision/api/v3/ticker/24hr?symbol="+symbol,{cache:"no-store"});
-   if(!r.ok)throw Error(r.status);
-   const p=await r.json();
-   updateQuote(symbol,p.lastPrice,"REST",new Date().toISOString(),p.priceChangePercent);
-   received++;
-  }catch(e){}
- }));
- if(!streamActive)showQuoteStatus(received===pairs.length?"CANLI REST":received?"KISMİ CANLI":"API ERİŞİLEMİYOR");
-}
-function connectWebsocket(){
- if(stream || typeof WebSocket==="undefined")return;
- const channels=pairs.map(x=>x.toLowerCase()+"@miniTicker").join("/");
- let socket;
- try{socket=new WebSocket("wss://data-stream.binance.vision/stream?streams="+channels)}
- catch(e){pollRest();return}
- stream=socket;
- const timeout=setTimeout(()=>{if(socket.readyState!==WebSocket.OPEN)socket.close()},10000);
- socket.onopen=()=>{clearTimeout(timeout);streamActive=true;showQuoteStatus("CANLI WEBSOCKET");};
- socket.onmessage=event=>{
-  try{
-   const p=JSON.parse(event.data).data;
-   if(p?.s&&p?.c)updateQuote(p.s,p.c,"WEBSOCKET",new Date(p.E||Date.now()).toISOString(),
-    p.o&&Number(p.o)>0?(Number(p.c)/Number(p.o)-1)*100:null);
-  }catch(e){}
- };
- socket.onerror=()=>{showQuoteStatus("WEBSOCKET HATASI")};
- socket.onclose=()=>{clearTimeout(timeout);if(stream===socket)stream=null;streamActive=false;showQuoteStatus("REST YEDEĞİNE GEÇİLDİ");pollRest()};
-}
-function showGate(){ $("#validated").textContent="0" }
-function displayResearch(){
- const symbol=$("#symbol").value,tf=$("#timeframe").value,family=$("#family-select").value;
- const report=latestResearch?.reports?.find(x=>x.symbol===symbol&&x.timeframe===tf);
- const tbody=$("#results"),cover=$("#coverage"),learner=$("#learning-results");
- const count=latestResearch?.actually_executed_backtests;
- if(latestResearch?.model_rule_version!=="pivot_range_research_v2"||!count){
-   $("#pipeline-status").textContent="Yalnız yapısal pivot araştırmasının sonuçları gösterilir. İlk geçerli rapor bekleniyor.";
-   cover.textContent=symbol+" · "+tf+" · henüz yeni yöntem raporu bulunmuyor";
-   tbody.innerHTML='<tr><td colspan="6">YENİ PİVOT RAPORU BEKLENİYOR — NO TRADE</td></tr>';
-   learner.textContent="Yeni metodun bağımsız ileri performans kanıtı bulunmuyor.";
-   return;
- }
- $("#pipeline-status").textContent="YAPISAL PİVOT V2 · Son araştırma: "+
-   researchTimestamp(latestResearch.generated_utc)+" · tamamlanan deney: "+fmt(count,0)+
-   " · bağımsız ileri doğrulama: bekleniyor · NO TRADE";
- if(report?.status!=="RESEARCH_ONLY_NO_TRADE"){
-   cover.textContent=symbol+" · "+tf+" · "+(report?.status||"DATA_UNAVAILABLE")+
-     " · yeterli kapanmış mum veya güvenilir kaynak yok";
-   tbody.innerHTML='<tr><td colspan="6">BU PERİYOTTA DEĞERLENDİRİLEBİLİR VERİ YOK — NO TRADE</td></tr>';
-   learner.textContent="Bu parite/periyotta henüz yeni modelin ölçülebilir sonucu bulunmuyor.";
-   return;
- }
- cover.textContent=symbol+" · "+tf+" · "+fmt(report.bars,0)+" kapanmış mum · "+
-   researchTimestamp(report.first_open_utc)+" — "+researchTimestamp(report.last_close_utc)+
-   " · "+report.source;
- const arms=report.results.filter(r=>r.family===family);
- tbody.innerHTML=arms.length?arms.map(a=>{
-   const t=a.test,positive=t.mean_net_r!==null&&t.mean_net_r>0;
-   return '<tr><td>'+esc(armNames[a.arm]||a.arm)+'</td><td>'+fmt(t.n,0)+'</td><td>'+
-    (t.win_rate===null?"—":fmt(t.win_rate*100,1)+"%")+'</td><td class="'+
-    (positive?"positive":"negative")+'">'+(t.mean_net_r===null?"—":trValue(positive?"+":"",t.mean_net_r))+
-    '</td><td>'+fmt(t.max_drawdown_r,2)+'</td><td><span class="tag">NO TRADE</span></td></tr>';
- }).join(""):'<tr><td colspan="6">Bu aile için değerlendirme bulunmuyor.</td></tr>';
- const best=report.best_by_training_only;
- learner.innerHTML="<strong>Yapısal pivot araştırması</strong><p>"+
-   fmt(report.executed_hypotheses,0)+" farklı model/filtre çalışması raporlandı. Eğitim dönemi skoru: "+
-   (best?esc(best.family+" / "+best.arm)+" · "+fmt(best.train_lower_shrunk_r,3)+"R":
-    "Yeterli pozitif eğitim kanıtı yok")+
-   ". Değerlendirme, kapanmış tarihsel işlemlere dayanır; bağımsız ileri onay yoktur. Otomatik emir kapalı.</p>";
-}
-async function refreshStudies(){
- const outcomes=await Promise.allSettled([
-   fetchJson("./model_results.json"),fetchJson("./pipeline_status.json")]);
- latestResearch=outcomes[0].status==="fulfilled"?outcomes[0].value:null;
- displayResearch();
- if(outcomes[1].status==="fulfilled"){
-   const p=outcomes[1].value;
-   if(p.status!=="FINISHED")$("#pipeline-status").textContent=
-     "Yapısal pivot araştırması uyarısı: "+esc(p.status)+". Sonuç güncelliğini kontrol edin.";
- }
-}
-function renderFamilyCatalogue(){
- $("#families").innerHTML=Object.entries(names).map(([name,label],i)=>
- '<div class="family-card"><b>'+String(i+1).padStart(2,"0")+'</b><strong>'+esc(label)+
- '</strong><small>384 aday · tümü doğrulanmış değil</small></div>').join("");
-}
-
-/* Visible live-shadow setup board. All prices are historical observed paper entries.
- * Mark-to-market is estimated with illustrative 7.5 bp/side fees and 5 bp
- * price friction/side; closed outcomes come only from causal scheduled jobs. */
-let setupState=null, setupTab="open", setupRerenderTimer=0;
-let setupSelectedId=null, setupShown=new Map();
-const setupNames={
- RANGE_SWEEP_EQ:"Range Sweep + EQ",RANGE_BREAKOUT:"Range Breakout",
- FVG_RETEST:"FVG Retest",OTE_RETRACEMENT:"Fibonacci OTE"
+/* EFLOUD AI 2.0 — source-audited read-only research interface.
+   No generated automatic setups, fictitious fee-adjusted R, or invented
+   strategy combinations. Binance live data and true closed-candle coverage only.
+*/
+const $=s=>document.querySelector(s);
+const escapeText=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt=(v,d=2)=>v===null||v===undefined||!Number.isFinite(Number(v))?"—":
+ Number(v).toLocaleString("tr-TR",{minimumFractionDigits:d,maximumFractionDigits:d});
+const timeText=s=>{
+ const d=new Date(s);return !Number.isFinite(d.getTime())?"—":d.toLocaleString("tr-TR",{timeZone:"Europe/Istanbul"})
 };
-function money(v) {
- const n=Number(v);
- if(!Number.isFinite(n))return "—";
- const decimals=Math.abs(n)<.1?8:Math.abs(n)<1?6:Math.abs(n)<100?4:2;
- return n.toLocaleString("tr-TR",{minimumFractionDigits:decimals,maximumFractionDigits:decimals});
+const pairs=["BTCUSDT","ETHUSDT","SOLUSDT","DODOUSDT"];
+const concepts=[
+ ["RH / RL / EQ","Ders 3: Range High, Range Low, denge noktası; hangi pivotun seçileceği kaynaktan teyit edilmeli"],
+ ["Deviation / Sweep","Ders 4: Fitille likidite süpürmesi ve gerçek kapanışın ayrılması"],
+ ["Breakout / Retest","Ders 6: Kırılım, yeniden test ve kaynağa dönüş anlatımı"],
+ ["Fibonacci OTE","Ders 10: 0,618–0,786 OTE alanı; otomatik alış/satış kuralı değil"],
+ ["FVG / Imbalance","Ders 13: Üç mumlu FVG, actual gap ve liquidity void ayrı kavramlardır"],
+ ["Piyasa Yapısı","Ders 14: HH/HL, LH/LL, major/minor swing ve teyit zamanı"],
+ ["HTF / LTF","Ders 1: Üst ve alt zaman dilimi bağlamı birbirinden ayrı değerlendirilir"],
+ ["Order Block","Eğitimde ele alınan bölge kavramı; kaynak grafik olmadan tek mumdan emir türetilmez"]
+];
+let prices={},stream=null,streamActive=false,study=null,lastQuoteAt=null;
+async function fetchJson(path){
+ const response=await fetch(path,{cache:"no-store"});
+ if(!response.ok)throw Error("HTTP "+response.status);
+ return response.json();
 }
-function signedR(value) { return Number.isFinite(value)?(value>=0?"+":"")+fmt(value,3)+"R":"—"; }
-function groupSetupItems(raw){
- const map=new Map();
- for(const p of raw){
-   const entry=Number(p.entry_exec),stop=Number(p.stop),target=Number(p.target);
-   const key=[p.symbol,p.timeframe,p.family,p.side,
-       Number.isFinite(entry)?entry.toPrecision(12):"",
-       Number.isFinite(stop)?stop.toPrecision(12):"",
-       Number.isFinite(target)?target.toPrecision(12):"",
-       p.observed_utc].join("|");
-   if(!map.has(key))map.set(key,{...p,arms:[],variants:0});
-   const item=map.get(key);
-   if(!item.arms.includes(p.arm))item.arms.push(p.arm);
-   item.variants+=1;
- }
- return Array.from(map.values()).sort((a,b)=>Date.parse(b.observed_utc)-Date.parse(a.observed_utc));
-}
-function setupNarrative(p){
- if(p.family==="RANGE_SWEEP_EQ")return {
-   event:"Daha önce onaylanan üst ve alt swing pivotlarıyla belirlenen range sınırı süpürüldü; sinyal mumu range içine yeniden kapandı.",
-   stop:"Süpürme fitilinin ekstrem fiyatı yapısal geçersizlik noktasıdır. ATR eklenmez.",
-   target:"Yapısal RH/RL seviyelerinin orta noktası, Equilibrium (EQ)."
- };
- if(p.family==="RANGE_BREAKOUT")return {
-   event:"Daha önce onaylanan yapısal RH/RL sınırı, yönlü mum kapanışıyla kırıldı.",
-   stop:"Son onaylı karşı swing pivot seviyesi; ATR stop tamponu yok.",
-   target:"Yalnızca daha önce onaylanmış karşı yapısal swing/liquidite seviyesi varsa kullanılır."
- };
- if(p.family==="FVG_RETEST")return {
-   event:"Geçmiş kapanmış mumlarda FVG dönüşü ve yönlü kapanış tespit edildi. Test edilen bir araştırma hipotezidir.",
-   stop:"Kaydedilmiş FVG'nin karşı fiyat sınırı, ek ATR çarpanı içermez.",
-   target:"Önceden onaylanmış yapısal karşı swing seviyesi."
- };
- if(p.family==="OTE_RETRACEMENT")return {
-   event:"Daha önce onaylanan iki swing pivotundan hesaplanan Fibonacci OTE bölgesinde kapanış adayı.",
-   stop:"Onaylı swing uç noktasında yapısal geçersizlik.",
-   target:"Önceden onaylanan karşı swing uç noktası."
- };
- return {event:"Kapanmış mumlardan türetilen, henüz doğrulanmamış araştırma hipotezi.",
-    stop:"Yapısal geçersizlik noktası.",target:"Önceden onaylı fiyat yapısı."};
-}
-function estimatedNetR(p, exitPrice){
- const entry=Number(p.entry_exec),stop=Number(p.stop),spot=Number(exitPrice);
- const dir=p.side==="LONG"?1:-1;
- const risk=Math.abs(entry-stop);
- if(!Number.isFinite(risk)||risk<=0||!Number.isFinite(spot)||spot<=0)return null;
- const executableExit=spot*(1-dir*0.0005);
- return (dir*(executableExit-entry)-0.00075*(entry+executableExit))/risk;
-}
-function setupClockAge(ts){const d=new Date(ts);if(Number.isNaN(d.getTime()))return "Bilinmiyor";const mins=Math.max(0,Math.round((Date.now()-d.getTime())/60000));return mins<60?mins+" dk önce":Math.floor(mins/60)+" sa "+mins%60+" dk önce";}
-function renderSetupCard(p,tab,staleSource){
- const isOpen=tab==="open",dir=p.side==="LONG"?1:-1;
- const quote=prices[p.symbol];
- const age=quote?Date.now()-Date.parse(quote.at):Infinity;
- const isFresh=quote&&age>=0&&age<120000;
- const nowPrice=isFresh?quote.price:null;
- const netNow=isOpen&&nowPrice!==null?estimatedNetR(p,nowPrice):null;
- const planNet=estimatedNetR(p,p.target);
- const finalResult=!isOpen?Number(p.net_r):null;
- const markupValue=isOpen?(isFresh?signedR(netNow):"GÜNCEL FİYAT YOK"):signedR(finalResult);
- const color=!isOpen&&Number.isFinite(finalResult)?(finalResult>=0?"positive":"negative"):Number.isFinite(netNow)?(netNow>=0?"positive":"negative"):"neutral";
- const narrative=setupNarrative(p);
- const model=(setupNames[p.family]||p.family);
-
- const quoteStatus=isOpen?(isFresh?"Anlık işaretleme: "+money(nowPrice)+" USDT · "+esc(quote.source):"Fiyat canlı doğrulanamadı: güncel R hesaplanmadı"):"Sonuç: "+esc(p.outcome||"KAPANDI");
- const stateAge=setupState?.updated_utc?Date.now()-Date.parse(setupState.updated_utc):Infinity;
- const reportStale=isOpen&&stateAge>90*60000;
- const levelStatus=isOpen&&isFresh&&
-    (dir*(nowPrice-p.target)>=0||dir*(nowPrice-p.stop)<=0)
-    ?" Fiyat stop/hedef sınırında ya da ötesinde; kesin kapanış durumu bir sonraki kapanmış-mum kontrolünde belirlenir.":"";
- const armList=p.arms.map(a=>'<span class="setup-arm">'+esc(armNames[a]||a)+'</span>').join("");
- const netTitle=isOpen?"Tahmini anlık net R":"Gerçekleşmiş gölge net R";
- const lastCheck=isOpen?(reportStale?"SON KONTROL GECİKMİŞ":"GÖLGE TAKİP"):"KAPANDI";
- return '<article class="setup-card '+(dir>0?"side-long":"side-short")+'">'+
-   '<div class="setup-head"><div><div class="setup-pair">'+esc(p.symbol.replace("USDT"," / USDT"))+
-   '</div><div class="setup-heading-small">'+esc(p.timeframe)+" · "+esc(model)+
-   '</div></div><div class="setup-tags"><span class="setup-tag '+(dir>0?"long":"short")+'">'+esc(p.side)+
-   '</span><span class="setup-tag paper">'+lastCheck+'</span></div></div>'+
-   '<div class="setup-prices">'+
-     '<div class="setup-price"><small>TEORİK GİRİŞ</small><b>'+money(p.entry_exec)+'</b></div>'+
-     '<div class="setup-price stop"><small>STOP / GEÇERSİZLİK</small><b>'+money(p.stop)+'</b></div>'+
-     '<div class="setup-price target"><small>HEDEF / TP</small><b>'+money(p.target)+'</b></div>'+
-   '</div>'+
-   '<div class="setup-r-strip"><div class="setup-r-item"><small>'+netTitle+'</small><strong class="'+color+'">'+markupValue+'</strong></div>'+
-   '<div class="setup-r-item"><small>Planlanan net hedef R</small><strong>'+(planNet===null?"—":signedR(planNet))+'</strong></div>'+
-   '<div class="setup-r-item"><small>Gösterge varyantı</small><strong>'+p.variants+'</strong></div></div>'+
-   '<div class="setup-price-status">'+esc(quoteStatus+levelStatus)+'</div>'+
-   '<div class="setup-reason"><strong>Bu setup neden oluştu?</strong><p>'+esc(narrative.event)+'</p>'+
-      '<strong>Stop neden burada?</strong><p>'+esc(narrative.stop)+'</p>'+
-      '<strong>Hedef neden burada?</strong><p>'+esc(narrative.target)+'</p>'+
-      '<strong>RedK karşılaştırma kolları</strong><div class="setup-arms">'+armList+'</div>'+
-   '</div>'+
-   '<button class="setup-chart-button" type="button" data-setup-chart-id="'+esc(p.id)+'">Grafikte Göster ↗</button>'+ 
-   '<div class="setup-foot"><span>Gözlem: '+esc(researchTimestamp(p.observed_utc))+' ('+esc(setupClockAge(p.observed_utc))+')</span>'+
-    '<span>'+(isOpen?"Son tarama: "+esc(researchTimestamp(setupState.updated_utc)):"Kapanış: "+esc(researchTimestamp(p.closed_utc)))+
-    '</span></div></article>';
+function renderConcepts(){
+ $("#families").innerHTML=concepts.map(([name,detail],i)=>
+ '<div class="family-card"><b>DERSTE GEÇEN KAVRAM</b><strong>'+escapeText(name)+
+ '</strong><small>'+escapeText(detail)+'</small></div>').join("");
 }
 function renderSetupBoard(){
- const summary=$("#setup-summary"),list=$("#setup-list"),feed=$("#setup-feed-status");
- if(!summary||!list||!feed)return;
- if(!setupState){summary.textContent="Takipçi verisi bekleniyor.";list.innerHTML='<div class="setup-empty">Henüz setup verisi alınamadı. Son kayıtlar yükleniyor.</div>';feed.textContent="VERİ BEKLENİYOR";return;}
- const isCurrent=p=>p.strategy_version==="pivot_range_research_v2";
- const open=groupSetupItems((setupState.pending||[]).filter(isCurrent));
- const closed=groupSetupItems((setupState.closed||[]).filter(isCurrent));
- const checked=setupState.updated_utc,age=Date.now()-Date.parse(checked);
- const isFresh=Number.isFinite(age)&&age<90*60000;
- feed.textContent=isFresh?"SAATLİK TAKİP AKTİF":"SON KONTROL GECİKMİŞ";
- summary.innerHTML=[
-  ["AYRI AÇIK SETUP",open.length],["FİLTRE VARYANTI",(setupState.pending||[]).filter(p=>p.strategy_version==="pivot_range_research_v2").length],
-  ["SONUÇLANAN SETUP",closed.length],["SON KONTROL",researchTimestamp(checked)]
- ].map(([k,v])=>'<div class="setup-metric"><small>'+esc(k)+'</small><strong>'+esc(v)+'</strong></div>').join("");
- const symbol=$("#setup-symbol").value,tf=$("#setup-tf").value;
- const data=(setupTab==="open"?open:closed).filter(p=>(symbol==="all"||p.symbol===symbol)&&(tf==="all"||p.timeframe===tf));
- setupShown=new Map(data.map(p=>[p.id,p]));
- list.innerHTML=data.length?data.map(p=>renderSetupCard(p,setupTab,!isFresh)).join(""):
-   '<div class="setup-empty">'+(setupTab==="open"?"Yeni yapısal pivot modelinde henüz açık setup yok. Kapanmış mumlardan uygun koşul oluşması bekleniyor.":"Bu filtrede tamamlanmış gölge işlem henüz bulunmuyor.")+'</div>';
+ const stamp=study?.updated_utc?timeText(study.updated_utc):"—";
+ $("#setup-feed-status").textContent="DOĞRULAMA BEKLENİYOR";
+ $("#setup-summary").innerHTML=[
+ ["KAYNAK ONAYLI SETUP",0],["KAYNAK ONAYLI FİLTRE",0],
+ ["KAPANMIŞ GEÇERLİ İŞLEM",0],["SON KONTROL",stamp]
+ ].map(([k,v])=>'<div class="setup-metric"><small>'+escapeText(k)+
+ '</small><strong>'+escapeText(v)+'</strong></div>').join("");
+ $("#setup-list").innerHTML=
+ '<div class="setup-empty">Eğitim kaynakları tam bir giriş, stop, hedef ve teyit kuralı vermediği için otomatik işlem üretilmiyor. Başka bir modelin sonuçları burada gösterilmez.</div>';
+ $("#shadow-learning").textContent=
+ "Kaynak doğrulama bekleniyor. Otomatik setup: 0 · Öğrenilmiş kârlılık: yok · Gerçek emir: kapalı.";
+ $("#chart-status").textContent="GERÇEK MUM / SİNYAL ONAYI YOK";
 }
-function queueSetupRender(){
- if(setupRerenderTimer)return;
- setupRerenderTimer=setTimeout(()=>{setupRerenderTimer=0;renderSetupBoard()},850);
+function showQuoteStatus(s){$("#live-status").textContent=s}
+function priceDecimals(v){return v<.1?6:v<1?5:v<100?4:2}
+function renderPrices(){
+ $("#ticker-grid").innerHTML=pairs.map(pair=>{
+  const p=prices[pair];
+  if(!p)return '<div class="ticker-card"><span class="ticker-symbol">'+pair+
+   '</span><strong>—</strong><small>Veri bekleniyor</small></div>';
+  const fresh=Date.now()-new Date(p.at).getTime()<90000;
+  return '<div class="ticker-card"><span class="ticker-symbol">'+pair.replace("USDT"," / USDT")+
+   '</span><strong>$'+fmt(p.price,priceDecimals(p.price))+'</strong><small>'+
+   escapeText(p.source)+(fresh?"":" · gecikmiş")+
+   '</small><small>UTC+3: '+escapeText(timeText(p.at))+'</small></div>';
+ }).join("");
+ const all=pairs.map(p=>prices[p]?.at).filter(Boolean).sort().reverse();
+ $("#live-updated").textContent="Binance Spot · Son güncelleme: "+(all.length?timeText(all[0]):"bekleniyor")+
+  " · Yalnız fiyat bilgisi, işlem önerisi değildir.";
 }
-function wireSetupBoard(){
- $("#setup-symbol").addEventListener("change",renderSetupBoard);
- $("#setup-tf").addEventListener("change",renderSetupBoard);
- $("#setup-list").addEventListener("click",event=>{
-   const button=event.target.closest("button[data-setup-chart-id]");
-   if(!button)return;
-   const setup=setupShown.get(button.dataset.setupChartId);
-   if(setup)openSetupChart(setup,true);
- });
- document.querySelectorAll("[data-setup-status]").forEach(button=>{
-  button.addEventListener("click",()=>{
-   setupTab=button.dataset.setupStatus;
-   document.querySelectorAll("[data-setup-status]").forEach(x=>x.classList.toggle("current",x===button));
-   renderSetupBoard();
-  });
- });
+function updateQuote(symbol,price,source,at){
+ if(!pairs.includes(symbol))return;
+ const n=Number(price);
+ if(!Number.isFinite(n)||n<=0)return;
+ const old=prices[symbol];
+ if(old&&Date.parse(at)<Date.parse(old.at))return;
+ prices[symbol]={price:n,source,at};
+ renderPrices();
 }
-
-function openSetupChart(p,scrollToChart=false){
- setupSelectedId=p.id;
- if(window.EfloudSetupChart){
-    window.EfloudSetupChart.open(p,prices[p.symbol]||null,armNames,{scrollToChart});
+async function loadQuotes(){
+ try{
+  const d=await fetchJson("./live.json");
+  for(const [symbol,p] of Object.entries(d.symbols||{})){
+   if(p.status==="OK")updateQuote(symbol,p.last_price,"Saatlik arşiv",p.observed_utc);
+  }
+  if(!streamActive)showQuoteStatus("SAATLİK YEDEK");
+ }catch(e){if(!streamActive)showQuoteStatus("VERİ BEKLENİYOR")}
+}
+async function fetchLatestRest(){
+ if(streamActive||document.hidden)return;
+ let count=0;
+ await Promise.all(pairs.map(async symbol=>{
+  try{
+    const r=await fetch("https://data-api.binance.vision/api/v3/ticker/24hr?symbol="+symbol,{cache:"no-store"});
+    if(!r.ok)throw Error("No quote");
+    const p=await r.json();
+    updateQuote(symbol,p.lastPrice,"Binance REST",new Date().toISOString());count++;
+  }catch(e){}
+ }));
+ if(!streamActive)showQuoteStatus(count===4?"CANLI REST":count?"KISMİ CANLI":"BAĞLANTI YOK");
+}
+function connectWebSocket(){
+ if(typeof WebSocket==="undefined")return;
+ const streams=pairs.map(p=>p.toLowerCase()+"@miniTicker").join("/");
+ let sock;
+ try{sock=new WebSocket("wss://data-stream.binance.vision/stream?streams="+streams)}
+ catch(e){return}
+ stream=sock;
+ sock.onopen=()=>{streamActive=true;showQuoteStatus("CANLI WEBSOCKET")};
+ sock.onmessage=e=>{
+  try{const d=JSON.parse(e.data).data;if(d?.s&&d?.c){
+    updateQuote(d.s,d.c,"Binance WebSocket",new Date(d.E||Date.now()).toISOString());
+  }}catch(err){}
+ };
+ sock.onerror=()=>{showQuoteStatus("AKIŞ HATASI")};
+ sock.onclose=()=>{streamActive=false;showQuoteStatus("REST YEDEĞİ");};
+}
+function showHistory(){
+ const symbol=$("#symbol").value,tf=$("#timeframe").value;
+ const row=(study?.reports||[]).find(x=>x.symbol===symbol&&x.timeframe===tf);
+ if(study?.model_rule_version!=="source_guard_v3"){
+  $("#pipeline-status").textContent="Kaynak filtresine uygun son veri raporu bekleniyor.";
+  $("#coverage").textContent="Eski varsayım bazlı backtest sonuçları gösterilmez.";
+ }else{
+  $("#pipeline-status").textContent="KAYNAK DENETİMİ AKTİF · Tamamlanan işlem backtesti: 0 · "+
+     "Kural onayı: 0 · Geçerli strateji performansı yok";
+  $("#coverage").textContent=symbol+" · "+tf+" · "+(row?.status||"DATA_UNAVAILABLE");
  }
+ if(!row){
+  $("#results").innerHTML='<tr><td colspan="6">Veri durumu bekleniyor; kârlılık raporlanmıyor.</td></tr>';
+ }else{
+  $("#results").innerHTML="<tr><td>"+escapeText(symbol)+"</td><td>"+escapeText(tf)+
+   "</td><td>"+fmt(row.bars,0)+"</td><td>"+escapeText(timeText(row.first_open_utc))+
+   "</td><td>"+escapeText(timeText(row.last_close_utc))+
+   "</td><td>"+escapeText(row.status)+"</td></tr>";
+ }
+ $("#learning-results").textContent="Tarihsel veri kapsamı denetleniyor. Kaynakça onaylı giriş, stop ve hedef "
+  +"algoritması olmadığı için otomatik PnL/backtest veya öğrenilmiş sinyal raporlanmıyor.";
+ if(window.EfloudSetupChart)window.EfloudSetupChart.showMarket(symbol,tf);
 }
-async function loadShadowLearning(){
- const el=$("#shadow-learning");
- if(!el)return;
+async function refreshStatus(){
+ try{
+  study=await fetchJson("./model_results.json");
+  if(study?.model_rule_version!=="source_guard_v3")study=null;
+ }catch(e){study=null}
+ showHistory();
  try{
   const d=await fetchJson("./learning_state.json");
-  if(d.strategy_version!=="pivot_range_research_v2")throw Error("Not current model state");
-  setupState=d;
-  renderSetupBoard();
-  const available=groupSetupItems((d.pending||[]).filter(p=>p.strategy_version==="pivot_range_research_v2"));
-  const finished=groupSetupItems((d.closed||[]).filter(p=>p.strategy_version==="pivot_range_research_v2"));
-  if(!setupSelectedId){
-    const firstChoice=available[0]||finished[0];
-    if(firstChoice)openSetupChart(firstChoice);
-  }else{
-    const updated=[...available,...finished].find(p=>p.id===setupSelectedId);
-    if(updated&&window.EfloudSetupChart){
-      const chart=window.EfloudSetupChart;
-      if(chart.currentStatus&&chart.currentStatus()!==updated.status)openSetupChart(updated);
-    }
-  }
-  const total=finished.length, open=available.length;
-  const weights=Object.keys(d.models||{}).length;
-  el.innerHTML="<strong>SAATLİK GÖLGE ÖĞRENME GÜNLÜĞÜ</strong><p>"+
-   "Kontrol: "+esc(researchTimestamp(d.updated_utc))+
-   " · Bekleyen gölge kurulum: "+fmt(open,0)+
-   " · Kapanmış ve sonucu kaydedilmiş: "+fmt(total,0)+
-   " · Kapanmış sonuçla güncellenen model: "+fmt(weights,0)+
-   ". Yalnız sonradan gözlenen kapanmış sonuçlar ağırlıkları günceller. "+
-   "Bu, gerçek emir veya doğrulanmış ileri performans değildir. NO TRADE.</p>";
- }catch(e){el.textContent="Saatlik gölge öğrenme ilk çalışmasını bekliyor; henüz doğrulanmış ileri performans yok.";renderSetupBoard();}
+  if(d.strategy_version!=="source_guard_v3")throw Error("Incorrect source gate");
+  study={...study,updated_utc:d.updated_utc,reports:study?.reports,
+         model_rule_version:study?.model_rule_version};
+ }catch(e){}
+ renderSetupBoard();
 }
 function start(){
- $("#lessons").textContent="44";$("#models").textContent=fmt(7680,0);
- $("#experiments").textContent=fmt(245760,0);showGate();renderFamilyCatalogue();drawTickers();wireSetupBoard();renderSetupBoard();
- if(window.EfloudSetupChart)window.EfloudSetupChart.init();
- $("#symbol").addEventListener("change",displayResearch);
- $("#timeframe").addEventListener("change",displayResearch);
- $("#family-select").addEventListener("change",displayResearch);
- refreshStudies();loadShadowLearning();loadHourlyBackup();connectWebsocket();
- pollRest();
- restTimer=setInterval(()=>{if(!streamActive)pollRest()},60000);
- setInterval(refreshStudies,5*60*1000);
- setInterval(loadShadowLearning,5*60*1000);
- setInterval(loadHourlyBackup,60*60*1000);
+ $("#lessons").textContent="44";
+ $("#models").textContent="0";
+ $("#experiments").textContent="0";
+ $("#validated").textContent="0";
+ renderConcepts();renderSetupBoard();renderPrices();
+ $("#setup-symbol").addEventListener("change",()=>{});
+ $("#setup-tf").addEventListener("change",()=>{});
+ document.querySelectorAll("[data-setup-status]").forEach(b=>{
+   b.addEventListener("click",()=>{
+    document.querySelectorAll("[data-setup-status]").forEach(x=>x.classList.toggle("current",x===b));
+   });
+ });
+ $("#symbol").addEventListener("change",showHistory);
+ $("#timeframe").addEventListener("change",showHistory);
+ window.EfloudSetupChart?.init();
+ refreshStatus();loadQuotes();connectWebSocket();fetchLatestRest();
+ setInterval(refreshStatus,300000);
+ setInterval(loadQuotes,3600000);
+ setInterval(fetchLatestRest,60000);
 }
 start();
