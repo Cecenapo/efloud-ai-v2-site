@@ -20,17 +20,21 @@ jobs:
         with:
           python-version: "3.11"
       - name: Check collector tests
-        run: python -m unittest scripts/test_research_engine.py
+        run: python -m unittest discover -s scripts -p "test_*.py" -v
         env:
           PYTHONPATH: scripts
       - name: Snapshot public read-only prices
         run: python scripts/collect_live.py
+      - name: Observe new completed-bar shadow setups and settle prior signals
+        run: python scripts/paper_forward.py
       - name: Publish only changed aggregate JSON
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add live.json
+          if test -f learning_state.json; then git add learning_state.json; fi
           if ! git diff --cached --quiet; then
             git commit -m "data: refresh read-only hourly market snapshot [skip ci]"
+            git pull --rebase origin main
             git push
           fi
