@@ -67,6 +67,8 @@ try{
     return status.includes("HAZIR") || status.includes("DOĞRULANAMADI") ||
            status.includes("MUM VERİSİ ALINAMADI");
   },undefined,{timeout:16000});
+  const automaticScroll=await page.evaluate(()=>window.scrollY);
+  assert.ok(automaticScroll<=80,width+": automatic setup selection unexpectedly scrolls page "+automaticScroll);
   const sizes=await page.evaluate(()=>{
     const win=window.innerWidth;
     const selectors=["main",".panel",".setup-card",".chart-workspace",".chart-viewport"];
@@ -108,7 +110,8 @@ try{
   }
   assert.equal(jsErrors.length,0,width+": JS exceptions: "+jsErrors.join("; "));
   await page.locator(".setup-chart-button").first().click();
-  await page.waitForTimeout(150);
+  await page.waitForFunction(()=>window.scrollY>150,undefined,{timeout:5000});
+  await page.waitForTimeout(200);
   await context.close();
  }
 }catch(e){failed=true;console.error("MOBILE QA FAILED:",e.stack||e)}
