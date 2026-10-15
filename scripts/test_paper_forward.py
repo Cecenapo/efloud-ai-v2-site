@@ -9,9 +9,9 @@ UTC=dt.timezone.utc
 class ShadowTests(unittest.TestCase):
     def test_only_post_observation_candles_close_a_trade(self):
         bars=sample_bars(100)
-        row=bars[51]
+        row=bars[52]
         future=(row[0],100.,112.,99.,109.,row[5])
-        modified=bars[:51]+[future]+bars[52:]
+        modified=bars[:52]+[future]+bars[53:]
         observed=dt.datetime.fromtimestamp((bars[50][5]+100)/1000,tz=UTC)
         p={"id":"one","symbol":"BTCUSDT","timeframe":"4h","family":"RANGE_SWEEP_EQ",
            "arm":"none","side":"LONG","observed_utc":observed.isoformat(),
