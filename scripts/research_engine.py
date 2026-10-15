@@ -139,7 +139,7 @@ def arm_pass(arm,direction,i,f):
 def signals(bars):
     """Derive four different observable event families using historical bars."""
     n=len(bars);out={name:[] for name in FAMILIES}
-    for i in range(START_LOOKBACK,n-1):
+    for i in range(START_LOOKBACK,n):
         row=bars[i];prev=bars[i-1]
         o,h,l,cl=row[1:5]; prevcl=prev[4]
         window=bars[i-48:i]
