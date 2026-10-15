@@ -13,6 +13,7 @@ import hashlib
 import json
 import math
 import pathlib
+from source_range import range_at, latest_swing, VERSION as RULE_VERSION
 from research_engine import (
     ROOT, SYMBOLS, TIMEFRAMES, FAMILIES, ARMS,
     UTC, CLOSE_OUT, FEE, FRICTION,
@@ -69,68 +70,69 @@ def evaluate_pending(pending,bars,now):
                 "closed_utc":dt.datetime.fromtimestamp(b[5]/1000,UTC).isoformat(),
                 "exit_exec":round(exit_exec,12),
                 "evidence":pending.get("evidence"),
+                "strategy_version":pending.get("strategy_version","legacy_48bar_atr"),
                 "net_r":round(net,8),"outcome":outcome,"status":"CLOSED_SHADOW_SIMULATION",
                 "no_real_order":True}
     return None
 
 def evidence_at_signal(bars, i, family, side):
-    """Freeze rule inputs on the actual completed signal candle for chart audit."""
-    if i < 49:
-        raise ValueError("Signal does not have required historical candles")
-    last48 = bars[i-48:i]
-    rh = max(b[2] for b in last48)
-    rl = min(b[3] for b in last48)
-    tr = [max(bars[k][2]-bars[k][3],
-              abs(bars[k][2]-bars[k-1][4]),
-              abs(bars[k][3]-bars[k-1][4]))
-          for k in range(i-13, i+1)]
-    atr = sum(tr)/len(tr)
-    proof = {
-        "as_of_close_ms": bars[i][5],
-        "lookback_range_bars": 48,
-        "range_high": rh,
-        "range_low": rl,
-        "equilibrium": (rh+rl)/2,
-        "atr14": atr,
-        "atr_safety_buffer": .15*atr,
-        "signal_open": bars[i][1],
-        "signal_high": bars[i][2],
-        "signal_low": bars[i][3],
-        "signal_close": bars[i][4],
-        "rule_family": family,
-        "direction": "LONG" if side == 1 else "SHORT",
-        "scope": "observed_closed_binance_spot_candles",
-        "is_research_hypothesis": True,
+    """Save structural evidence known before/at signal CLOSE; no ATR stops.
+
+    Source-supported concepts: confirmed pivots, contextual RH/RL/EQ, sweep
+    versus breakout, structural invalidation. Implementation hyperparameters
+    remain separately-labeled engineering research hypotheses.
+    """
+    rg=range_at(bars,i)
+    sw=latest_swing(bars,i)
+    p={
+        "method_version":RULE_VERSION,
+        "as_of_close_ms":bars[i][5],
+        "rule_family":family,
+        "direction":"LONG" if side==1 else "SHORT",
+        "signal_open":bars[i][1],
+        "signal_high":bars[i][2],
+        "signal_low":bars[i][3],
+        "signal_close":bars[i][4],
+        "scope":"observed_closed_binance_spot_candles",
+        "no_atr_stop":True,
+        "rule_provenance":"EFLOUD chapters 3/4/14: concepts; structural detection is separately-testable ENGINEERING hypothesis",
     }
-    if family == "RANGE_BREAKOUT":
-        proof["stop_rule"] = ("range_high - 0.15 ATR14" if side == 1
-                              else "range_low + 0.15 ATR14")
-        proof["target_rule"] = ("range_high + 0.55*(range_high-range_low)" if side == 1
-                                else "range_low - 0.55*(range_high-range_low)")
-    elif family == "RANGE_SWEEP_EQ":
-        proof["sweep_wick"] = bars[i][3] if side == 1 else bars[i][2]
-        proof["stop_rule"] = ("signal_low - 0.15 ATR14" if side == 1
-                              else "signal_high + 0.15 ATR14")
-        proof["target_rule"] = "(range_high + range_low)/2"
-    elif family == "FVG_RETEST":
-        b4,b2 = bars[i-4],bars[i-2]
-        proof["fvg_lower"] = b4[2] if side == 1 else b2[2]
-        proof["fvg_upper"] = b2[3] if side == 1 else b4[3]
-        proof["stop_rule"] = ("fvg_prior_high - 0.15 ATR14" if side == 1
-                              else "fvg_prior_low + 0.15 ATR14")
-        proof["target_rule"] = "range_high" if side == 1 else "range_low"
-    elif family == "OTE_RETRACEMENT":
-        swing = bars[i-20:i]
-        hi = max(b[2] for b in swing)
-        lo = min(b[3] for b in swing)
-        delta = hi-lo
-        proof["swing_high"]=hi
-        proof["swing_low"]=lo
-        proof["ote_lower"]=hi-.786*delta if side == 1 else lo+.618*delta
-        proof["ote_upper"]=hi-.618*delta if side == 1 else lo+.786*delta
-        proof["stop_rule"]="swing_low - 0.15 ATR14" if side == 1 else "swing_high + 0.15 ATR14"
-        proof["target_rule"]="swing_high" if side == 1 else "swing_low"
-    return proof
+    if rg:
+        p.update({"range_high":rg["high"],"range_low":rg["low"],
+            "equilibrium":rg["eq"],"top_pivot_i":rg["top_pivot_i"],
+            "bottom_pivot_i":rg["bottom_pivot_i"],
+            "top_confirmed_i":rg["top_confirmed_i"],
+            "bottom_confirmed_i":rg["bottom_confirmed_i"],
+            "top_touch_count":rg["top_touch_count"],
+            "bottom_touch_count":rg["bottom_touch_count"],
+            "first_pivot_i":rg["first_pivot_i"],
+            "pivot_left":rg["pivot_left"],"pivot_right":rg["pivot_right"],
+            "source_rule_status":rg["source_rule_status"]})
+    if sw:
+        p.update({"swing_high":sw["high"],"swing_low":sw["low"],
+            "swing_high_pivot_i":sw["top_pivot_i"],
+            "swing_low_pivot_i":sw["bottom_pivot_i"]})
+    if family=="RANGE_SWEEP_EQ":
+        p["stop_rule"]="beyond signal sweep wick (no ATR padding)"
+        p["target_rule"]="midpoint of confirmed candidate range RH/RL"
+    elif family=="RANGE_BREAKOUT":
+        p["stop_rule"]="last confirmed opposing structural swing"
+        p["target_rule"]="next previously confirmed external swing, if available"
+    elif family=="FVG_RETEST":
+        b4,b2=bars[i-4],bars[i-2]
+        p["fvg_lower"]=b4[2] if side==1 else b2[2]
+        p["fvg_upper"]=b2[3] if side==1 else b4[3]
+        p["stop_rule"]="far FVG boundary (no ATR padding)"
+        p["target_rule"]="confirmed structural opposing swing"
+    elif family=="OTE_RETRACEMENT":
+        if sw:
+            top,bot=sw["high"],sw["low"]
+            delta=top-bot
+            p["ote_lower"]=top-.786*delta if side==1 else bot+.618*delta
+            p["ote_upper"]=top-.618*delta if side==1 else bot+.786*delta
+        p["stop_rule"]="confirmed structural swing extreme"
+        p["target_rule"]="opposite confirmed structural swing extreme"
+    return p
 
 
 def fresh_events(bars,price,symbol,tf,now):
@@ -161,6 +163,7 @@ def fresh_events(bars,price,symbol,tf,now):
                     "signal_closed_utc":dt.datetime.fromtimestamp(latest[5]/1000,UTC).isoformat(),
                     "entry_exec":round(exec_entry,12),"stop":stop,"target":target,
                     "evidence":evidence_at_signal(bars, i, family, side),
+                    "strategy_version":RULE_VERSION,
                     "original_r":risk,"status":"OPEN_SHADOW","order_placed":False,
                 })
     return candidate
@@ -171,7 +174,13 @@ def update_learning(previous, feed, now=None):
     state=previous if isinstance(previous,dict) else {}
     pending=list(state.get("pending",[]))
     outcomes=list(state.get("closed",[]))
-    scores=dict(state.get("models",{}))
+    historical_version=state.get("strategy_version")
+    # Re-start learning independently; previous EMA evidence was produced by
+    # the obsolete 48-bar and arbitrary ATR/target rules.
+    scores=dict(state.get("models",{})) if historical_version==RULE_VERSION else {}
+    legacy_models=state.get("legacy_models",{}) if historical_version==RULE_VERSION else dict(state.get("models",{}))
+    for entry in pending+outcomes:
+        entry.setdefault("strategy_version","legacy_48bar_atr")
     known={t["id"] for t in pending+outcomes}
     backup=feed.get("symbols",{})
     ticks={}
@@ -199,7 +208,11 @@ def update_learning(previous, feed, now=None):
         else:
             new_pending.append(p)
     for entry in new_closed:
-        key="|".join((entry["symbol"],entry["timeframe"],entry["family"],entry["arm"]))
+        if entry.get("strategy_version")!=RULE_VERSION:
+            # Legacy outcomes can still be audited on the site, but never
+            # teach the updated structural-pivot research model.
+            continue
+        key="|".join((RULE_VERSION,entry["symbol"],entry["timeframe"],entry["family"],entry["arm"]))
         val=float(entry["net_r"])
         old=scores.get(key,{"closed_trades":0,"mean_net_r":0.0,"ewma_net_r":0.0})
         n=int(old["closed_trades"])+1
@@ -218,7 +231,12 @@ def update_learning(previous, feed, now=None):
     return {
        "schema":1,"kind":"HOURLY_CAUSAL_PAPER_SHADOW_LEARNER_NOT_LIVE_EXECUTION",
        "updated_utc":utc_text(now),
+       "strategy_version":RULE_VERSION,
+       "legacy_hypotheses_preserved":True,
+       "legacy_models":legacy_models,
        "pending":new_pending,"closed":outcomes,"models":scores,
+       "legacy_open_count":sum(p.get("strategy_version")!=RULE_VERSION for p in new_pending),
+       "legacy_closed_count":sum(p.get("strategy_version")!=RULE_VERSION for p in outcomes),
        "new_closed_this_cycle":len(new_closed),
        "tracked_open":len(new_pending),"tracked_closed":len(outcomes),
        "failed_feeds":errors,
