@@ -177,15 +177,14 @@ def update_learning(previous, feed, now=None):
     """Reproducible state transition; called by scheduled hourly workflow."""
     now=now or utc_now()
     state=previous if isinstance(previous,dict) else {}
-    pending=list(state.get("pending",[]))
-    outcomes=list(state.get("closed",[]))
-    historical_version=state.get("strategy_version")
-    # Re-start learning independently; previous EMA evidence was produced by
-    # the obsolete 48-bar and arbitrary ATR/target rules.
-    scores=dict(state.get("models",{})) if historical_version==RULE_VERSION else {}
-    legacy_models=state.get("legacy_models",{}) if historical_version==RULE_VERSION else dict(state.get("models",{}))
-    for entry in pending+outcomes:
-        entry.setdefault("strategy_version","legacy_48bar_atr")
+    # The live state contains ONLY the current structural-pivot model.
+    # Old variants are neither displayed nor re-evaluated nor trained on.
+    pending=[p for p in state.get("pending",[])
+             if p.get("strategy_version")==RULE_VERSION]
+    outcomes=[p for p in state.get("closed",[])
+              if p.get("strategy_version")==RULE_VERSION]
+    scores=(dict(state.get("models",{}))
+            if state.get("strategy_version")==RULE_VERSION else {})
     known={t["id"] for t in pending+outcomes}
     backup=feed.get("symbols",{})
     ticks={}
@@ -213,10 +212,6 @@ def update_learning(previous, feed, now=None):
         else:
             new_pending.append(p)
     for entry in new_closed:
-        if entry.get("strategy_version")!=RULE_VERSION:
-            # Legacy outcomes can still be audited on the site, but never
-            # teach the updated structural-pivot research model.
-            continue
         key="|".join((RULE_VERSION,entry["symbol"],entry["timeframe"],entry["family"],entry["arm"]))
         val=float(entry["net_r"])
         old=scores.get(key,{"closed_trades":0,"mean_net_r":0.0,"ewma_net_r":0.0})
@@ -237,11 +232,7 @@ def update_learning(previous, feed, now=None):
        "schema":1,"kind":"HOURLY_CAUSAL_PAPER_SHADOW_LEARNER_NOT_LIVE_EXECUTION",
        "updated_utc":utc_text(now),
        "strategy_version":RULE_VERSION,
-       "legacy_hypotheses_preserved":True,
-       "legacy_models":legacy_models,
        "pending":new_pending,"closed":outcomes,"models":scores,
-       "legacy_open_count":sum(p.get("strategy_version")!=RULE_VERSION for p in new_pending),
-       "legacy_closed_count":sum(p.get("strategy_version")!=RULE_VERSION for p in outcomes),
        "new_closed_this_cycle":len(new_closed),
        "tracked_open":len(new_pending),"tracked_closed":len(outcomes),
        "failed_feeds":errors,
