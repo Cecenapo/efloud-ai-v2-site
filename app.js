@@ -16,6 +16,7 @@ function updateQuote(symbol,price,source,at,percent=null){
  if(previous && Number(new Date(at)) < Number(new Date(previous.at))) return;
  prices[symbol]={price:Number(price),source,at,percent:percent===null?null:Number(percent)};
  drawTickers();
+ queueSetupRender();
 }
 function drawTickers(){
  $("#ticker-grid").innerHTML=pairs.map(symbol=>{
@@ -136,11 +137,161 @@ function renderFamilyCatalogue(){
  '<div class="family-card"><b>'+String(i+1).padStart(2,"0")+'</b><strong>'+esc(label)+
  '</strong><small>384 aday · tümü doğrulanmış değil</small></div>').join("");
 }
+
+/* Visible live-shadow setup board. All prices are historical observed paper entries.
+ * Mark-to-market is estimated with illustrative 7.5 bp/side fees and 5 bp
+ * price friction/side; closed outcomes come only from causal scheduled jobs. */
+let setupState=null, setupTab="open", setupRerenderTimer=0;
+const setupNames={
+ RANGE_SWEEP_EQ:"Range Sweep + EQ",RANGE_BREAKOUT:"Range Breakout",
+ FVG_RETEST:"FVG Retest",OTE_RETRACEMENT:"Fibonacci OTE"
+};
+function money(v) {
+ const n=Number(v);
+ if(!Number.isFinite(n))return "—";
+ const decimals=Math.abs(n)<.1?8:Math.abs(n)<1?6:Math.abs(n)<100?4:2;
+ return n.toLocaleString("tr-TR",{minimumFractionDigits:decimals,maximumFractionDigits:decimals});
+}
+function signedR(value) { return Number.isFinite(value)?(value>=0?"+":"")+fmt(value,3)+"R":"—"; }
+function groupSetupItems(raw){
+ const map=new Map();
+ for(const p of raw){
+   const entry=Number(p.entry_exec),stop=Number(p.stop),target=Number(p.target);
+   const key=[p.symbol,p.timeframe,p.family,p.side,
+       Number.isFinite(entry)?entry.toPrecision(12):"",
+       Number.isFinite(stop)?stop.toPrecision(12):"",
+       Number.isFinite(target)?target.toPrecision(12):"",
+       p.observed_utc].join("|");
+   if(!map.has(key))map.set(key,{...p,arms:[],variants:0});
+   const item=map.get(key);
+   if(!item.arms.includes(p.arm))item.arms.push(p.arm);
+   item.variants+=1;
+ }
+ return Array.from(map.values()).sort((a,b)=>Date.parse(b.observed_utc)-Date.parse(a.observed_utc));
+}
+function setupNarrative(p){
+ const dir=p.side==="LONG"?"yukarı":"aşağı";
+ if(p.family==="RANGE_BREAKOUT")
+   return {
+    event:"Önceki 48 kapanmış mumun "+(p.side==="LONG"?"Range High":"Range Low")+" sınırı "+dir+" geçildi ve kırılım mumu bu yönde kapandı.",
+    stop:"Kırılan range sınırının diğer tarafında, ATR'nin %15'i kadar araştırma tamponuyla oluşturulmuş geçersizlik düzeyi.",
+    target:"Önceki 48 mumluk range boyunun %55'i kadar kırılım yönündeki teorik projeksiyon."
+   };
+ if(p.family==="FVG_RETEST")
+   return {
+    event:"Üç mumun oluşturduğu Fair Value Gap dengesizlik bölgesine fiyat geri döndü ve "+dir+" kapanış koşulunu sağladı.",
+    stop:"FVG referans seviyesinin ötesine eklenen 0,15 ATR tamponu. Bu geometrik kurala dayanan deneysel stop.",
+    target:"Önceki 48 mumun "+(p.side==="LONG"?"Range High":"Range Low")+" seviyesi."
+   };
+ if(p.family==="OTE_RETRACEMENT")
+   return {
+    event:"Son 20 kapanmış mumdan hesaplanan range içinde 0,618–0,786 Fibonacci düzeltme bandında "+dir+" mum kapanışı gözlendi.",
+    stop:"Son 20 mumun karşı swing ucunun ötesinde 0,15 ATR tamponu.",
+    target:"20 mumluk yapının karşı uç seviyesi."
+   };
+ if(p.family==="RANGE_SWEEP_EQ")
+   return {
+    event:"Son 48 mumun "+(p.side==="LONG"?"alt":"üst")+" sınırı fitille aşıldı, mum range içine geri kapandı (sweep/reclaim).",
+    stop:"Likidite süpürmesinin fitil ucunun 0,15 ATR ötesi.",
+    target:"48 mumluk fiyat aralığının Equilibrium (EQ, %50) seviyesi."
+   };
+ return {event:"Tarihsel fiyat olayı ve kapanmış mum sinyali.",stop:"Önceden belirlenmiş invalidasyon seviyesi.",target:"Önceden belirlenmiş yapısal fiyat hedefi."};
+}
+function estimatedNetR(p, exitPrice){
+ const entry=Number(p.entry_exec),stop=Number(p.stop),spot=Number(exitPrice);
+ const dir=p.side==="LONG"?1:-1;
+ const risk=Math.abs(entry-stop);
+ if(!Number.isFinite(risk)||risk<=0||!Number.isFinite(spot)||spot<=0)return null;
+ const executableExit=spot*(1-dir*0.0005);
+ return (dir*(executableExit-entry)-0.00075*(entry+executableExit))/risk;
+}
+function setupClockAge(ts){const d=new Date(ts);if(Number.isNaN(d.getTime()))return "Bilinmiyor";const mins=Math.max(0,Math.round((Date.now()-d.getTime())/60000));return mins<60?mins+" dk önce":Math.floor(mins/60)+" sa "+mins%60+" dk önce";}
+function renderSetupCard(p,tab,staleSource){
+ const isOpen=tab==="open",dir=p.side==="LONG"?1:-1;
+ const quote=prices[p.symbol];
+ const age=quote?Date.now()-Date.parse(quote.at):Infinity;
+ const isFresh=quote&&age>=0&&age<120000;
+ const nowPrice=isFresh?quote.price:null;
+ const netNow=isOpen&&nowPrice!==null?estimatedNetR(p,nowPrice):null;
+ const planNet=estimatedNetR(p,p.target);
+ const finalResult=!isOpen?Number(p.net_r):null;
+ const markupValue=isOpen?(isFresh?signedR(netNow):"GÜNCEL FİYAT YOK"):signedR(finalResult);
+ const color=!isOpen&&Number.isFinite(finalResult)?(finalResult>=0?"positive":"negative"):Number.isFinite(netNow)?(netNow>=0?"positive":"negative"):"neutral";
+ const narrative=setupNarrative(p);
+ const model=(setupNames[p.family]||p.family);
+ const quoteStatus=isOpen?(isFresh?"Anlık işaretleme: "+money(nowPrice)+" USDT · "+esc(quote.source):"Fiyat canlı doğrulanamadı: güncel R hesaplanmadı"):"Sonuç: "+esc(p.outcome||"KAPANDI");
+ const stateAge=setupState?.updated_utc?Date.now()-Date.parse(setupState.updated_utc):Infinity;
+ const reportStale=isOpen&&stateAge>90*60000;
+ const levelStatus=isOpen&&isFresh&&
+    (dir*(nowPrice-p.target)>=0||dir*(nowPrice-p.stop)<=0)
+    ?" Fiyat stop/hedef sınırında ya da ötesinde; kesin kapanış durumu bir sonraki kapanmış-mum kontrolünde belirlenir.":"";
+ const armList=p.arms.map(a=>'<span class="setup-arm">'+esc(armNames[a]||a)+'</span>').join("");
+ const netTitle=isOpen?"Tahmini anlık net R":"Gerçekleşmiş gölge net R";
+ const lastCheck=isOpen?(reportStale?"SON KONTROL GECİKMİŞ":"SON KONTROLDE AÇIK"):"KAPANDI";
+ return '<article class="setup-card '+(dir>0?"side-long":"side-short")+'">'+
+   '<div class="setup-head"><div><div class="setup-pair">'+esc(p.symbol.replace("USDT"," / USDT"))+
+   '</div><div class="setup-heading-small">'+esc(p.timeframe)+" · "+esc(model)+
+   '</div></div><div class="setup-tags"><span class="setup-tag '+(dir>0?"long":"short")+'">'+esc(p.side)+
+   '</span><span class="setup-tag paper">'+lastCheck+'</span></div></div>'+
+   '<div class="setup-prices">'+
+     '<div class="setup-price"><small>TEORİK GİRİŞ</small><b>'+money(p.entry_exec)+'</b></div>'+
+     '<div class="setup-price stop"><small>STOP / GEÇERSİZLİK</small><b>'+money(p.stop)+'</b></div>'+
+     '<div class="setup-price target"><small>HEDEF / TP</small><b>'+money(p.target)+'</b></div>'+
+   '</div>'+
+   '<div class="setup-r-strip"><div class="setup-r-item"><small>'+netTitle+'</small><strong class="'+color+'">'+markupValue+'</strong></div>'+
+   '<div class="setup-r-item"><small>Planlanan net hedef R</small><strong>'+(planNet===null?"—":signedR(planNet))+'</strong></div>'+
+   '<div class="setup-r-item"><small>Gösterge varyantı</small><strong>'+p.variants+'</strong></div></div>'+
+   '<div class="setup-price-status">'+esc(quoteStatus+levelStatus)+'</div>'+
+   '<div class="setup-reason"><strong>Bu setup neden oluştu?</strong><p>'+esc(narrative.event)+'</p>'+
+      '<strong>Stop neden burada?</strong><p>'+esc(narrative.stop)+'</p>'+
+      '<strong>Hedef neden burada?</strong><p>'+esc(narrative.target)+'</p>'+
+      '<strong>RedK karşılaştırma kolları</strong><div class="setup-arms">'+armList+'</div>'+
+   '</div>'+
+   '<div class="setup-foot"><span>Gözlem: '+esc(researchTimestamp(p.observed_utc))+' ('+esc(setupClockAge(p.observed_utc))+')</span>'+
+    '<span>'+(isOpen?"Son tarama: "+esc(researchTimestamp(setupState.updated_utc)):"Kapanış: "+esc(researchTimestamp(p.closed_utc)))+
+    '</span></div></article>';
+}
+function renderSetupBoard(){
+ const summary=$("#setup-summary"),list=$("#setup-list"),feed=$("#setup-feed-status");
+ if(!summary||!list||!feed)return;
+ if(!setupState){summary.textContent="Takipçi verisi bekleniyor.";list.innerHTML='<div class="setup-empty">Henüz setup verisi alınamadı. Son kayıtlar yükleniyor.</div>';feed.textContent="VERİ BEKLENİYOR";return;}
+ const open=groupSetupItems(setupState.pending||[]);
+ const closed=groupSetupItems(setupState.closed||[]);
+ const checked=setupState.updated_utc,age=Date.now()-Date.parse(checked);
+ const isFresh=Number.isFinite(age)&&age<90*60000;
+ feed.textContent=isFresh?"SAATLİK TAKİP AKTİF":"SON KONTROL GECİKMİŞ";
+ summary.innerHTML=[
+  ["AYRI AÇIK SETUP",open.length],["FİLTRE VARYANTI",(setupState.pending||[]).length],
+  ["SONUÇLANAN SETUP",closed.length],["SON KONTROL",researchTimestamp(checked)]
+ ].map(([k,v])=>'<div class="setup-metric"><small>'+esc(k)+'</small><strong>'+esc(v)+'</strong></div>').join("");
+ const symbol=$("#setup-symbol").value,tf=$("#setup-tf").value;
+ const data=(setupTab==="open"?open:closed).filter(p=>(symbol==="all"||p.symbol===symbol)&&(tf==="all"||p.timeframe===tf));
+ list.innerHTML=data.length?data.map(p=>renderSetupCard(p,setupTab,!isFresh)).join(""):
+   '<div class="setup-empty">'+(setupTab==="open"?"Bu filtrede açık gölge setup bulunamadı. Sistem yeni kapanmış mumları taramayı sürdürüyor.":"Bu filtrede tamamlanmış gölge işlem henüz bulunmuyor.")+'</div>';
+}
+function queueSetupRender(){
+ if(setupRerenderTimer)return;
+ setupRerenderTimer=setTimeout(()=>{setupRerenderTimer=0;renderSetupBoard()},850);
+}
+function wireSetupBoard(){
+ $("#setup-symbol").addEventListener("change",renderSetupBoard);
+ $("#setup-tf").addEventListener("change",renderSetupBoard);
+ document.querySelectorAll("[data-setup-status]").forEach(button=>{
+  button.addEventListener("click",()=>{
+   setupTab=button.dataset.setupStatus;
+   document.querySelectorAll("[data-setup-status]").forEach(x=>x.classList.toggle("current",x===button));
+   renderSetupBoard();
+  });
+ });
+}
+
 async function loadShadowLearning(){
  const el=$("#shadow-learning");
  if(!el)return;
  try{
   const d=await fetchJson("./learning_state.json");
+  setupState=d;
+  renderSetupBoard();
   const total=Number(d.tracked_closed||0), open=Number(d.tracked_open||0);
   const weights=Object.keys(d.models||{}).length;
   el.innerHTML="<strong>SAATLİK GÖLGE ÖĞRENME GÜNLÜĞÜ</strong><p>"+
@@ -150,11 +301,11 @@ async function loadShadowLearning(){
    " · Kapanmış sonuçla güncellenen model: "+fmt(weights,0)+
    ". Yalnız sonradan gözlenen kapanmış sonuçlar ağırlıkları günceller. "+
    "Bu, gerçek emir veya doğrulanmış ileri performans değildir. NO TRADE.</p>";
- }catch(e){el.textContent="Saatlik gölge öğrenme ilk çalışmasını bekliyor; henüz doğrulanmış ileri performans yok."}
+ }catch(e){el.textContent="Saatlik gölge öğrenme ilk çalışmasını bekliyor; henüz doğrulanmış ileri performans yok.";renderSetupBoard();}
 }
 function start(){
  $("#lessons").textContent="44";$("#models").textContent=fmt(7680,0);
- $("#experiments").textContent=fmt(245760,0);showGate();renderFamilyCatalogue();drawTickers();
+ $("#experiments").textContent=fmt(245760,0);showGate();renderFamilyCatalogue();drawTickers();wireSetupBoard();renderSetupBoard();
  $("#symbol").addEventListener("change",displayResearch);
  $("#timeframe").addEventListener("change",displayResearch);
  $("#family-select").addEventListener("change",displayResearch);
