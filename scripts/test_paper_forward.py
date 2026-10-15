@@ -25,6 +25,29 @@ class ShadowTests(unittest.TestCase):
         now=dt.datetime(2026,10,15,tzinfo=UTC)
         row={"status":"OK","last_price":500.0,"observed_utc":"2026-10-14T00:00:00Z"}
         self.assertIsNone(valid_quote(row,now))
+    def test_old_strategy_is_completely_purged(self):
+        now=dt.datetime(2026,10,15,tzinfo=UTC)
+        previous={
+            "strategy_version":"pivot_range_research_v2",
+            "pending":[{"id":"old-open","strategy_version":"legacy_48bar_atr"}],
+            "closed":[{"id":"old-closed","strategy_version":"legacy_48bar_atr"}],
+            "legacy_models":{"old":{ "closed_trades":99 }},
+            "models":{"pivot_model":{"closed_trades":2}},
+        }
+        with patch("paper_forward.last_closed_candles",return_value=[]):
+            out=update_learning(previous,{"symbols":{
+                s:{"status":"OK","last_price":100.0,"observed_utc":now.isoformat()}
+                for s in ("BTCUSDT","ETHUSDT","SOLUSDT","DODOUSDT")
+            }},now)
+        self.assertEqual(out["pending"],[])
+        self.assertEqual(out["closed"],[])
+        self.assertEqual(out["tracked_open"],0)
+        self.assertEqual(out["tracked_closed"],0)
+        self.assertNotIn("legacy_models",out)
+        self.assertNotIn("legacy_open_count",out)
+        self.assertEqual(out["models"],{"pivot_model":{"closed_trades":2}})
+        self.assertEqual(out["strategy_version"],"pivot_range_research_v2")
+
     def test_no_duplicate_shadow_rewards(self):
         bars=sample_bars()
         now=dt.datetime.fromtimestamp((bars[-1][5]+1000)/1000,tz=UTC)
