@@ -22,7 +22,7 @@ button:focus-visible,a:focus-visible,select:focus-visible{outline:2px solid #7ce
   .chart-rationale{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
   .chart-rationale .chart-note:last-child{grid-column:1/-1}
 }
-@media(max-width:900px){
+@media(max-width:1100px){
   .shell{display:flex;flex-direction:column;align-items:stretch}
   .sidebar{display:none}
   .mobile-bar{display:block;position:sticky;top:0;z-index:30;
@@ -136,3 +136,6 @@ button:focus-visible,a:focus-visible,select:focus-visible{outline:2px solid #7ce
   .chart-viewport{height:270px}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+/* Tablets in landscape keep the compact navigation, not the 250px sidebar. */
+@media(min-width:760px) and (max-width:1100px){.chart-viewport{height:430px}.ticker-card strong{font-size:19px}.setup-prices{grid-template-columns:repeat(3,minmax(0,1fr))}}
