@@ -74,3 +74,37 @@ a:focus-visible,button:focus-visible,select:focus-visible{outline:2px solid #73e
 .setup-price-status{font-size:11px;color:#e5b88d}
 @media(max-width:1080px){.setup-list{grid-template-columns:1fr}.setup-summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:570px){.setup-summary{gap:7px}.setup-metric{padding:10px}.setup-list{gap:10px}.setup-card{padding:12px}.setup-price{padding:8px}.setup-price b{font-size:13px}.setup-r-item strong{font-size:16px}.setup-filter-tabs{margin-left:0;width:100%;justify-content:center}}
+
+/* Annotated, real OHLC chart for observed shadow setups */
+.setup-chart-button{display:block;width:100%;text-align:center;border:1px solid #4b9ab0;border-radius:10px;padding:11px 14px;background:linear-gradient(120deg,#164b55,#185372);color:#eaffff;cursor:pointer;font-weight:700;font-size:13px}
+.setup-chart-button:hover,.setup-chart-button:focus-visible{background:#20747c;outline:2px solid #78dfc8;outline-offset:2px}
+.setup-card.chart-selected{border-color:#78dcc7;box-shadow:0 0 0 1px #5feac877}
+#setup-chart-panel{border-color:#315b71;scroll-margin-top:15px}
+.chart-toolbar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:16px 0}
+.chart-toolbar>div{padding:12px;background:#0b2232;border:1px solid #294e60;border-radius:10px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.chart-toolbar small{font-size:10px;color:#9bb6c4;letter-spacing:1px}
+.chart-toolbar strong{font-size:14px;color:#f5fdff;overflow-wrap:anywhere}
+.chart-workspace{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(255px,1fr);gap:13px}
+.chart-main{min-width:0}
+.chart-controls{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:9px;color:#acc7d2;font-size:11px}
+.chart-controls>div{display:flex;gap:6px}
+.chart-controls button{cursor:pointer;color:#e3f8ff;background:#153249;border:1px solid #315d71;border-radius:7px;padding:6px 11px;min-width:34px}
+.chart-controls button:hover{background:#205168}
+.chart-viewport{position:relative;height:525px;width:100%;overflow:hidden;border-radius:11px;border:1px solid #315366;background:#081826;touch-action:pan-y}
+#setup-chart-canvas{display:block;width:100%;height:100%;cursor:crosshair}
+.chart-tooltip{position:absolute;left:12px;top:10px;pointer-events:none;white-space:pre-line;line-height:1.6;color:#e9f7fa;font-size:10px;background:#092032ec;border:1px solid #527786;border-radius:8px;padding:8px 11px;max-width:250px;z-index:2}
+.chart-legend{display:flex;flex-wrap:wrap;gap:12px;margin:11px 0;color:#abc3d0;font-size:10px}
+.chart-legend span{display:inline-flex;align-items:center;gap:5px}
+.chart-legend i{width:19px;height:3px;display:inline-block}
+.legend-entry{background:#51adff}.legend-stop{background:#ff858a}.legend-tp{background:#68d7ac}.legend-live{background:#f0ca6c}.legend-zone{background:#b58ade}
+.chart-rationale{display:flex;flex-direction:column;gap:10px}
+.chart-note{background:#0c2030;border:1px solid #2c5266;border-radius:11px;padding:13px}
+.chart-note small{font-size:10px;letter-spacing:.7px;color:#9ebaca;display:block;margin-bottom:8px}
+.chart-note strong{color:#f1faff;font-size:19px;display:block;margin-bottom:6px}
+.chart-note p{color:#c0d5df;font-size:12px;line-height:1.65;margin:0;overflow-wrap:anywhere}
+.chart-note-entry{border-left:3px solid #51adff}.chart-note-stop{border-left:3px solid #ff858a}.chart-note-tp{border-left:3px solid #68d7ac}
+.chart-arm-list{display:flex;flex-wrap:wrap;gap:6px;color:#aacbd5;font-size:11px}
+.chart-arm-list span{border:1px solid #3b5f6f;border-radius:6px;padding:5px 7px}
+#chart-source-note{font-size:10px}
+@media(max-width:1080px){.chart-workspace{grid-template-columns:1fr}.chart-toolbar{grid-template-columns:repeat(2,minmax(0,1fr))}.chart-viewport{height:450px}}
+@media(max-width:600px){.chart-viewport{height:350px}.chart-toolbar{gap:7px}.chart-toolbar>div{padding:9px}.chart-toolbar strong{font-size:12px}.chart-controls>span{font-size:10px}.chart-note strong{font-size:17px}}
