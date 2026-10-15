@@ -44,7 +44,6 @@ function renderSetupBoard(){
  '<div class="setup-empty">Eğitim kaynakları tam bir giriş, stop, hedef ve teyit kuralı vermediği için otomatik işlem üretilmiyor. Başka bir modelin sonuçları burada gösterilmez.</div>';
  $("#shadow-learning").textContent=
  "Kaynak doğrulama bekleniyor. Otomatik setup: 0 · Öğrenilmiş kârlılık: yok · Gerçek emir: kapalı.";
- $("#chart-status").textContent="GERÇEK MUM / SİNYAL ONAYI YOK";
 }
 function showQuoteStatus(s){$("#live-status").textContent=s}
 function priceDecimals(v){return v<.1?6:v<1?5:v<100?4:2}
