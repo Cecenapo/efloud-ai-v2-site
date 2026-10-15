@@ -16,6 +16,7 @@ function updateQuote(symbol,price,source,at,percent=null){
  if(previous && Number(new Date(at)) < Number(new Date(previous.at))) return;
  prices[symbol]={price:Number(price),source,at,percent:percent===null?null:Number(percent)};
  drawTickers();
+ if(window.EfloudSetupChart)window.EfloudSetupChart.updateQuote(symbol,prices[symbol]);
  queueSetupRender();
 }
 function drawTickers(){
@@ -142,6 +143,7 @@ function renderFamilyCatalogue(){
  * Mark-to-market is estimated with illustrative 7.5 bp/side fees and 5 bp
  * price friction/side; closed outcomes come only from causal scheduled jobs. */
 let setupState=null, setupTab="open", setupRerenderTimer=0;
+let setupSelectedId=null, setupShown=new Map();
 const setupNames={
  RANGE_SWEEP_EQ:"Range Sweep + EQ",RANGE_BREAKOUT:"Range Breakout",
  FVG_RETEST:"FVG Retest",OTE_RETRACEMENT:"Fibonacci OTE"
@@ -247,6 +249,7 @@ function renderSetupCard(p,tab,staleSource){
       '<strong>Hedef neden burada?</strong><p>'+esc(narrative.target)+'</p>'+
       '<strong>RedK karşılaştırma kolları</strong><div class="setup-arms">'+armList+'</div>'+
    '</div>'+
+   '<button class="setup-chart-button" type="button" data-setup-chart-id="'+esc(p.id)+'">Grafikte Göster ↗</button>'+ 
    '<div class="setup-foot"><span>Gözlem: '+esc(researchTimestamp(p.observed_utc))+' ('+esc(setupClockAge(p.observed_utc))+')</span>'+
     '<span>'+(isOpen?"Son tarama: "+esc(researchTimestamp(setupState.updated_utc)):"Kapanış: "+esc(researchTimestamp(p.closed_utc)))+
     '</span></div></article>';
@@ -266,6 +269,7 @@ function renderSetupBoard(){
  ].map(([k,v])=>'<div class="setup-metric"><small>'+esc(k)+'</small><strong>'+esc(v)+'</strong></div>').join("");
  const symbol=$("#setup-symbol").value,tf=$("#setup-tf").value;
  const data=(setupTab==="open"?open:closed).filter(p=>(symbol==="all"||p.symbol===symbol)&&(tf==="all"||p.timeframe===tf));
+ setupShown=new Map(data.map(p=>[p.id,p]));
  list.innerHTML=data.length?data.map(p=>renderSetupCard(p,setupTab,!isFresh)).join(""):
    '<div class="setup-empty">'+(setupTab==="open"?"Bu filtrede açık gölge setup bulunamadı. Sistem yeni kapanmış mumları taramayı sürdürüyor.":"Bu filtrede tamamlanmış gölge işlem henüz bulunmuyor.")+'</div>';
 }
@@ -276,6 +280,12 @@ function queueSetupRender(){
 function wireSetupBoard(){
  $("#setup-symbol").addEventListener("change",renderSetupBoard);
  $("#setup-tf").addEventListener("change",renderSetupBoard);
+ $("#setup-list").addEventListener("click",event=>{
+   const button=event.target.closest("button[data-setup-chart-id]");
+   if(!button)return;
+   const setup=setupShown.get(button.dataset.setupChartId);
+   if(setup)openSetupChart(setup);
+ });
  document.querySelectorAll("[data-setup-status]").forEach(button=>{
   button.addEventListener("click",()=>{
    setupTab=button.dataset.setupStatus;
@@ -285,6 +295,12 @@ function wireSetupBoard(){
  });
 }
 
+function openSetupChart(p){
+ setupSelectedId=p.id;
+ if(window.EfloudSetupChart){
+    window.EfloudSetupChart.open(p,prices[p.symbol]||null,armNames);
+ }
+}
 async function loadShadowLearning(){
  const el=$("#shadow-learning");
  if(!el)return;
@@ -292,6 +308,18 @@ async function loadShadowLearning(){
   const d=await fetchJson("./learning_state.json");
   setupState=d;
   renderSetupBoard();
+  const available=groupSetupItems(d.pending||[]);
+  const finished=groupSetupItems(d.closed||[]);
+  if(!setupSelectedId){
+    const firstChoice=available[0]||finished[0];
+    if(firstChoice)openSetupChart(firstChoice);
+  }else{
+    const updated=[...available,...finished].find(p=>p.id===setupSelectedId);
+    if(updated&&window.EfloudSetupChart){
+      const chart=window.EfloudSetupChart;
+      if(chart.currentStatus&&chart.currentStatus()!==updated.status)openSetupChart(updated);
+    }
+  }
   const total=Number(d.tracked_closed||0), open=Number(d.tracked_open||0);
   const weights=Object.keys(d.models||{}).length;
   el.innerHTML="<strong>SAATLİK GÖLGE ÖĞRENME GÜNLÜĞÜ</strong><p>"+
@@ -306,6 +334,7 @@ async function loadShadowLearning(){
 function start(){
  $("#lessons").textContent="44";$("#models").textContent=fmt(7680,0);
  $("#experiments").textContent=fmt(245760,0);showGate();renderFamilyCatalogue();drawTickers();wireSetupBoard();renderSetupBoard();
+ if(window.EfloudSetupChart)window.EfloudSetupChart.init();
  $("#symbol").addEventListener("change",displayResearch);
  $("#timeframe").addEventListener("change",displayResearch);
  $("#family-select").addEventListener("change",displayResearch);
