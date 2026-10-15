@@ -13,12 +13,14 @@ const entry={
  family:"RANGE_BREAKOUT",arm:"none",side:"LONG",
  observed_utc:observed,signal_closed_utc:signalClosed,
  entry_exec:100.2,stop:99.55,target:101.25,status:"OPEN_SHADOW",
+ strategy_version:"pivot_range_research_v2",
  order_placed:false,
  evidence:{scope:"observed_closed_binance_spot_candles",
+    method_version:"pivot_range_research_v2",
     as_of_close_ms:Date.parse(signalClosed),range_high:99.97,range_low:98.1,
     equilibrium:99.035,atr14:.54}
 };
-const fakeState={updated_utc:new Date().toISOString(),pending:[entry],
+const fakeState={updated_utc:new Date().toISOString(),strategy_version:"pivot_range_research_v2",pending:[entry],
  closed:[],models:{},tracked_open:1,tracked_closed:0,
  new_closed_this_cycle:0,failed_feeds:[]};
 const now=new Date().toISOString();
