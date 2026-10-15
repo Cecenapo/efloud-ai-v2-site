@@ -136,16 +136,33 @@ function renderFamilyCatalogue(){
  '<div class="family-card"><b>'+String(i+1).padStart(2,"0")+'</b><strong>'+esc(label)+
  '</strong><small>384 aday · tümü doğrulanmış değil</small></div>').join("");
 }
+async function loadShadowLearning(){
+ const el=$("#shadow-learning");
+ if(!el)return;
+ try{
+  const d=await fetchJson("./learning_state.json");
+  const total=Number(d.tracked_closed||0), open=Number(d.tracked_open||0);
+  const weights=Object.keys(d.models||{}).length;
+  el.innerHTML="<strong>SAATLİK GÖLGE ÖĞRENME GÜNLÜĞÜ</strong><p>"+
+   "Kontrol: "+esc(researchTimestamp(d.updated_utc))+
+   " · Bekleyen gölge kurulum: "+fmt(open,0)+
+   " · Kapanmış ve sonucu kaydedilmiş: "+fmt(total,0)+
+   " · Kapanmış sonuçla güncellenen model: "+fmt(weights,0)+
+   ". Yalnız sonradan gözlenen kapanmış sonuçlar ağırlıkları günceller. "+
+   "Bu, gerçek emir veya doğrulanmış ileri performans değildir. NO TRADE.</p>";
+ }catch(e){el.textContent="Saatlik gölge öğrenme ilk çalışmasını bekliyor; henüz doğrulanmış ileri performans yok."}
+}
 function start(){
  $("#lessons").textContent="44";$("#models").textContent=fmt(7680,0);
  $("#experiments").textContent=fmt(245760,0);showGate();renderFamilyCatalogue();drawTickers();
  $("#symbol").addEventListener("change",displayResearch);
  $("#timeframe").addEventListener("change",displayResearch);
  $("#family-select").addEventListener("change",displayResearch);
- refreshStudies();loadHourlyBackup();connectWebsocket();
+ refreshStudies();loadShadowLearning();loadHourlyBackup();connectWebsocket();
  pollRest();
  restTimer=setInterval(()=>{if(!streamActive)pollRest()},60000);
  setInterval(refreshStudies,5*60*1000);
+ setInterval(loadShadowLearning,5*60*1000);
  setInterval(loadHourlyBackup,60*60*1000);
 }
 start();
