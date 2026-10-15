@@ -81,6 +81,14 @@ function displayResearch(){
  const tbody=$("#results"),cover=$("#coverage"),learner=$("#learning-results");
  const count=latestResearch?.actually_executed_backtests;
  if(latestResearch&&count) {
+  if(latestResearch.model_rule_version!=="pivot_range_research_v2"){
+    $("#pipeline-status").textContent="ESKİ METOT RAPORU: 48 mum ve ATR varsayımlarıyla yapılmış çalışma. Yeni pivot yapısı yeniden test edilmeden bu sonuçlar öğrenme/başarı kanıtı sayılamaz.";
+    $("#coverage").textContent="Yeni yapısal pivot range motoru için ilk günlük backtest çıktısı bekleniyor.";
+    $("#results").innerHTML='<tr><td colspan="6">ESKİ 48 MUM / ATR SONUCU ARŞİVLENDİ. YENİ MODEL İÇİN BAĞIMSIZ KANIT BEKLENİYOR — NO TRADE.</td></tr>';
+    const learning=$("#learning-results");
+    if(learning)learning.textContent="Eski backtest verileri yeni range modeline taşınmadı. Değerlendirme yeniden yapılacak.";
+    return;
+  }
   $("#pipeline-status").textContent="SON GÜNLÜK ARAŞTIRMA: "+researchTimestamp(latestResearch.generated_utc)+" · çalıştırılan deney: "+fmt(count,0)+
    " / "+fmt(latestResearch.candidate_model_timeframe_trials,0)+" planlı · öğrenme: kapanmış tarihsel sonuçlarla yeniden kalibrasyon · ileri paper: 0";
   if(report?.status==="RESEARCH_ONLY_NO_TRADE"){
@@ -328,6 +336,7 @@ async function loadShadowLearning(){
     }
   }
   const total=Number(d.tracked_closed||0), open=Number(d.tracked_open||0);
+  const legacyCount=Number(d.legacy_open_count||0)+Number(d.legacy_closed_count||0);
   const weights=Object.keys(d.models||{}).length;
   el.innerHTML="<strong>SAATLİK GÖLGE ÖĞRENME GÜNLÜĞÜ</strong><p>"+
    "Kontrol: "+esc(researchTimestamp(d.updated_utc))+
