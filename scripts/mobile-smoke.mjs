@@ -32,6 +32,14 @@ try{
   page.on("pageerror",e=>errors.push(String(e)));
   page.on("requestfailed",req=>failedResponses.push(req.url().slice(0,170)+" : "+
      req.failure()?.errorText));
+  await page.route("**/verified_setups.json*",r=>r.fulfill({json:{
+    schema:1,status:"AWAITING_SOURCE_VERIFICATION",
+    items:[{
+      status:"UNVERIFIED",symbol:"BTCUSDT",timeframe:"4h",
+      confirmed_bar_open_utc:new Date(rawBars[190][0]).toISOString(),
+      side:"LONG",entry:100,stop:99,target:101,source:{video_id:"none"}
+    }]
+  }}));
   await page.route("**/learning_state.json*",r=>r.fulfill({json:state}));
   await page.route("**/model_results.json*",r=>r.fulfill({json:audit}));
   await page.route("**/pipeline_status.json*",r=>r.fulfill({json:{status:"SOURCE_RULES_AWAITING_VERIFICATION"}}));
@@ -76,6 +84,8 @@ try{
   assert.equal(result.chart?.bars,220,"Actual (mocked in test) candle count incorrect");
   assert.ok(result.canvases>=2,"No TradingView render canvases");
   assert.equal(result.tradeCards,0,"Invented trade cards appeared");
+  assert.equal(result.chart?.verifiedCount,0,
+    "Unverified/synthetic signal unexpectedly rendered an overlay");
   assert.equal(result.models,"0");assert.equal(result.plans,"0");
   assert.equal(result.validated,"0");
   assert.equal(result.over.length,0,"Element overflows viewport "+JSON.stringify(result.over));
@@ -89,6 +99,33 @@ try{
   assert.equal(await page.locator("#chart-entry-price").textContent(),"—");
   assert.equal(await page.locator("#chart-stop-price").textContent(),"—");
   assert.equal(await page.locator("#chart-tp-price").textContent(),"—");
+  if(width===375){
+    await page.route("**/verified_setups.json*",r=>r.fulfill({json:{
+     schema:1,status:"AWAITING_SOURCE_VERIFICATION",
+     items:[{
+       status:"SOURCE_VERIFIED",symbol:"BTCUSDT",timeframe:"1h",
+       confirmed_bar_open_utc:new Date(rawBars[190][0]).toISOString(),
+       side:"LONG",entry:100,stop:99,target:101,
+       entry_reason:"TEST FIXTURE ONLY: previously confirmed close above level.",
+       stop_reason:"TEST FIXTURE ONLY: lower prior structural level.",
+       target_reason:"TEST FIXTURE ONLY: historic confirmed price level.",
+       reviewer:"Playwright isolated browser test",
+       source:{evidence_type:"ORIGINAL_VIDEO_FRAME_VERIFIED",
+          video_id:"TEST_FIXTURE_NOT_REAL_SOURCE",
+          frame_id:"MOCK_190",timecode_seconds:190}
+     }]
+    }}));
+    await page.locator('button[data-chart-tf="4h"]').click();
+    await page.waitForFunction(()=>window.EfloudSetupChart?.debugState()?.interval==="4h",
+      undefined,{timeout:10000});
+    await page.locator('button[data-chart-tf="1h"]').click();
+    await page.waitForFunction(()=>window.EfloudSetupChart?.debugState()?.verifiedCount===1,
+      undefined,{timeout:10000});
+    assert.match(await page.locator("#chart-entry-why").textContent(),/TEST FIXTURE ONLY/);
+    await page.locator('button[data-chart-tf="4h"]').click();
+    await page.waitForFunction(()=>window.EfloudSetupChart?.debugState()?.verifiedCount===0,
+      undefined,{timeout:10000});
+  }
   await context.close();
  }
 }finally{await browser.close()}
