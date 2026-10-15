@@ -31,3 +31,46 @@ a:focus-visible,button:focus-visible,select:focus-visible{outline:2px solid #73e
 .toolbar select{max-width:165px}
 @media(max-width:1150px){.ticker-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:550px){.ticker-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.ticker-card{padding:13px 10px}.ticker-card strong{font-size:15px}.ticker-card small{font-size:9px}.toolbar select{max-width:105px}}
+
+/* Observable paper setup board */
+#live-setups{border-color:#317660;background:linear-gradient(132deg,rgba(23,70,64,.22),rgba(8,27,43,.1) 43%,transparent)}
+.setup-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px;margin:19px 0}
+.setup-metric{border:1px solid #304d5b;background:#0c1c29;border-radius:11px;padding:13px;min-width:0;display:flex;flex-direction:column;gap:7px}
+.setup-metric small{font-size:10px;letter-spacing:1.1px;color:#8faebd}
+.setup-metric strong{font-size:19px;color:#ecf9ff}
+.setup-filters{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:16px 0 18px}
+.setup-filters label{font-size:10px;color:#a3baca;letter-spacing:1px}
+.setup-filters select{border:1px solid #315165;background:#0c1d2a;color:#e9f4fa;border-radius:8px;padding:9px;min-height:37px}
+.setup-filter-tabs{margin-left:auto;display:flex;border:1px solid #2c5265;border-radius:9px;padding:3px;gap:3px}
+.setup-tab{background:transparent;color:#9cb4c4;border:0;border-radius:6px;padding:9px 12px;cursor:pointer}
+.setup-tab.current{background:#20574f;color:#f1fffb}
+.setup-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin-bottom:15px}
+.setup-card{border:1px solid #2e4c61;border-radius:13px;padding:17px;background:#0b1b2a;min-width:0;display:flex;flex-direction:column;gap:13px}
+.setup-card.side-long{border-left:3px solid #53d8b2}.setup-card.side-short{border-left:3px solid #f0a476}
+.setup-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.setup-pair{font-size:18px;font-weight:800;color:#f0faff}
+.setup-heading-small{font-size:11px;color:#9bb4c4;margin-top:5px}
+.setup-tags{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.setup-tag{font-size:10px;padding:5px 8px;border-radius:7px;border:1px solid #466078;white-space:nowrap}
+.setup-tag.long{color:#74dfbb;border-color:#276451;background:#123a31}
+.setup-tag.short{color:#ffb58e;border-color:#7b4d37;background:#38261e}
+.setup-tag.paper{color:#b7c9d4}
+.setup-prices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.setup-price{border:1px solid #223d52;background:#0c2335;border-radius:9px;padding:11px;min-width:0}
+.setup-price small{font-size:10px;color:#9bb0bf;display:block;margin-bottom:6px}
+.setup-price b{font-size:clamp(12px,1.4vw,17px);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.setup-price.stop b{color:#ff9f96}.setup-price.target b{color:#6fe3c0}
+.setup-r-strip{display:flex;gap:8px;flex-wrap:wrap;align-items:stretch}
+.setup-r-item{flex:1;min-width:110px;background:#112c3d;border-radius:9px;padding:10px 11px;display:flex;flex-direction:column;gap:7px}
+.setup-r-item small{font-size:10px;color:#a0bbc7}.setup-r-item strong{font-size:19px;font-variant-numeric:tabular-nums}
+.setup-r-item .positive{color:#72e2bc}.setup-r-item .negative{color:#ffa095}
+.setup-r-item .neutral{color:#a9bfca}
+.setup-reason{border-top:1px solid #263e50;padding-top:11px;font-size:12px;color:#b3cbd7;line-height:1.6}
+.setup-reason strong{color:#e8f7fa}.setup-reason p{margin:5px 0 7px}
+.setup-arms{display:flex;gap:6px;flex-wrap:wrap}
+.setup-arm{border:1px solid #385768;background:#112a3a;padding:4px 7px;border-radius:6px;color:#b6ddd7;font-size:10px}
+.setup-foot{font-size:10px;color:#8fabb9;display:flex;justify-content:space-between;gap:7px;flex-wrap:wrap}
+.setup-empty{grid-column:1/-1;padding:26px;border:1px dashed #34566a;text-align:center;color:#b0c4d0;border-radius:12px}
+.setup-price-status{font-size:11px;color:#e5b88d}
+@media(max-width:1080px){.setup-list{grid-template-columns:1fr}.setup-summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:570px){.setup-summary{gap:7px}.setup-metric{padding:10px}.setup-list{gap:10px}.setup-card{padding:12px}.setup-price{padding:8px}.setup-price b{font-size:13px}.setup-r-item strong{font-size:16px}.setup-filter-tabs{margin-left:0;width:100%;justify-content:center}}
