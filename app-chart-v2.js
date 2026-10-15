@@ -284,7 +284,7 @@ function wireSetupBoard(){
    const button=event.target.closest("button[data-setup-chart-id]");
    if(!button)return;
    const setup=setupShown.get(button.dataset.setupChartId);
-   if(setup)openSetupChart(setup);
+   if(setup)openSetupChart(setup,true);
  });
  document.querySelectorAll("[data-setup-status]").forEach(button=>{
   button.addEventListener("click",()=>{
@@ -295,10 +295,10 @@ function wireSetupBoard(){
  });
 }
 
-function openSetupChart(p){
+function openSetupChart(p,scrollToChart=false){
  setupSelectedId=p.id;
  if(window.EfloudSetupChart){
-    window.EfloudSetupChart.open(p,prices[p.symbol]||null,armNames);
+    window.EfloudSetupChart.open(p,prices[p.symbol]||null,armNames,{scrollToChart});
  }
 }
 async function loadShadowLearning(){
