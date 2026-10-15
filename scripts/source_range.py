@@ -41,14 +41,14 @@ def pivots_before(bars, signal_i, left=PIVOT_LEFT, right=PIVOT_RIGHT, limit=SEAR
     return out
 
 
-def range_at(bars, signal_i):
+def range_at(bars, signal_i, pivots=None):
     """Find a recent pivot-confirmed, repeatedly tested, bounded range candidate.
 
     This is not an instructor's fixed pivot algorithm. The pivot confirmation
     and repeated near-level tests prevent selecting an arbitrary last-N high
     and low retrospectively. We reject ambiguous/no-range candidates.
     """
-    ps=pivots_before(bars,signal_i)
+    ps=pivots if pivots is not None else pivots_before(bars,signal_i)
     highs=[p for p in ps if p[0]=="HIGH"]
     lows=[p for p in ps if p[0]=="LOW"]
     if len(highs)<MIN_CONFIRMING_TOUCHES or len(lows)<MIN_CONFIRMING_TOUCHES:
@@ -95,9 +95,9 @@ def range_at(bars, signal_i):
     return max(candidates,key=lambda v:(v["confirmed_at_i"],v["top_pivot_i"]+v["bottom_pivot_i"]))
 
 
-def latest_swing(bars, signal_i):
+def latest_swing(bars, signal_i, pivots=None):
     """Most recently confirmed opposite-direction pivot pair."""
-    ps=pivots_before(bars,signal_i)
+    ps=pivots if pivots is not None else pivots_before(bars,signal_i)
     highs=[p for p in ps if p[0]=="HIGH"]
     lows=[p for p in ps if p[0]=="LOW"]
     if not highs or not lows:
@@ -127,7 +127,7 @@ def next_structure_target(bars, signal_i, threshold, side):
     return max(levels) if levels else None
 
 
-def structural_events(bars):
+def structural_events(bars, only_last=False):
     """Return events compatible with the legacy research backtest tuple format.
 
     RANGE_SWEEP_EQ: wick below/above a *previously confirmed* range boundary,
@@ -143,12 +143,14 @@ def structural_events(bars):
     instructor-verbatim algorithms. Both use structural invalidation ONLY.
     """
     out={"RANGE_SWEEP_EQ":[],"RANGE_BREAKOUT":[],"FVG_RETEST":[],"OTE_RETRACEMENT":[]}
-    for i in range(32,len(bars)):
+    indices=range(max(32,len(bars)-1),len(bars)) if only_last else range(32,len(bars))
+    for i in indices:
         row=bars[i]
         o,h,l,close=row[1:5]
         previous=bars[i-1][4]
-        rg=range_at(bars,i)
-        sw=latest_swing(bars,i)
+        confirmed=pivots_before(bars,i)
+        rg=range_at(bars,i,pivots=confirmed)
+        sw=latest_swing(bars,i,pivots=confirmed)
         if rg:
             rh,rl,eq=rg["high"],rg["low"],rg["eq"]
             if rl<=previous<=rh and l<rl and rl<close<rh and l<eq:
