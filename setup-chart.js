@@ -356,5 +356,5 @@ function init(){
  else window.addEventListener("resize",resize);
  draw();
 }
-window.EfloudSetupChart={init,open,updateQuote};
+window.EfloudSetupChart={init,open,updateQuote,currentStatus:()=>active?.status||null};
 })();
