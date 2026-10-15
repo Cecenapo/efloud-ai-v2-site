@@ -177,7 +177,7 @@ def run_trades(bars,events,arm,features):
     """Next-bar open; original-risk R; first TP/SL touch frozen; no overlap."""
     result=[];next_allowed=0
     for i,direction,stop,target in events:
-        if i+1<next_allowed or not arm_pass(arm,"LONG" if direction==1 else "SHORT",i,features):
+        if i+1>=len(bars) or i+1<next_allowed or not arm_pass(arm,"LONG" if direction==1 else "SHORT",i,features):
             continue
         open_px=bars[i+1][1]
         entry=open_px*(1+FRICTION*direction)
@@ -201,7 +201,11 @@ def run_trades(bars,events,arm,features):
             if kind:
                 exit_i=j;break
         if kind is None:
-            exit_i=min(len(bars)-1,i+CLOSE_OUT)
+            # Do NOT label an open position TIMEOUT simply because the
+            # historical snapshot ends; only closed mature outcomes train.
+            if i+CLOSE_OUT>=len(bars):
+                continue
+            exit_i=i+CLOSE_OUT
             raw=bars[exit_i][4]
             kind="TIMEOUT"
         actual=raw*(1-FRICTION*direction)
