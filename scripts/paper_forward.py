@@ -68,9 +68,70 @@ def evaluate_pending(pending,bars,now):
                 "entry_exec":entry,"stop":stop,"target":target,
                 "closed_utc":dt.datetime.fromtimestamp(b[5]/1000,UTC).isoformat(),
                 "exit_exec":round(exit_exec,12),
+                "evidence":pending.get("evidence"),
                 "net_r":round(net,8),"outcome":outcome,"status":"CLOSED_SHADOW_SIMULATION",
                 "no_real_order":True}
     return None
+
+def evidence_at_signal(bars, i, family, side):
+    """Freeze rule inputs on the actual completed signal candle for chart audit."""
+    if i < 49:
+        raise ValueError("Signal does not have required historical candles")
+    last48 = bars[i-48:i]
+    rh = max(b[2] for b in last48)
+    rl = min(b[3] for b in last48)
+    tr = [max(bars[k][2]-bars[k][3],
+              abs(bars[k][2]-bars[k-1][4]),
+              abs(bars[k][3]-bars[k-1][4]))
+          for k in range(i-13, i+1)]
+    atr = sum(tr)/len(tr)
+    proof = {
+        "as_of_close_ms": bars[i][5],
+        "lookback_range_bars": 48,
+        "range_high": rh,
+        "range_low": rl,
+        "equilibrium": (rh+rl)/2,
+        "atr14": atr,
+        "atr_safety_buffer": .15*atr,
+        "signal_open": bars[i][1],
+        "signal_high": bars[i][2],
+        "signal_low": bars[i][3],
+        "signal_close": bars[i][4],
+        "rule_family": family,
+        "direction": "LONG" if side == 1 else "SHORT",
+        "scope": "observed_closed_binance_spot_candles",
+        "is_research_hypothesis": True,
+    }
+    if family == "RANGE_BREAKOUT":
+        proof["stop_rule"] = ("range_high - 0.15 ATR14" if side == 1
+                              else "range_low + 0.15 ATR14")
+        proof["target_rule"] = ("range_high + 0.55*(range_high-range_low)" if side == 1
+                                else "range_low - 0.55*(range_high-range_low)")
+    elif family == "RANGE_SWEEP_EQ":
+        proof["sweep_wick"] = bars[i][3] if side == 1 else bars[i][2]
+        proof["stop_rule"] = ("signal_low - 0.15 ATR14" if side == 1
+                              else "signal_high + 0.15 ATR14")
+        proof["target_rule"] = "(range_high + range_low)/2"
+    elif family == "FVG_RETEST":
+        b4,b2 = bars[i-4],bars[i-2]
+        proof["fvg_lower"] = b4[2] if side == 1 else b2[2]
+        proof["fvg_upper"] = b2[3] if side == 1 else b4[3]
+        proof["stop_rule"] = ("fvg_prior_high - 0.15 ATR14" if side == 1
+                              else "fvg_prior_low + 0.15 ATR14")
+        proof["target_rule"] = "range_high" if side == 1 else "range_low"
+    elif family == "OTE_RETRACEMENT":
+        swing = bars[i-20:i]
+        hi = max(b[2] for b in swing)
+        lo = min(b[3] for b in swing)
+        delta = hi-lo
+        proof["swing_high"]=hi
+        proof["swing_low"]=lo
+        proof["ote_lower"]=hi-.786*delta if side == 1 else lo+.618*delta
+        proof["ote_upper"]=hi-.618*delta if side == 1 else lo+.786*delta
+        proof["stop_rule"]="swing_low - 0.15 ATR14" if side == 1 else "swing_high + 0.15 ATR14"
+        proof["target_rule"]="swing_high" if side == 1 else "swing_low"
+    return proof
+
 
 def fresh_events(bars,price,symbol,tf,now):
     """Only final fully closed candle may become an hourly observed signal."""
@@ -99,6 +160,7 @@ def fresh_events(bars,price,symbol,tf,now):
                     "observed_utc":utc_text(now),
                     "signal_closed_utc":dt.datetime.fromtimestamp(latest[5]/1000,UTC).isoformat(),
                     "entry_exec":round(exec_entry,12),"stop":stop,"target":target,
+                    "evidence":evidence_at_signal(bars, i, family, side),
                     "original_r":risk,"status":"OPEN_SHADOW","order_placed":False,
                 })
     return candidate
