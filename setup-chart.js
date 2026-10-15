@@ -74,6 +74,30 @@ function evidenceFor(p,bars,index){
      }
    }
  }
+ if(p.evidence && p.evidence.scope==="observed_closed_binance_spot_candles" &&
+   Number(p.evidence.as_of_close_ms)===bars[index].closeMs){
+    const audit=p.evidence;
+    const keys=[["range_high","rangeHigh"],["range_low","rangeLow"],["equilibrium","eq"],["atr14","atr"]];
+    keys.forEach(([src,dest])=>{if(Number.isFinite(Number(audit[src])))info[dest]=Number(audit[src])});
+    info.source="Sinyal oluştuğu anda kaydedilen mum verileri";
+    if(p.family==="RANGE_BREAKOUT"||p.family==="RANGE_SWEEP_EQ"){
+      info.zone={start:index-48,end:index,low:info.rangeLow,high:info.rangeHigh,
+                 label:"KAYDEDİLEN RANGE · 48 MUM",color:"#7b97ab"};
+      info.levels=[{price:info.rangeHigh,label:"RH"},{price:info.rangeLow,label:"RL"}];
+      if(p.family==="RANGE_SWEEP_EQ")info.levels.push({price:info.eq,label:"EQ %50"});
+    }
+    if(p.family==="FVG_RETEST" && Number.isFinite(Number(audit.fvg_lower)) &&
+       Number.isFinite(Number(audit.fvg_upper))){
+      info.zone={start:index-4,end:bars.length-1,low:Number(audit.fvg_lower),
+        high:Number(audit.fvg_upper),label:"KAYDEDİLEN FVG",color:"#9877e7"};
+    }
+    if(p.family==="OTE_RETRACEMENT" && Number.isFinite(Number(audit.ote_lower)) &&
+       Number.isFinite(Number(audit.ote_upper))){
+      info.zone={start:index-20,end:index,low:Math.min(Number(audit.ote_lower),Number(audit.ote_upper)),
+        high:Math.max(Number(audit.ote_lower),Number(audit.ote_upper)),
+        label:"KAYDEDİLEN OTE %61,8–78,6",color:"#dfa469"};
+    }
+ }
  return info;
 }
 function reasons(p,ev){
@@ -311,7 +335,7 @@ async function open(p,quote,armLabels){
    }else{
      proof=evidenceFor(p,candles,signalIndex);
      f.status.textContent=proof?"GRAFİK VE SEVİYELER HAZIR":"MUM EKSİĞİ";
-     f.source.textContent="Kaynak: Binance Spot kapanmış mumlar. Sinyal zamanına göre fiyat yapısı mumlardan yeniden hesaplanmıştır. Giriş/stop/TP ise gerçekten kaydedilen araştırma seviyeleridir. Bu, gerçek borsa emri değildir.";
+     f.source.textContent="Kaynak: Binance Spot kapanmış mumlar. "+(proof?.source||"Fiyat yapısı doğrulanamadı")+". Giriş/stop/TP kaydedilmiş araştırma seviyeleridir. Canlı borsa emri oluşturulmamıştır.";
    }
    setSignalWindow();render();
  }catch(error){
