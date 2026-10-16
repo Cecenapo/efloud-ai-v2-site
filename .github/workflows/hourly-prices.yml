@@ -6,6 +6,7 @@ on:
     paths:
       - "scripts/collect_live.py"
       - "scripts/paper_forward.py"
+      - "scripts/experimental_lab.py"
       - "scripts/research_engine.py"
       - "scripts/test_*.py"
       - ".github/workflows/hourly-prices.yml"
@@ -19,7 +20,7 @@ concurrency:
 jobs:
   publish_quotes:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
         with:
@@ -33,13 +34,15 @@ jobs:
           PYTHONPATH: scripts
       - name: Snapshot public read-only prices
         run: python scripts/collect_live.py
-      - name: Observe new completed-bar shadow setups and settle prior signals
+      - name: Independent experimental radar - observation only (no fills or orders)
+        run: python scripts/experimental_lab.py radar
+      - name: Keep verified educator-source auto-signal gate disabled
         run: python scripts/paper_forward.py
       - name: Publish only changed aggregate JSON
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add live.json
+          git add live.json experimental_radar.json
           if test -f learning_state.json; then git add learning_state.json; fi
           if ! git diff --cached --quiet; then
             git commit -m "data: refresh read-only hourly market snapshot [skip ci]"
