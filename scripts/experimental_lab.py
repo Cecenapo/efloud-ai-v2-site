@@ -278,7 +278,45 @@ def recent_observations(asof=None,fetch=None,symbols=SYMBOLS,frames=("5m","15m",
 
 def write_research():
     result=run_research()
-    (ROOT/"experimental_lab.json").write_text(json.dumps(result,indent=2,ensure_ascii=False,allow_nan=False)+"\n",encoding="utf8")
+    # Full results are provided for audit, but compact JSON avoids wasting
+    # GitHub Pages/mobile bandwidth due to indentation of nested evidence.
+    (ROOT/"experimental_lab.json").write_text(
+        json.dumps(result,separators=(",",":"),ensure_ascii=False,allow_nan=False)+"\n",encoding="utf8")
+    # Public summary contains counts/validation; never post-select best OOS arm.
+    from redk_features import ARMS,INDICATOR_VERSION
+    aggregate={arm:{"groups_tested":0,"validation_groups_with_20plus":0,
+                    "oos_groups_with_20plus":0,"oos_groups_positive_10bps":0,
+                    "oos_groups_positive_30bps":0,"oos_groups_nominal_lower95_positive":0,
+                    "oos_variant_observations":0,"validation_gate_groups":0}
+               for arm in ARMS}
+    for report in result.get("reports",[]):
+        for group in report.get("redk_ablation",{}).get("groups",[]):
+            for a in group.get("arms",[]):
+                z=aggregate[a["arm"]]
+                validation=a["validation"]["10bps"]
+                oos=a["holdout"]["10bps"]
+                stress=a["holdout"]["30bps"]
+                z["groups_tested"]+=1
+                z["validation_groups_with_20plus"]+=int(validation["n"]>=20)
+                z["oos_groups_with_20plus"]+=int(oos["n"]>=20)
+                z["oos_groups_positive_10bps"]+=int(oos["mean_r"] is not None and oos["mean_r"]>0)
+                z["oos_groups_positive_30bps"]+=int(stress["mean_r"] is not None and stress["mean_r"]>0)
+                z["oos_groups_nominal_lower95_positive"]+=int(oos["lower_95_r"] is not None and oos["lower_95_r"]>0)
+                z["oos_variant_observations"]+=oos["n"]
+                z["validation_gate_groups"]+=int(a["validation_gate"])
+    summary={"schema":1,"version":"redk_ablation_v1","generated_utc":result["generated_utc"],
+      "source":"User-provided RedK Indicator Amplifier / RedKTrader MPL-2.0",
+      "indicator_version":INDICATOR_VERSION,
+      "data_groups":len(result.get("reports",[])),
+      "pa_historical_variant_events":result.get("candidate_events_backtested",0),
+      "redk_group_comparisons":result.get("redk_group_comparisons",0),
+      "redk_arm_comparisons":result.get("redk_arm_comparisons",0),
+      "source_approved_models":0,"real_orders":False,
+      "promoted_profitable_models":0,"data_errors":result.get("errors",[]),
+      "arms":aggregate,
+      "limitations":"Counts are overlapping variant observations, NOT independent trades. Positive means/nominal normal CI are not multiple-testing or serial-correlation adjusted. 10/30bp are hypothetical cost scenarios. No actual broker fills; no established improvement in future profitability."}
+    (ROOT/"experimental_redk_summary.json").write_text(
+        json.dumps(summary,ensure_ascii=False,indent=2,allow_nan=False)+"\n",encoding="utf8")
     print("Independent experimental research:",len(result["reports"]),"groups",
       result["candidate_events_backtested"],"historical events;",
       result["experimental_holdout_passed"],"holdout candidates; errors",len(result["errors"]))
