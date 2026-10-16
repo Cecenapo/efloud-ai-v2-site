@@ -40,6 +40,29 @@ try{
       side:"LONG",entry:100,stop:99,target:101,source:{video_id:"none"}
     }]
   }}));
+  await page.route("**/experimental_radar.json*",r=>r.fulfill({json:{
+    schema:1,version:"independent_lab_v1",
+    updated_utc:new Date().toISOString(),new_events:1,errors:[],
+    observations:[{
+      id:"test-lab-1",symbol:"BTCUSDT",timeframe:"4h",
+      family:"SWING_SWEEP",side:"LONG",left:3,right:3,
+      signal_open_ms:rawBars[190][0],
+      observed_utc:new Date().toISOString(),
+      status:"EXPERIMENTAL_OBSERVATION_ONLY",
+      can_trade:false,order_placed:false,
+      indicative_entry:100,stop:99,target:105,
+      source_class:"INDEPENDENT_EXPERIMENT_NOT_EFLOUD_INSTRUCTOR_RULE",
+      reasons:{entry:"TEST LAB RULE: swing sweep",stop:"TEST LAB: wick",target:"TEST LAB: prior pivot"}
+    }]
+  }}));
+  await page.route("**/experimental_lab.json*",r=>r.fulfill({json:{
+    schema:1,version:"independent_lab_v1",generated_utc:new Date().toISOString(),
+    candidate_events_backtested:26,variant_results:6,experimental_holdout_passed:0,
+    reports:[{symbol:"BTCUSDT",timeframe:"4h",status:"RESEARCHED_EXPERIMENTAL",
+      variants:[{family:"SWING_SWEEP",side:"LONG",research_params:{left:3,right:3},
+        gate:"NO_EVIDENCE",holdout_10bp:{n:3,mean_r:-.1,lower_95_r:-.7},
+        holdout_30bp:{n:3,mean_r:-.25}}]}]
+  }}));
   await page.route("**/learning_state.json*",r=>r.fulfill({json:state}));
   await page.route("**/model_results.json*",r=>r.fulfill({json:audit}));
   await page.route("**/pipeline_status.json*",r=>r.fulfill({json:{status:"SOURCE_RULES_AWAITING_VERIFICATION"}}));
@@ -99,6 +122,18 @@ try{
   assert.equal(await page.locator("#chart-entry-price").textContent(),"—");
   assert.equal(await page.locator("#chart-stop-price").textContent(),"—");
   assert.equal(await page.locator("#chart-tp-price").textContent(),"—");
+  await page.locator("#lab-candidates .lab-card").first().waitFor({timeout:10000});
+  if(width===375){
+    await page.locator("#lab-candidates .lab-card button").first().click();
+    await page.waitForFunction(()=>
+      document.querySelector("#chart-side")?.textContent.includes("BAĞIMSIZ DENEYSEL"),undefined,
+      {timeout:12000});
+    assert.match(await page.locator("#chart-entry-why").textContent(),/TEST LAB RULE/);
+    assert.match(await page.locator("#chart-net-r").textContent(),/NET R YOK/);
+    await page.locator('button[data-chart-tf="1h"]').click();
+    await page.waitForFunction(()=>document.querySelector("#chart-entry-price")?.textContent==="—",
+      undefined,{timeout:10000});
+  }
   if(width===375){
     await page.route("**/verified_setups.json*",r=>r.fulfill({json:{
      schema:1,status:"AWAITING_SOURCE_VERIFICATION",
