@@ -34,6 +34,14 @@ function renderRadar(){
  }
  $("#lab-candidates").innerHTML=filtered.slice(0,30).map((e,i)=>{
   const reason=e.reasons||{};
+  const flags=e.redk_ablation_filters||null;
+  const redkStatus=flags?Object.entries(flags).filter(([k,v])=>k!=="none"&&v===true)
+    .map(([k])=>k.replaceAll("_"," ")).join(", ")||"Diğer koşulları geçen kol yok":"İlk RedK taraması bekleniyor";
+  const redkHistorical=e.redk_historical_ablation?.arms||[];
+  const redkComparison=redkHistorical.length?
+    redkHistorical.map(a=>a.arm+": OOS "+(a.n??0)+" kayıt / "+
+      (a.holdout_mean_r_10bps==null?"—":fmt(a.holdout_mean_r_10bps,3)+"R")).join(" | "):
+    "RedK geçmiş karşılaştırması henüz eşleşmedi";
   const params='Pivot teyidi '+escapeHTML(e.left)+' sol / '+escapeHTML(e.right)+' sağ';
   return '<article class="lab-card"><div class="lab-card-head"><div><strong>'+
    escapeHTML(e.symbol)+' · '+escapeHTML(e.timeframe)+
@@ -49,6 +57,8 @@ function renderRadar(){
    ' · 10bp senaryo net R '+escapeHTML(e.historical_oos?.mean_r==null?"—":fmt(e.historical_oos.mean_r,3))+
    ' · 30bp senaryo net R '+escapeHTML(e.stress_oos?.mean_r==null?"—":fmt(e.stress_oos.mean_r,3))+
    '</p>'+
+   '<p><b>RedK filtreleri (kapanmış mum):</b> '+escapeHTML(redkStatus)+'</p>'+
+   '<p><b>RedK OOS alt grupları:</b> '+escapeHTML(redkComparison)+'</p>'+
    '<p><b>Neden görüldü?</b> '+escapeHTML(reason.entry||"Kaynak açıklaması yok")+'</p>'+
    '<p><b>Stop mantığı:</b> '+escapeHTML(reason.stop||"Yok")+'</p>'+
    '<p><b>TP mantığı:</b> '+escapeHTML(reason.target||"Yok")+'</p>'+
@@ -94,20 +104,63 @@ function renderResearch(){
  '<th>OOS N</th><th>OOS NET R<br>10bp senaryo</th><th>ALT %95 R</th><th>OOS NET R<br>30bp senaryo</th><th>ETİKET</th></tr></thead>'+
  '<tbody>'+(rows.length?rows.slice(0,400).join(""):'<tr><td colspan="10">Henüz yeterli veri veya doğrulanabilir olay bulunamadı.</td></tr>')+'</tbody></table>';
 }
+const redkNames={
+ none:"Filtresiz Price Action",rsi_bias:"RedK RSI yön",
+ stoch_flip_recent:"RedK Stochastic yakın flip",
+ cci_impulse:"RedK CCI impuls",macd_expansion:"RedK MACD genişleme",
+ rsi_macd_agree:"RedK RSI + MACD"
+};
+function renderRedk(){
+ const table=$("#lab-redk-table");
+ if(!table)return;
+ const sym=$("#lab-symbol").value,tf=$("#lab-tf").value;
+ const groups=(research?.reports||[]).filter(r=>
+  (sym==="all"||r.symbol===sym)&&(tf==="all"||r.timeframe===tf) &&
+  r.redk_ablation?.version==="redk_ablation_v1");
+ const rows=[];
+ for(const rep of groups)for(const g of rep.redk_ablation.groups||[]){
+  const base=(g.arms||[]).find(a=>a.arm==="none");
+  const baseline=base?.holdout?.["10bps"]?.mean_r;
+  for(const a of g.arms||[]){
+    const h=a.holdout?.["10bps"]||{},v=a.validation?.["10bps"]||{};
+    const thirty=a.holdout?.["30bps"]||{};
+    const diff=baseline==null||h.mean_r==null?null:h.mean_r-baseline;
+    rows.push('<tr><td>'+escapeHTML(rep.symbol)+'</td><td>'+escapeHTML(rep.timeframe)+
+     '</td><td>'+escapeHTML(g.family)+'</td><td>'+escapeHTML(g.side)+'</td><td>'+
+     escapeHTML(g.left)+'/'+escapeHTML(g.right)+'</td><td>'+
+     escapeHTML(redkNames[a.arm]||a.arm)+'</td><td>'+
+     valueCell(a.n_eligible_total,"count")+'</td><td>'+
+     valueCell(v.n,"count")+'</td><td>'+valueCell(h.n,"count")+'</td><td>'+
+     valueCell(h.mean_r,"R")+'</td><td>'+valueCell(diff,"R")+'</td><td>'+
+     valueCell(h.lower_95_r,"R")+'</td><td>'+valueCell(thirty.mean_r,"R")+'</td><td>'+
+     (a.validation_gate?'<span class="lab-pass">VALİDASYON ADAYI</span>':
+     '<span class="lab-fail">KANIT YETERSİZ</span>')+'</td></tr>');
+  }
+ }
+ const message=research?.redk_ablation_version==="redk_ablation_v1"?
+   "Gerçek kapanmış OHLC üzerinde altı kol test edildi. 10/30 baz puan yalnız maliyet senaryosudur. +R farkı farklı örneklem seçiminin sonucu olabilir; kâr kanıtı değildir.":
+   "RedK günlük raporu henüz hazır değil; doğrulanmış al/sat kuralı bulunmuyor.";
+ table.innerHTML='<div class="lab-empty">'+escapeHTML(message)+'</div>'+
+ '<table class="lab-report"><thead><tr><th>PARİTE</th><th>TF</th><th>PA</th><th>YÖN</th>'+
+ '<th>PİVOT</th><th>REDK KOLU</th><th>ÖRNEK</th><th>VAL N</th><th>OOS N</th>'+
+ '<th>OOS 10bp</th><th>Δ FİLTRESİZ</th><th>ALT %95</th><th>OOS 30bp</th><th>DURUM</th></tr></thead>'+
+ '<tbody>'+(rows.length?rows.slice(0,600).join(""):'<tr><td colspan="14">Karşılaştırma bekleniyor.</td></tr>')+
+ '</tbody></table><p class="footnote">İlk 600 satır gösterilir. R değerleri gerçekleşmiş emir değil, maliyet duyarlılığına sahip tarihsel araştırmadır. Holdout sonuçları yeni parametre seçmek için kullanılmaz.</p>';
+}
 function setView(view){
  selected=view;
  document.querySelectorAll("[data-lab-view]").forEach(b=>b.classList.toggle("active",b.dataset.labView===view));
- for(const v of ["radar","research","method"])$("#lab-"+v+"-view").hidden=v!==view;
+ for(const v of ["radar","research","redk","method"])$("#lab-"+v+"-view").hidden=v!==view;
 }
 async function refresh(){
  const [a,b]=await Promise.allSettled([loadJson("./experimental_radar.json"),loadJson("./experimental_lab.json")]);
  radar=a.status==="fulfilled"&&a.value.version==="independent_lab_v1"?a.value:null;
  research=b.status==="fulfilled"&&b.value.version==="independent_lab_v1"?b.value:null;
- updateSummary();renderRadar();renderResearch();
+ updateSummary();renderRadar();renderResearch();renderRedk();
 }
 function init(){
  if(!$("#experimental-lab"))return;
- for(const id of ["#lab-symbol","#lab-tf"])$(id).addEventListener("change",()=>{renderRadar();renderResearch()});
+ for(const id of ["#lab-symbol","#lab-tf"])$(id).addEventListener("change",()=>{renderRadar();renderResearch();renderRedk()});
  document.querySelectorAll("[data-lab-view]").forEach(b=>b.addEventListener("click",()=>setView(b.dataset.labView)));
  setView("radar");refresh();setInterval(refresh,300000);
 }
