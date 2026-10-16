@@ -215,14 +215,18 @@ def run_research(fetch=None,asof=None,limit=None,symbols=SYMBOLS,frames=TIMEFRAM
                 for left,right in PIVOT_VARIANTS:events.extend(detect(bars,left,right))
                 total_events+=len(events)
                 variants=evaluate(bars,events)
+                from redk_ablation import ablation_for
+                redk=ablation_for(bars,events)
                 reports.append({"symbol":symbol,"timeframe":tf,"bars":len(bars),
                    "status":"RESEARCHED_EXPERIMENTAL","event_count":len(events),
                    "first_closed_ms":bars[0][5],"last_closed_ms":bars[-1][5],
-                   "variants":variants})
+                   "variants":variants,"redk_ablation":redk})
             except Exception as exc:
                 errors.append({"symbol":symbol,"timeframe":tf,"error":str(exc)[:200]})
                 reports.append({"symbol":symbol,"timeframe":tf,"status":"ERROR","variants":[]})
     flat=[v for r in reports for v in r.get("variants",[])]
+    redk_groups=sum(r.get("redk_ablation",{}).get("groups_tested",0) for r in reports)
+    redk_trials=sum(r.get("redk_ablation",{}).get("arm_comparisons",0) for r in reports)
     return {
         "schema":1,"version":VERSION,"kind":"INDEPENDENT_HYPOTHESIS_RESEARCH_NOT_TEACHER_RULE",
         "generated_utc":utc_text(asof),"source_class":PROVENANCE,
@@ -232,6 +236,12 @@ def run_research(fetch=None,asof=None,limit=None,symbols=SYMBOLS,frames=TIMEFRAM
         "train_fraction":.6,"validation_fraction":.2,"holdout_fraction":.2,
         "candidate_events_backtested":total_events,"variant_results":len(flat),
         "experimental_holdout_passed":sum(v["gate"]=="HOLDOUT_PASSED_EXPERIMENTAL" for v in flat),
+        "redk_ablation_version":"redk_ablation_v1",
+        "redk_indicators_from_user_archive":True,
+        "redk_group_comparisons":redk_groups,
+        "redk_arm_comparisons":redk_trials,
+        "redk_arms_including_baseline":["none","rsi_bias","stoch_flip_recent","cci_impulse","macd_expansion","rsi_macd_agree"],
+        "redk_promoted_as_profitable":0,
         "source_verified_auto_rules":0,"real_orders":False,
         "reports":reports,"errors":errors,
         "notes":"OOS variants are statistical research findings, not verified instructor rules or live investment recommendations."
@@ -249,10 +259,16 @@ def recent_observations(asof=None,fetch=None,symbols=SYMBOLS,frames=("5m","15m",
                 if len(bars)<200:continue
                 # Only last completely closed candle is a fresh event.
                 i=len(bars)-1
+                from redk_features import feature_matrix, evaluate_at, INDICATOR_VERSION
+                redk_features=feature_matrix(bars)
                 for left,right in PIVOT_VARIANTS:
                     for event in detect(bars,left,right,start=i):
                         if event["i"]!=i:continue
+                        redk_evidence=evaluate_at(redk_features,i,event["side"])
                         event={k:v for k,v in event.items() if k!="i"}
+                        event["redk_indicator_version"]=INDICATOR_VERSION
+                        event["redk_ablation_filters"]=redk_evidence
+                        event["redk_gate_source"]="USER_UPLOADED_RED_K_AMPLIFIER_RESEARCH_NOT_TEACHER_RULE"
                         key=f"{symbol}:{tf}:{event['family']}:{event['side']}:{left}:{right}:{event['signal_open_ms']}"
                         seen.append({"id":key,"symbol":symbol,"timeframe":tf,
                            "observed_utc":utc_text(asof),"status":"EXPERIMENTAL_OBSERVATION_ONLY",
@@ -276,6 +292,7 @@ def write_radar():
     # Historical study status is informative; never label an hourly observation
     # a verified educator rule or a filled order.
     study={}
+    lab_redk={}
     try:
         lab=json.loads((ROOT/"experimental_lab.json").read_text(encoding="utf8"))
         if lab.get("version")==VERSION:
@@ -283,6 +300,18 @@ def write_radar():
                (rep["symbol"],rep["timeframe"],v["family"],v["side"],
                 v["research_params"]["left"],v["research_params"]["right"]):v
                for rep in lab.get("reports",[]) for v in rep.get("variants",[])
+            }
+            lab_redk={
+              (rep["symbol"],rep["timeframe"],g["family"],g["side"],g["left"],g["right"]):
+              {"version":rep["redk_ablation"]["version"],
+               "arms":[{"arm":a["arm"],"n":a["holdout"]["10bps"]["n"],
+                        "holdout_mean_r_10bps":a["holdout"]["10bps"]["mean_r"],
+                        "holdout_lower95_10bps":a["holdout"]["10bps"]["lower_95_r"],
+                        "holdout_mean_r_30bps":a["holdout"]["30bps"]["mean_r"],
+                        "validation_gate":a["validation_gate"],
+                        "promote_to_real":False} for a in g["arms"]]}
+              for rep in lab.get("reports",[]) if rep.get("redk_ablation")
+              for g in rep["redk_ablation"].get("groups",[])
             }
     except (OSError,ValueError,KeyError,TypeError):
         pass
@@ -293,6 +322,10 @@ def write_radar():
         candidate["historical_oos"]=v.get("holdout_10bp") if v else None
         candidate["stress_oos"]=v.get("holdout_30bp") if v else None
         candidate["research_policy"]="NEVER_AN_ORDER_RECOMMENDATION"
+        candidate["redk_historical_ablation"]=(
+           lab_redk.get((candidate["symbol"],candidate["timeframe"],
+              candidate["family"],candidate["side"],candidate["left"],candidate["right"]))
+           if isinstance(lab_redk,dict) else None)
     # Keep latest candidate each id for inspection; never imply fills.
     recorded={s["id"]:s for s in prior.get("observations",[]) if s.get("status")=="EXPERIMENTAL_OBSERVATION_ONLY"}
     for x in fresh:recorded[x["id"]]=x
