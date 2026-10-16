@@ -2,6 +2,20 @@
 
 **Web sitesi:** https://cecenapo.github.io/efloud-ai-v2-site/
 
+## 16 Ekim 2026 — Bağımsız deneysel araştırma yeniden açıldı
+
+**İki motor bilinçli olarak ayrı tutulur.** `source_policy.py` ve `learning_state.json` eğitmenin kaynak-video ile onaylanmış otomatik al/sat stratejilerini tutar: **şu an sıfır**. `scripts/experimental_lab.py` ise tamamen ayrı bir **mühendislik araştırma laboratuvarıdır**: `SWING_SWEEP` ve `PIVOT_BREAK` olaylarını çalışır veriyle tarar. Bu işlemler eğitmenin birebir sayısal stratejileri değildir.
+
+- Günlük: GitHub Actions yalnız kapanmış Binance Spot mumlarıyla 32 sembol/periyot kombinasyonunda tarihsel olayları, bir sonraki bar açılışını, stop/TP önceliğini ve kronolojik eğitim–validasyon–holdout dönemlerini inceler; `experimental_lab.json` oluşturur.
+- Saatlik: Son kapanmış mumdaki deneysel olayları `experimental_radar.json` içine yalnız **ARAŞTIRMA ADAYI** olarak kaydeder; gerçek emre, fill'e veya kâr/zarar raporuna dönüştürmez.
+- Her olayda RH/RL pivot fiyatı, pivotun teyit edildiği mum, göstergesel sinyal kapanışı, yapısal geçersizlik ve geçmişte bilinen hedef saklanır. Giriş *sinyal kapanışı değildir*; tarihsel simülasyonda ancak **sonraki mumun açılışı** kullanılır.
+- Araştırma sayısal parametreleri: pivot sol/sağ 2/2, 3/3, 4/4; maksimum gözlem ufku 48 mum; doğrulanmış pivot arama belleği 180 mum; varsayımsal maliyet senaryoları 0, 10, 30 baz puan.
+- Bunlar **kullanıcı/EFLOUD eğitmeni tarafından onaylanmış sabit kurallar değildir**. Stres/holdout testleri geçilmeden bir hipoteze avantaj iddiası yazılmaz. Testi geçse dahi ancak deneysel araştırma adayıdır; yatırım tavsiyesi değildir.
+- Açık maliyet senaryoları **gerçek komisyon/slippage değildir**. Hiçbir gerçek emir veya gerçek net R kaydı yoktur.
+- Grafik: deneysel olay seçildiğinde çizgiler **kesikli ve DENEY** etiketlidir. Kaynaktan teyitli grafik/strateji kapısı ayrı ve hâlâ kapalıdır.
+
+Bu ayrım, "eğitimden öğrenen bir bot" beklentisi ile "bağımsız hipotezleri test et" beklentisini sahte bir eğitmen kuralı icat etmeden birleştirmek içindir. Çalışmanın kanıtı `experimental_lab.json` dosyasındaki örneklem sayıları, kronolojik holdout ve stres maliyeti sonuçlarıdır.
+
 ## Mevcut durum (15 Ekim 2026)
 
 **Yalnız doğrulanabilir piyasa verisi ve eğitimde gerçekten anlatılmış kavramlar görüntülenir.**
