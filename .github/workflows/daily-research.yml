@@ -8,6 +8,8 @@ on:
       - "scripts/source_range.py"
       - "scripts/research_engine.py"
       - "scripts/experimental_lab.py"
+      - "scripts/redk_features.py"
+      - "scripts/redk_ablation.py"
       - "scripts/test_*.py"
       - ".github/workflows/daily-research.yml"
   schedule:
@@ -30,6 +32,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+      - name: Install RedK indicator math dependencies (open source)
+        run: python -m pip install "numpy>=1.26,<3" "pandas>=2.2,<3"
       - name: Test data integrity and source-verification gate
         run: PYTHONPATH=scripts python -m unittest discover -s scripts -p "test_*.py" -v
       - name: Check real CLOSED Binance Spot candle availability only
