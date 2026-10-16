@@ -44,6 +44,11 @@ function renderRadar(){
    money(e.indicative_entry)+'</b></div><div><small>YAPISAL GEÇERSİZLİK</small><b>'+
    money(e.stop)+'</b></div><div><small>YAPISAL HEDEF</small><b>'+
    money(e.target)+'</b></div></div>'+
+   '<p><b>Tarihsel kanıt:</b> '+escapeHTML(e.historical_gate||"BACKTEST BEKLENİYOR")+
+   ' · OOS gözlem '+escapeHTML(e.historical_oos?.n??"—")+
+   ' · 10bp senaryo net R '+escapeHTML(e.historical_oos?.mean_r==null?"—":fmt(e.historical_oos.mean_r,3))+
+   ' · 30bp senaryo net R '+escapeHTML(e.stress_oos?.mean_r==null?"—":fmt(e.stress_oos.mean_r,3))+
+   '</p>'+
    '<p><b>Neden görüldü?</b> '+escapeHTML(reason.entry||"Kaynak açıklaması yok")+'</p>'+
    '<p><b>Stop mantığı:</b> '+escapeHTML(reason.stop||"Yok")+'</p>'+
    '<p><b>TP mantığı:</b> '+escapeHTML(reason.target||"Yok")+'</p>'+
