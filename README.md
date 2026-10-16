@@ -2,6 +2,18 @@
 
 **Web sitesi:** https://cecenapo.github.io/efloud-ai-v2-site/
 
+## RedK Indicator Amplifier entegrasyonu — 16 Ekim 2026
+
+Kullanıcının RedK arşivinden alınan © RedKTrader MPL-2.0 kaynak formülleri yeni **deneysel** karşılaştırma sistemine eklendi. `scripts/redk_features.py` RSI(14), Stochastic(14,3), CCI(close,20), MACD histogram(12,26,9), normallaştırılmış oscillator ve flip/impuls özelliklerini kapanmış mumlarla hesaplar. `scripts/redk_ablation.py` altı kolu aynı SWING_SWEEP/PIVOT_BREAK Price Action gözlemleri üzerinde kıyaslar:
+
+Filtresiz PA; RSI bias; Stochastic son üç kapalı mum flip; CCI impuls; MACD histogram genişleme; RSI+MACD yön uyumu.
+
+Günlük gerçek OHLC backtesti: kronolojik eğitim/validasyon/holdout, varsayımsal 0/10/30bp round-trip maliyet hassasiyeti ve aynı örneklem tabanını raporlar. Saatlik deneysel radar RedK filtrelerini ayrıca saklar. Mobil TradingView sayfasında **RedK · 6 kol karşılaştırması** sekmesi ve bireysel deney adayı yanında RedK kapanmış mum kanıtı gösterilir.
+
+**Bir RedK kolu daha fazla R çıkardığında bunun kârlılığı kanıtladığı ilan edilmez.** Alt örneklem değişimi, model seçimi, çoklu hipotez testleri ve maliyet senaryoları açıkça gösterilir. Her kolun `promote_to_real` alanı false; gerçek emir yok. Öğretmen kaynak onayı ve bağımsız deneysel hipotezler birbirinden ayrı kalır.
+
+Ayrıntılar: [RedK kaynak ve deney metodolojisi](docs/REDK_EXPERIMENTS.md).
+
 ## 16 Ekim 2026 — Bağımsız deneysel araştırma yeniden açıldı
 
 **İki motor bilinçli olarak ayrı tutulur.** `source_policy.py` ve `learning_state.json` eğitmenin kaynak-video ile onaylanmış otomatik al/sat stratejilerini tutar: **şu an sıfır**. `scripts/experimental_lab.py` ise tamamen ayrı bir **mühendislik araştırma laboratuvarıdır**: `SWING_SWEEP` ve `PIVOT_BREAK` olaylarını çalışır veriyle tarar. Bu işlemler eğitmenin birebir sayısal stratejileri değildir.
