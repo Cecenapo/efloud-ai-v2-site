@@ -49,6 +49,7 @@ try{
       signal_open_ms:rawBars[190][0],
       observed_utc:new Date().toISOString(),
       status:"EXPERIMENTAL_OBSERVATION_ONLY",
+      redk_ablation_filters:{none:true,rsi_bias:true,stoch_flip_recent:false,cci_impulse:true,macd_expansion:false,rsi_macd_agree:false},
       can_trade:false,order_placed:false,
       indicative_entry:100,stop:99,target:105,
       source_class:"INDEPENDENT_EXPERIMENT_NOT_EFLOUD_INSTRUCTOR_RULE",
@@ -58,7 +59,18 @@ try{
   await page.route("**/experimental_lab.json*",r=>r.fulfill({json:{
     schema:1,version:"independent_lab_v1",generated_utc:new Date().toISOString(),
     candidate_events_backtested:26,variant_results:6,experimental_holdout_passed:0,
+    redk_ablation_version:"redk_ablation_v1",redk_arm_comparisons:6,
     reports:[{symbol:"BTCUSDT",timeframe:"4h",status:"RESEARCHED_EXPERIMENTAL",
+      redk_ablation:{version:"redk_ablation_v1",groups:[{
+        family:"SWING_SWEEP",side:"LONG",left:3,right:3,
+        arms:["none","rsi_bias","stoch_flip_recent","cci_impulse","macd_expansion","rsi_macd_agree"].map(arm=>({
+          arm,n_eligible_total:arm==="none"?15:5,
+          validation_gate:false,
+          validation:{"10bps":{n:3,mean_r:-.1}},
+          holdout:{"10bps":{n:3,mean_r:-.2,lower_95_r:-1.3},
+                   "30bps":{n:3,mean_r:-.4}}
+        }))
+      }]},
       variants:[{family:"SWING_SWEEP",side:"LONG",research_params:{left:3,right:3},
         gate:"NO_EVIDENCE",holdout_10bp:{n:3,mean_r:-.1,lower_95_r:-.7},
         holdout_30bp:{n:3,mean_r:-.25}}]}]
@@ -123,6 +135,12 @@ try{
   assert.equal(await page.locator("#chart-stop-price").textContent(),"—");
   assert.equal(await page.locator("#chart-tp-price").textContent(),"—");
   await page.locator("#lab-candidates .lab-card").first().waitFor({timeout:10000});
+  await page.locator('[data-lab-view="redk"]').click();
+  await page.locator("#lab-redk-table tbody tr").first().waitFor({timeout:10000});
+  assert.match(await page.locator("#lab-redk-table").textContent(),/RedK RSI/);
+  assert.match(await page.locator("#lab-redk-table").textContent(),/Filtresiz Price Action/);
+  await page.locator('[data-lab-view="radar"]').click();
+  assert.match(await page.locator(".lab-card").first().textContent(),/RedK filtreleri/);
   if(width===375){
     await page.locator("#lab-candidates .lab-card button").first().click();
     await page.waitForFunction(()=>
