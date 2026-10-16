@@ -273,6 +273,26 @@ def write_radar():
     try:prior=json.loads(path.read_text(encoding="utf8"))
     except (OSError,ValueError):pass
     fresh,errors=recent_observations()
+    # Historical study status is informative; never label an hourly observation
+    # a verified educator rule or a filled order.
+    study={}
+    try:
+        lab=json.loads((ROOT/"experimental_lab.json").read_text(encoding="utf8"))
+        if lab.get("version")==VERSION:
+            study={
+               (rep["symbol"],rep["timeframe"],v["family"],v["side"],
+                v["research_params"]["left"],v["research_params"]["right"]):v
+               for rep in lab.get("reports",[]) for v in rep.get("variants",[])
+            }
+    except (OSError,ValueError,KeyError,TypeError):
+        pass
+    for candidate in fresh:
+        v=study.get((candidate["symbol"],candidate["timeframe"],
+             candidate["family"],candidate["side"],candidate["left"],candidate["right"]))
+        candidate["historical_gate"]=v["gate"] if v else "NOT_YET_TESTED"
+        candidate["historical_oos"]=v.get("holdout_10bp") if v else None
+        candidate["stress_oos"]=v.get("holdout_30bp") if v else None
+        candidate["research_policy"]="NEVER_AN_ORDER_RECOMMENDATION"
     # Keep latest candidate each id for inspection; never imply fills.
     recorded={s["id"]:s for s in prior.get("observations",[]) if s.get("status")=="EXPERIMENTAL_OBSERVATION_ONLY"}
     for x in fresh:recorded[x["id"]]=x
