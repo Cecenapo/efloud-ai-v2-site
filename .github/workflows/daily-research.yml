@@ -52,14 +52,14 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           mkdir -p /tmp/efloud-generated
-          for f in model_results.json pipeline_status.json experimental_lab.json; do
+          for f in model_results.json pipeline_status.json experimental_lab.json experimental_redk_summary.json; do
             if test -f "$f"; then cp "$f" /tmp/efloud-generated/; fi
           done
           for attempt in 1 2 3 4 5; do
             git fetch origin main
             git reset --hard origin/main
             cp -f /tmp/efloud-generated/* ./
-            git add -f model_results.json pipeline_status.json experimental_lab.json
+            git add -f model_results.json pipeline_status.json experimental_lab.json experimental_redk_summary.json
             if git diff --cached --quiet; then
               echo "No new JSON payload"
               exit 0
