@@ -88,11 +88,33 @@ def ablation_for(bars,events):
                 round(other["mean_r"]-baseline["mean_r"],5)
                 if other["mean_r"] is not None and baseline["mean_r"] is not None else None)
             result["additional_caveat"]="Comparison is on a filtered SUBSET; higher average R may reflect selection/sample changes rather than a real edge."
+        # Emulate selection without data leakage: select only from TRAIN/VAL.
+        # This is NOT a deployable signal and not an instructor model.
+        eligible=[x for x in ARMS
+                  if comparisons[x]["validation_gate"]
+                  and comparisons[x]["train"]["10bps"]["n"]>=20]
+        winner=max(eligible,key=lambda x:(
+            comparisons[x]["validation"]["10bps"]["lower_95_r"] or -999,
+            comparisons[x]["validation"]["30bps"]["mean_r"] or -999
+        )) if eligible else None
+        holdout_status="NOT_SELECTED_FROM_VALIDATION"
+        if winner is not None:
+            candidate=comparisons[winner]
+            ten=candidate["holdout"]["10bps"]
+            thirty=candidate["holdout"]["30bps"]
+            if (ten["n"]>=MINIMUM_HOLDOUT_TRADES and
+                ten["lower_95_r"] is not None and ten["lower_95_r"]>0 and
+                thirty["mean_r"] is not None and thirty["mean_r"]>0):
+                holdout_status="EXPERIMENTAL_HOLDOUT_INDICATION_REQUIRES_FORWARD"
+            else:
+                holdout_status="HOLDOUT_NO_INDEPENDENT_EVIDENCE"
         report.append({
             "family":family,"side":side,"left":left,"right":right,
             "baseline_event_count":len(raw_entries),
             "arms":[comparisons[arm] for arm in ARMS],
-            "selected_arm":"none",  # No OOS-based picking; no live deployment.
+            "validation_selected_arm":winner,
+            "holdout_assessment_of_validation_selection":holdout_status,
+            "selected_for_live_trade":False,
             "holdout_used_for_selection":False
         })
     return {
