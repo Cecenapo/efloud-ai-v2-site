@@ -1,0 +1,78 @@
+{
+  "schema": 1,
+  "version": "redk_ablation_v1",
+  "generated_utc": "2026-10-16T20:55:18.735335Z",
+  "source": "User-provided RedK Indicator Amplifier / RedKTrader MPL-2.0",
+  "indicator_version": "redk_indicator_amplifier_mpl20_v1_adapter",
+  "data_groups": 32,
+  "pa_historical_variant_events": 33508,
+  "redk_group_comparisons": 288,
+  "redk_arm_comparisons": 1728,
+  "source_approved_models": 0,
+  "real_orders": false,
+  "promoted_profitable_models": 0,
+  "data_errors": [],
+  "arms": {
+    "none": {
+      "groups_tested": 288,
+      "validation_groups_with_20plus": 206,
+      "oos_groups_with_20plus": 211,
+      "oos_groups_positive_10bps": 32,
+      "oos_groups_positive_30bps": 13,
+      "oos_groups_nominal_lower95_positive": 5,
+      "oos_variant_observations": 7020,
+      "validation_gate_groups": 0
+    },
+    "rsi_bias": {
+      "groups_tested": 288,
+      "validation_groups_with_20plus": 92,
+      "oos_groups_with_20plus": 81,
+      "oos_groups_positive_10bps": 54,
+      "oos_groups_positive_30bps": 34,
+      "oos_groups_nominal_lower95_positive": 7,
+      "oos_variant_observations": 3770,
+      "validation_gate_groups": 0
+    },
+    "stoch_flip_recent": {
+      "groups_tested": 288,
+      "validation_groups_with_20plus": 0,
+      "oos_groups_with_20plus": 0,
+      "oos_groups_positive_10bps": 64,
+      "oos_groups_positive_30bps": 21,
+      "oos_groups_nominal_lower95_positive": 14,
+      "oos_variant_observations": 1205,
+      "validation_gate_groups": 0
+    },
+    "cci_impulse": {
+      "groups_tested": 288,
+      "validation_groups_with_20plus": 97,
+      "oos_groups_with_20plus": 85,
+      "oos_groups_positive_10bps": 44,
+      "oos_groups_positive_30bps": 24,
+      "oos_groups_nominal_lower95_positive": 7,
+      "oos_variant_observations": 3397,
+      "validation_gate_groups": 0
+    },
+    "macd_expansion": {
+      "groups_tested": 288,
+      "validation_groups_with_20plus": 71,
+      "oos_groups_with_20plus": 63,
+      "oos_groups_positive_10bps": 47,
+      "oos_groups_positive_30bps": 24,
+      "oos_groups_nominal_lower95_positive": 9,
+      "oos_variant_observations": 2931,
+      "validation_gate_groups": 0
+    },
+    "rsi_macd_agree": {
+      "groups_tested": 288,
+      "validation_groups_with_20plus": 70,
+      "oos_groups_with_20plus": 59,
+      "oos_groups_positive_10bps": 48,
+      "oos_groups_positive_30bps": 28,
+      "oos_groups_nominal_lower95_positive": 7,
+      "oos_variant_observations": 2857,
+      "validation_gate_groups": 0
+    }
+  },
+  "limitations": "Counts are overlapping variant observations, NOT independent trades. Positive means/nominal normal CI are not multiple-testing or serial-correlation adjusted. 10/30bp are hypothetical cost scenarios. No actual broker fills; no established improvement in future profitability."
+}
