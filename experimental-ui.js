@@ -8,7 +8,7 @@ const escapeHTML=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;"
 const fmt=(v,d=2)=>v==null||!Number.isFinite(Number(v))?"—":Number(v).toLocaleString("tr-TR",{maximumFractionDigits:d,minimumFractionDigits:d});
 const money=v=>{const n=Number(v);return !Number.isFinite(n)?"—":fmt(n,n<.1?7:n<1?5:n<100?4:2)};
 const date=s=>{const d=new Date(s);return Number.isFinite(d.getTime())?d.toLocaleString("tr-TR",{timeZone:"Europe/Istanbul",day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"}):"—"};
-let radar=null,research=null,selected="radar";
+let radar=null,research=null,redkSummary=null,selected="radar";
 async function loadJson(path){const r=await fetch(path,{cache:"no-store"});if(!r.ok)throw Error("HTTP "+r.status);return r.json()}
 const sigName={"SWING_SWEEP":"Swing Sweep (deneysel)","PIVOT_BREAK":"Pivot Break (deneysel)"};
 function updateSummary(){
@@ -111,6 +111,20 @@ const redkNames={
  rsi_macd_agree:"RedK RSI + MACD"
 };
 function renderRedk(){
+ const quick=$("#lab-redk-summary");
+ if(quick){
+  const count=redkSummary?.version==="redk_ablation_v1"?redkSummary:null;
+  const total=count?.arms?.none?.oos_groups_with_20plus??"—";
+  const compared=count?.redk_arm_comparisons??"—";
+  const pairs=count?.data_groups??"—";
+  const promoted=count?.promoted_profitable_models??"—";
+  quick.innerHTML=[
+   ["REDK KOLU","6 (filtresiz + 5)"],
+   ["OOS YETERLİ KONTROL GRUBU",total],
+   ["KARŞILAŞTIRILAN VARYANT",compared],
+   ["GERÇEK İŞLEME ALINAN",promoted]
+  ].map(([k,v])=>'<div><small>'+escapeHTML(k)+'</small><strong>'+escapeHTML(v)+'</strong></div>').join("");
+ }
  const table=$("#lab-redk-table");
  if(!table)return;
  const sym=$("#lab-symbol").value,tf=$("#lab-tf").value;
@@ -153,9 +167,10 @@ function setView(view){
  for(const v of ["radar","research","redk","method"])$("#lab-"+v+"-view").hidden=v!==view;
 }
 async function refresh(){
- const [a,b]=await Promise.allSettled([loadJson("./experimental_radar.json"),loadJson("./experimental_lab.json")]);
+ const [a,b,c]=await Promise.allSettled([loadJson("./experimental_radar.json"),loadJson("./experimental_lab.json"),loadJson("./experimental_redk_summary.json")]);
  radar=a.status==="fulfilled"&&a.value.version==="independent_lab_v1"?a.value:null;
  research=b.status==="fulfilled"&&b.value.version==="independent_lab_v1"?b.value:null;
+ redkSummary=c.status==="fulfilled"&&c.value.version==="redk_ablation_v1"?c.value:null;
  updateSummary();renderRadar();renderResearch();renderRedk();
 }
 function init(){
