@@ -12,7 +12,7 @@ const STREAM="wss://data-stream.binance.vision/ws/";
 const UP="#26a69a",DOWN="#ef5350";
 let chart=null,candles=null,volumes=null,started=false,ws=null,loadId=0;
 let symbol="BTCUSDT",interval="4h",lastTime=0,lastBar=null,currentBars=[],volumeVisible=true;
-let refreshTimer=0,canLive=false,markerView=null,priceLines=[],verifiedCount=0;
+let refreshTimer=0,canLive=false,markerView=null,priceLines=[],experimentalLines=[],verifiedCount=0;
 const el=id=>document.getElementById(id);
 const fPrice=n=>{
  if(!Number.isFinite(Number(n)))return "—";
@@ -159,7 +159,67 @@ function plot(bars,preserve=false){
    "Son mum oluşuyorsa kapanış değerleri değişebilir. Eğitmen kaynağıyla onaylı işlem bulunmadığı için giriş/stop/TP çizilmez.";
  setLoading(null);
 }
+function clearResearchOverlay(){
+ if(candles)for(const l of experimentalLines){try{candles.removePriceLine(l)}catch(e){}}
+ experimentalLines=[];
+ // Source-reviewed markers and experimental markers never share a display
+ // simultaneously. A new chart selection restores source review markers.
+ if(verifiedCount===0)markerView?.setMarkers([]);
+}
+async function showResearchObservation(e){
+ if(!e||e.source_class!=="INDEPENDENT_EXPERIMENT_NOT_EFLOUD_INSTRUCTOR_RULE"||
+    e.status!=="EXPERIMENTAL_OBSERVATION_ONLY"||e.can_trade!==false||e.order_placed!==false)return;
+ const s=e.symbol,t=e.timeframe;
+ if(!["BTCUSDT","ETHUSDT","SOLUSDT","DODOUSDT"].includes(s))return;
+ if(!["5m","15m","1h","4h","6h","1d","1w","1M"].includes(t))return;
+ const signalTime=Math.floor(Number(e.signal_open_ms)/1000);
+ if(!Number.isFinite(signalTime)||signalTime>Date.now()/1000)return;
+ const entry=Number(e.indicative_entry),stop=Number(e.stop),target=Number(e.target);
+ if(![entry,stop,target].every(x=>Number.isFinite(x)&&x>0) ||
+   !(e.side==="LONG" ? stop<entry&&entry<target : target<entry&&entry<stop))return;
+ await showMarket(s,t,{preserve:false});
+ if(!currentBars.some(x=>x.time===signalTime)){changeStatus("DENEYSEL OLAY MUMU GRAFİK ARALIĞI DIŞINDA");return}
+ if(verifiedCount) {
+  // A source-verified overlay may not be replaced by an independent hypothesis.
+  changeStatus("KAYNAK TEYİTLİ SEVİYELER KORUNDU");return;
+ }
+ clearResearchOverlay();
+ const levels=[
+  {price:entry,color:"#5799f9",title:"DENEY · GÖSTERGE"},
+  {price:stop,color:"#ef5350",title:"DENEY · GEÇERSİZLİK"},
+  {price:target,color:"#26a69a",title:"DENEY · HEDEF"}
+ ];
+ for(const x of levels)experimentalLines.push(candles.createPriceLine({
+  price:x.price,color:x.color,lineWidth:1,lineStyle:2,
+  axisLabelVisible:true,title:x.title
+ }));
+ markerView?.setMarkers([{
+  time:signalTime,position:e.side==="LONG"?"belowBar":"aboveBar",
+  shape:"circle",color:"#ffb768",text:"DENEYSEL · AL/SAT DEĞİL"
+ }]);
+ el("chart-side").textContent="BAĞIMSIZ DENEYSEL HİPOTEZ";
+ el("chart-entry-price").textContent=fPrice(entry)+" (gösterge)";
+ el("chart-stop-price").textContent=fPrice(stop);
+ el("chart-tp-price").textContent=fPrice(target);
+ el("chart-entry-why").textContent=e.reasons?.entry||"Yalnız deneysel olay kaydı.";
+ el("chart-stop-why").textContent=e.reasons?.stop||"İncelenen yapısal geçersizlik.";
+ el("chart-tp-why").textContent=e.reasons?.target||"Önceden bilinen yapısal hedef.";
+ el("chart-net-r").textContent="FILL YOK · NET R YOK";
+ el("chart-arms").textContent="Pivot "+e.left+"/"+e.right+
+   " · doğrulanmamış mühendislik parametresi";
+ el("chart-observation").textContent="Bu, hocanın kuralı veya otomatik AL/SAT sinyali değildir. "+
+   "Gözlenen fiyat sinyal kapanışıdır; gelecek mum açılışı ve emir gerçekleşmesi bilinmez.";
+ el("chart-source-note").textContent="Deneysel hipotez: "+(e.family||"")+" · "+
+   "gerçek Binance mumları üzerine araştırma amaçlı kesikli seviyeler. "+
+   "Gerçek emir, kaynak onayı, garantili kâr veya doğrulanmış giriş fiyatı değildir.";
+ const idx=currentBars.findIndex(x=>x.time===signalTime);
+ if(idx>=0)chart.timeScale().setVisibleLogicalRange({
+  from:Math.max(0,idx-(window.innerWidth<650?22:48)),to:Math.min(currentBars.length+8,idx+(window.innerWidth<650?22:35))
+ });
+ changeStatus("DENEYSEL HİPOTEZ · EMİR YOK");
+}
 function clearApprovedOverlays(){
+ clearResearchOverlay();
  if(candles)for(const line of priceLines){
    try{candles.removePriceLine(line)}catch(e){}
  }
@@ -345,7 +405,7 @@ function init(){
    showMarket(symbol,interval,{preserve:true})},180000);
  window.addEventListener("beforeunload",()=>{closeStream();clearInterval(refreshTimer)});
 }
-window.EfloudSetupChart={init,showMarket,
+window.EfloudSetupChart={init,showMarket,showResearchObservation,
  debugState:()=>({ready:!!chart,symbol,interval,bars:currentBars.length,
  live:canLive,engine:window.LightweightCharts?.version?.()||null,lastTime,verifiedCount})};
 })();
