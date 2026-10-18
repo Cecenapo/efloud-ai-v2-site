@@ -4,6 +4,7 @@ const assert=require("node:assert/strict");
 const fs=require("node:fs");
 const path=require("node:path");
 const model=require("../manual-plan-math.js");
+const near=(actual,expected)=>assert.ok(Math.abs(actual-expected)<1e-8,`Expected ${actual} near ${expected}`);
 
 const example=()=>({
  symbol:"BTCUSDT",timeframe:"4h",side:"LONG",context:"HTF_LTF",
@@ -17,7 +18,7 @@ test("gross R derives from structure, never assumes fixed 2R/3R",()=>{
  const p=model.read(example());
  assert.equal(p.kind,"MANUAL_STRUCTURE_STUDY_NOT_A_TRADE");
  assert.deepEqual(p.targets.map(t=>t.grossR),[2.4,4.2]);
- assert.deepEqual(p.targets.map(t=>t.grossPnlUnits),[2.4,4.2]);
+ p.targets.forEach((t,i)=>near(t.grossPnlUnits,[2.4,4.2][i]));
  assert.equal(p.quantity,0.2);
  assert.equal(p.plannedRiskUnits,1);
  assert.equal(p.notional,20);
@@ -34,7 +35,7 @@ test("half risk depends on manually flagged countertrend/unconfirmed context",()
  assert.equal(p.riskMultiplier,.5);
  assert.equal(p.plannedRiskUnits,.5);
  assert.equal(p.quantity,.1);
- assert.equal(p.targets[0].grossPnlUnits,1.2);
+ near(p.targets[0].grossPnlUnits,1.2);
  assert.ok(p.sourceRuleIds.includes("K30.1"));
 });
 
@@ -50,18 +51,18 @@ test("range EQ and OTE depend on explicit low/high anchors",()=>{
  const p=model.read({...example(),rangeLow:"100",rangeHigh:"120",
   swingLow:"100",swingHigh:"200"});
  assert.equal(p.eq,110);
- assert.equal(p.ote.low,121.4);
- assert.equal(p.ote.high,138.2);
- assert.equal(p.ote.center705,129.5);
+ near(p.ote.low,121.4);
+ near(p.ote.high,138.2);
+ near(p.ote.center705,129.5);
  assert.ok(p.sourceRuleIds.includes("K10.7"));
 });
 
 test("OTE short orientation is symmetric",()=>{
  const p=model.read({...example(),side:"SHORT",stop:"105",target1:"90",target2:"",
    swingLow:"100",swingHigh:"200"});
- assert.equal(p.ote.center705,170.5);
- assert.equal(p.ote.low,161.8);
- assert.equal(p.ote.high,178.6);
+ near(p.ote.center705,170.5);
+ near(p.ote.low,161.8);
+ near(p.ote.high,178.6);
 });
 
 test("no blank/invalid source prices or arbitrary pivots are accepted",()=>{
