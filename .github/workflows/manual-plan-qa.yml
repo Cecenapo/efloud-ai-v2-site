@@ -1,0 +1,43 @@
+name: EFLOUD Manual Structure QA
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'manual-plan-math.js'
+      - 'manual-plan-ui.js'
+      - 'manual-plan.css'
+      - 'setup-chart.js'
+      - 'instructor_rules.json'
+      - 'instructor-rules-ui.js'
+      - 'index.html'
+      - 'scripts/test_manual_plan.cjs'
+      - 'scripts/test_instructor_atlas.py'
+      - '.github/workflows/manual-plan-qa.yml'
+permissions:
+  contents: read
+concurrency:
+  group: efloud-manual-plan-qa
+  cancel-in-progress: true
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate JavaScript syntax
+        run: |
+          node --check manual-plan-math.js
+          node --check manual-plan-ui.js
+          node --check setup-chart.js
+          node --check instructor-rules-ui.js
+      - name: Run structural analysis and no-trade tests
+        run: node --test scripts/test_manual_plan.cjs
+      - name: Reconcile note archive and original source
+        run: python -m unittest discover -s scripts -p 'test_instructor_atlas.py' -v
