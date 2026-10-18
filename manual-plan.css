@@ -1,0 +1,21 @@
+/* Manual structure math: a user-facing research calculator, never a signal board. */
+.mp-card{scroll-margin-top:72px}
+.mp-intro{color:#bdccdb;line-height:1.6;margin:6px 0 20px}
+.mp-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.mp-grid label{display:flex;flex-direction:column;gap:6px;min-width:0;color:#cbd8e6;font-size:.88rem}
+.mp-grid input,.mp-grid select{height:43px;min-width:0;width:100%;border-radius:9px;border:1px solid #34546b;background:#0e1e2c;color:#f4f9ff;padding:10px;font-size:1rem}
+.mp-grid input:focus,.mp-grid select:focus{outline:2px solid #47a4da;outline-offset:1px}
+.mp-details{margin:16px 0;border:1px solid #2b4964;background:#0d1b2a;border-radius:10px;padding:13px}
+.mp-details summary{cursor:pointer;color:#bbdbf5;font-weight:600}
+.mp-details .mp-grid{margin-top:13px}
+.mp-checks{display:flex;flex-wrap:wrap;gap:16px;margin:17px 0;color:#d5e1ed}
+.mp-checks label{display:flex;align-items:center;gap:7px;cursor:pointer}
+.mp-checks input{width:18px;height:18px}
+.mp-buttons{display:flex;flex-wrap:wrap;gap:9px;margin:14px 0}
+.mp-buttons button{padding:11px 15px;border-radius:8px;border:1px solid #397294;background:#154a67;color:#f2faff;font:inherit;font-weight:600;cursor:pointer;min-height:43px}
+.mp-buttons button:disabled{opacity:.45;cursor:not-allowed}
+.mp-note{color:#b1c8d9;font-size:.89rem;line-height:1.55;margin:12px 0}
+.mp-note.manual-error{color:#ffb7ad}
+.mp-result{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.65;background:#0c1a28;border:1px solid #284c65;border-radius:10px;color:#e1edf8;padding:15px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.87rem;min-height:3rem}
+@media(max-width:900px){.mp-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:540px){.mp-grid{grid-template-columns:1fr}.mp-buttons button{flex:1 1 auto}.mp-card{scroll-margin-top:100px}}
