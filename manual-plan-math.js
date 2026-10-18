@@ -51,6 +51,10 @@ function read(source){
  if(side==="LONG"&&!(stop<entry)||side==="SHORT"&&!(entry<stop))
    throw Error("Stop, seçilen yönün geçersizlik tarafında olmalı.");
  const candidates=Array.isArray(source.targets)?source.targets:[source.target1,source.target2,source.target3];
+ if(candidates.length>3||String(candidates[0]??"").trim()==="")
+   throw Error("İlk hedef zorunlu; toplam en çok üç hedef olmalı.");
+ if(candidates.some((v,i)=>i>0&&String(v??"").trim()!==""&&String(candidates[i-1]??"").trim()===""))
+   throw Error("Hedefleri 1, 2, 3 sırasında doldur.");
  const rawTargets=candidates.filter(v=>v!==null&&v!==undefined&&String(v).trim()!=="");
  if(!rawTargets.length||rawTargets.length>3)throw Error("En az bir, en çok üç manuel hedef gerekli.");
  const targets=rawTargets.map((v,i)=>n(v,"Hedef "+(i+1)));
