@@ -13,6 +13,7 @@ const UP="#26a69a",DOWN="#ef5350";
 let chart=null,candles=null,volumes=null,started=false,ws=null,loadId=0;
 let symbol="BTCUSDT",interval="4h",lastTime=0,lastBar=null,currentBars=[],volumeVisible=true;
 let refreshTimer=0,canLive=false,markerView=null,priceLines=[],experimentalLines=[],verifiedCount=0;
+let manualLines=[],activeManualPlan=null,manualRequestToken=0,manualMarketReady=false;
 const el=id=>document.getElementById(id);
 const fPrice=n=>{
  if(!Number.isFinite(Number(n)))return "—";
@@ -183,6 +184,7 @@ async function showResearchObservation(e){
   // A source-verified overlay may not be replaced by an independent hypothesis.
   changeStatus("KAYNAK TEYİTLİ SEVİYELER KORUNDU");return;
  }
+ clearManualPlan();
  clearResearchOverlay();
  const levels=[
   {price:entry,color:"#5799f9",title:"DENEY · GÖSTERGE"},
@@ -217,6 +219,71 @@ async function showResearchObservation(e){
   from:Math.max(0,idx-(window.innerWidth<650?22:48)),to:Math.min(currentBars.length+8,idx+(window.innerWidth<650?22:35))
  });
  changeStatus("DENEYSEL HİPOTEZ · EMİR YOK");
+}
+function eraseManualLines(){
+ if(candles)for(const line of manualLines){
+  try{candles.removePriceLine(line)}catch(e){}
+ }
+ manualLines=[];
+}
+function clearManualPlan(){
+ manualRequestToken++;
+ if(!activeManualPlan&&!manualLines.length)return;
+ eraseManualLines();
+ activeManualPlan=null;
+ if(!verifiedCount){
+   titleState();
+   changeStatus("MANUEL PLAN TEMİZLENDİ");
+ }
+}
+function renderManualPlan(plan){
+ if(!manualMarketReady||!candles||!currentBars.length||verifiedCount||
+    symbol!==plan.symbol||interval!==plan.timeframe)return false;
+ eraseManualLines();
+ // Manual scenarios cannot coexist with independently discovered experiments.
+ clearResearchOverlay();
+ const levels=[
+  {price:plan.entry,color:"#5799f9",title:"MANUEL · GİRİŞ"},
+  {price:plan.stop,color:"#ef5350",title:"MANUEL · STOP"},
+  ...plan.targets.map(t=>({price:t.price,color:"#26a69a",title:"MANUEL TP"+t.index}))
+ ];
+ if(plan.eq!==null)levels.push({price:plan.eq,color:"#c3a24c",title:"MANUEL · EQ"});
+ if(plan.ote)levels.push(
+  {price:plan.ote.low,color:"#9b88e8",title:"MANUEL · OTE ALT"},
+  {price:plan.ote.high,color:"#9b88e8",title:"MANUEL · OTE ÜST"}
+ );
+ try{
+  for(const l of levels)manualLines.push(candles.createPriceLine({
+    price:l.price,color:l.color,lineWidth:1,lineStyle:2,axisLabelVisible:true,title:l.title
+  }));
+ }catch(e){eraseManualLines();return false}
+ el("chart-side").textContent=plan.side+" · MANUEL SENARYO / SİNYAL DEĞİL";
+ el("chart-entry-price").textContent=fPrice(plan.entry)+" (MANUEL)";
+ el("chart-stop-price").textContent=fPrice(plan.stop)+" (MANUEL)";
+ el("chart-tp-price").textContent=plan.targets.map(t=>fPrice(t.price)+" / "+t.grossR.toFixed(2)+"R").join(" | ");
+ el("chart-entry-why").textContent=plan.explanation.entry;
+ el("chart-stop-why").textContent=plan.explanation.stop;
+ el("chart-tp-why").textContent=plan.explanation.target;
+ el("chart-net-r").textContent="BRÜT RR · NET/EV YOK";
+ el("chart-arms").textContent="Not ID: "+plan.sourceRuleIds.join(", ")+" · Kaynak video doğrulanmadı";
+ el("chart-observation").textContent="Fiyatlar kullanıcı tarafından girildi. FILL, ileri-zaman onayı, EV ve gerçek emir YOK.";
+ el("chart-source-note").textContent="MANUEL ANALİZ · Binance Spot mumları, sadece fiyat bağlamı. "+
+   "Kesikli seviyeler kullanıcı senaryosudur; otomatik setup değildir.";
+ changeStatus("MANUEL FİYAT PLANI · EMİR YOK");
+ return true;
+}
+async function showManualPlan(raw){
+ let plan;
+ try{plan=window.EfloudPlanMath?.read(raw)}catch(e){return false}
+ if(!plan||plan.kind!=="MANUAL_STRUCTURE_STUDY_NOT_A_TRADE"||
+    plan.ordersEnabled!==false||plan.tradeAllowed!==false)return false;
+ const token=++manualRequestToken;
+ // Fresh OHLC is required for chart drawing. Arithmetic alone still works offline.
+ await showMarket(plan.symbol,plan.timeframe,{preserve:false});
+ if(token!==manualRequestToken||!manualMarketReady||verifiedCount||
+    symbol!==plan.symbol||interval!==plan.timeframe)return false;
+ activeManualPlan=plan;
+ return renderManualPlan(plan);
 }
 function clearApprovedOverlays(){
  clearResearchOverlay();
@@ -339,6 +406,8 @@ function openStream(requestId){
 }
 async function showMarket(s,t,options={}){
  if(!SYMBOLS.has(s)||!INTERVALS.has(t))return;
+ if(activeManualPlan&&(activeManualPlan.symbol!==s||activeManualPlan.timeframe!==t))clearManualPlan();
+ manualMarketReady=false;
  const same=symbol===s&&interval===t&&currentBars.length>0;
  symbol=s;interval=t;const id=++loadId;
  highlightInterval();titleState();adjustPriceFormat();
@@ -359,10 +428,15 @@ async function showMarket(s,t,options={}){
   plot(parsed,same&&options.preserve!==false);
   await loadApprovedSetups(id);
   if(id!==loadId)return;
-  changeStatus("GERÇEK OHLC HAZIR");
+  manualMarketReady=true;
+  if(activeManualPlan&&!verifiedCount&&activeManualPlan.symbol===symbol&&activeManualPlan.timeframe===interval){
+    renderManualPlan(activeManualPlan);
+  }else changeStatus("GERÇEK OHLC HAZIR");
   openStream(id);
  }catch(e){
   if(id!==loadId)return;
+  manualMarketReady=false;
+  eraseManualLines();
   changeStatus("GRAFİK KAYNAĞI HATASI","error");
   setLoading(String(e.message||e)+" · CDN/Binance erişimini kontrol et.");
   el("chart-source-note").textContent="Grafik yüklenemedi: "+
@@ -405,7 +479,7 @@ function init(){
    showMarket(symbol,interval,{preserve:true})},180000);
  window.addEventListener("beforeunload",()=>{closeStream();clearInterval(refreshTimer)});
 }
-window.EfloudSetupChart={init,showMarket,showResearchObservation,
+window.EfloudSetupChart={init,showMarket,showResearchObservation,showManualPlan,clearManualPlan,
  debugState:()=>({ready:!!chart,symbol,interval,bars:currentBars.length,
  live:canLive,engine:window.LightweightCharts?.version?.()||null,lastTime,verifiedCount})};
 })();
