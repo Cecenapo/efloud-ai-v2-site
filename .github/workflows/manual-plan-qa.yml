@@ -4,6 +4,10 @@ on:
   push:
     branches: [main]
     paths:
+      - 'auto-watch-engine.js'
+      - 'auto-watch-ui.js'
+      - 'auto-watch.css'
+      - 'scripts/test_auto_watch.cjs'
       - 'catalogue-context.js'
       - 'catalogue-context-ui.js'
       - 'scripts/test_catalogue_context.cjs'
@@ -40,6 +44,8 @@ jobs:
           python-version: '3.11'
       - name: Validate JavaScript syntax
         run: |
+          node --check auto-watch-engine.js
+          node --check auto-watch-ui.js
           node --check catalogue-context.js
           node --check catalogue-context-ui.js
           node --check manual-plan-math.js
@@ -49,6 +55,6 @@ jobs:
           node --check setup-chart.js
           node --check instructor-rules-ui.js
       - name: Run structural analysis and no-trade tests
-        run: node --test scripts/test_manual_plan.cjs scripts/test_catalogue_context.cjs scripts/test_efloud_cycle.cjs
+        run: node --test scripts/test_manual_plan.cjs scripts/test_catalogue_context.cjs scripts/test_efloud_cycle.cjs scripts/test_auto_watch.cjs
       - name: Reconcile note archive and original source
         run: python -m unittest discover -s scripts -p 'test_instructor_atlas.py' -v
