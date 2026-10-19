@@ -57,12 +57,18 @@ function render(){
         "k="+m.pivotWidth,m.split];
       if(usable){
         confirmed++;
+        const years=a.annualPaperRiskProfilesStress;
+        const yearly=years&&typeof years==="object"?
+          Object.entries(years).sort(([x],[y])=>x.localeCompare(y))
+            .map(([year,detail])=>year+": "+
+              (detail.cumulativeEstimatedR===null?"—":fmt(detail.cumulativeEstimatedR)+"R"))
+            .join(" · "):"—";
         values.push(p.sampleSize,fmt(p.cumulativeEstimatedR),
           fmt(p.peakToTroughMaxDrawdownR),
           p.estimatedPaperProfitFactor===null?"Tanımlanamaz":fmt(p.estimatedPaperProfitFactor),
-          p.worstConsecutiveNetLosses);
+          p.worstConsecutiveNetLosses,yearly||"—");
       }else{
-        values.push("—","—","—","—","—");
+        values.push("—","—","—","—","—","—");
       }
       for(const value of values){
         const td=document.createElement("td");
@@ -73,7 +79,7 @@ function render(){
    }
    if(!rows.length){
       const tr=document.createElement("tr"),td=document.createElement("td");
-      td.colSpan=9;td.textContent="Bu filtrelerde tarihsel Spot LONG risk verisi bulunamadı.";
+      td.colSpan=10;td.textContent="Bu filtrelerde tarihsel Spot LONG risk verisi bulunamadı.";
       tr.appendChild(td);riskBody.appendChild(tr);
    }
    txt($("fiveyear-risk-status"),"Risk analizi doğrulanmış araştırma grubu: "+
