@@ -1,8 +1,8 @@
 {
   "schema": 1,
   "kind": "EFLOUD_447_RESEARCH_EVIDENCE_GATE_V1",
-  "sourceReportUtc": "2026-10-19T21:00:00.553000+00:00",
-  "generatedUtc": "2026-10-19T21:05:28.652556+00:00",
+  "sourceReportUtc": "2026-10-19T21:32:56.806000+00:00",
+  "generatedUtc": "2026-10-19T21:34:35.173307+00:00",
   "historicalCoverage": {
     "completedSeries": 32,
     "totalSeries": 32,
@@ -16,8 +16,9 @@
     "positiveHoldoutBaseMeanDoesNotProveEdge": true
   },
   "verdictCounts": {
-    "HISTORICAL_COST_FAIL": 49,
-    "INSUFFICIENT_SAMPLES": 15
+    "SPOT_LONG_ONLY_AUDIT_PENDING": 32,
+    "INSUFFICIENT_SAMPLES": 16,
+    "HISTORICAL_COST_FAIL": 16
   },
   "multipleTestingAdjusted95ConfidenceEstablished": false,
   "certifiedPositiveNetEVStrategies": 0,
@@ -30,11 +31,14 @@
       "symbol": "BTCUSDT",
       "timeframe": "15m",
       "width": 2,
-      "status": "HISTORICAL_COST_FAIL",
+      "status": "SPOT_LONG_ONLY_AUDIT_PENDING",
       "reasons": [
+        "CAUSAL_UNRESOLVED_EXPOSURE_AUDIT_PENDING",
+        "BINANCE_SPOT_LONG_ONLY_AUDIT_PENDING",
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "FIVE_YEAR_DATA_COVERAGE_UNVERIFIED",
         "NONPOSITIVE_STRESS_NET_R_TRAIN,VALIDATION,HOLDOUT",
-        "SINGLE_COMPARISON_95_LOWER_NOT_POSITIVE",
+        "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
         "MULTIPLE_TESTING_NOT_CORRECTED",
         "UNVERIFIED_INSTRUCTOR_NUMERIC_CONTRACT",
         "INDEPENDENT_FORWARD_MARKET_EVIDENCE_MISSING",
@@ -45,24 +49,30 @@
         "validation": 475,
         "holdout": 500
       },
+      "spotLongOnlyAudited": false,
+      "spotLongOnlySampleSize": null,
       "netStressMeanR": {
         "train": -2.41065,
         "validation": -2.61186,
         "holdout": -2.87428
       },
-      "holdout5thPercentileBaseR": -1.63055,
+      "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": false,
-      "overlapAudited": false
+      "overlapAudited": false,
+      "overlappingPaperOutcomesExcluded": null
     },
     {
       "symbol": "BTCUSDT",
       "timeframe": "15m",
       "width": 4,
-      "status": "HISTORICAL_COST_FAIL",
+      "status": "SPOT_LONG_ONLY_AUDIT_PENDING",
       "reasons": [
+        "CAUSAL_UNRESOLVED_EXPOSURE_AUDIT_PENDING",
+        "BINANCE_SPOT_LONG_ONLY_AUDIT_PENDING",
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "FIVE_YEAR_DATA_COVERAGE_UNVERIFIED",
         "NONPOSITIVE_STRESS_NET_R_TRAIN,VALIDATION,HOLDOUT",
-        "SINGLE_COMPARISON_95_LOWER_NOT_POSITIVE",
+        "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
         "MULTIPLE_TESTING_NOT_CORRECTED",
         "UNVERIFIED_INSTRUCTOR_NUMERIC_CONTRACT",
         "INDEPENDENT_FORWARD_MARKET_EVIDENCE_MISSING",
@@ -73,14 +83,17 @@
         "validation": 375,
         "holdout": 339
       },
+      "spotLongOnlyAudited": false,
+      "spotLongOnlySampleSize": null,
       "netStressMeanR": {
         "train": -1.62044,
         "validation": -2.06351,
         "holdout": -1.80992
       },
-      "holdout5thPercentileBaseR": -1.06771,
+      "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": false,
-      "overlapAudited": false
+      "overlapAudited": false,
+      "overlappingPaperOutcomesExcluded": null
     },
     {
       "symbol": "BTCUSDT",
@@ -88,6 +101,7 @@
       "width": 2,
       "status": "INSUFFICIENT_SAMPLES",
       "reasons": [
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "LOW_TRAIN_VALIDATION_OR_HOLDOUT_SAMPLE",
         "MISSING_NET_COST_STRESS_ESTIMATE",
         "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
@@ -101,6 +115,12 @@
         "validation": 0,
         "holdout": 0
       },
+      "spotLongOnlyAudited": true,
+      "spotLongOnlySampleSize": {
+        "train": 0,
+        "validation": 0,
+        "holdout": 0
+      },
       "netStressMeanR": {
         "train": null,
         "validation": null,
@@ -108,7 +128,8 @@
       },
       "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": true,
-      "overlapAudited": false
+      "overlapAudited": true,
+      "overlappingPaperOutcomesExcluded": 0
     },
     {
       "symbol": "BTCUSDT",
@@ -116,6 +137,7 @@
       "width": 4,
       "status": "INSUFFICIENT_SAMPLES",
       "reasons": [
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "LOW_TRAIN_VALIDATION_OR_HOLDOUT_SAMPLE",
         "MISSING_NET_COST_STRESS_ESTIMATE",
         "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
@@ -129,6 +151,12 @@
         "validation": 0,
         "holdout": 0
       },
+      "spotLongOnlyAudited": true,
+      "spotLongOnlySampleSize": {
+        "train": 0,
+        "validation": 0,
+        "holdout": 0
+      },
       "netStressMeanR": {
         "train": null,
         "validation": null,
@@ -136,7 +164,8 @@
       },
       "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": true,
-      "overlapAudited": false
+      "overlapAudited": true,
+      "overlappingPaperOutcomesExcluded": 0
     },
     {
       "symbol": "BTCUSDT",
@@ -144,6 +173,7 @@
       "width": 2,
       "status": "HISTORICAL_COST_FAIL",
       "reasons": [
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "LOW_TRAIN_VALIDATION_OR_HOLDOUT_SAMPLE",
         "NONPOSITIVE_STRESS_NET_R_TRAIN,VALIDATION,HOLDOUT",
         "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
@@ -153,18 +183,25 @@
         "REAL_EXECUTION_FILL_UNOBSERVED"
       ],
       "sampleSize": {
-        "train": 9,
+        "train": 3,
         "validation": 2,
-        "holdout": 3
+        "holdout": 2
+      },
+      "spotLongOnlyAudited": true,
+      "spotLongOnlySampleSize": {
+        "train": 3,
+        "validation": 2,
+        "holdout": 2
       },
       "netStressMeanR": {
-        "train": -0.70207,
+        "train": -1.17474,
         "validation": -1.11153,
-        "holdout": -1.06884
+        "holdout": -1.06952
       },
       "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": true,
-      "overlapAudited": false
+      "overlapAudited": true,
+      "overlappingPaperOutcomesExcluded": 0
     },
     {
       "symbol": "BTCUSDT",
@@ -172,6 +209,7 @@
       "width": 4,
       "status": "HISTORICAL_COST_FAIL",
       "reasons": [
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "LOW_TRAIN_VALIDATION_OR_HOLDOUT_SAMPLE",
         "NONPOSITIVE_STRESS_NET_R_TRAIN,VALIDATION,HOLDOUT",
         "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
@@ -181,28 +219,38 @@
         "REAL_EXECUTION_FILL_UNOBSERVED"
       ],
       "sampleSize": {
-        "train": 5,
-        "validation": 4,
-        "holdout": 4
+        "train": 2,
+        "validation": 3,
+        "holdout": 2
+      },
+      "spotLongOnlyAudited": true,
+      "spotLongOnlySampleSize": {
+        "train": 2,
+        "validation": 3,
+        "holdout": 2
       },
       "netStressMeanR": {
-        "train": -1.1268,
-        "validation": -0.14471,
-        "holdout": -0.31456
+        "train": -1.10633,
+        "validation": -0.67327,
+        "holdout": -0.34009
       },
       "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": true,
-      "overlapAudited": false
+      "overlapAudited": true,
+      "overlappingPaperOutcomesExcluded": 0
     },
     {
       "symbol": "BTCUSDT",
       "timeframe": "1h",
       "width": 2,
-      "status": "HISTORICAL_COST_FAIL",
+      "status": "SPOT_LONG_ONLY_AUDIT_PENDING",
       "reasons": [
+        "CAUSAL_UNRESOLVED_EXPOSURE_AUDIT_PENDING",
+        "BINANCE_SPOT_LONG_ONLY_AUDIT_PENDING",
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "FIVE_YEAR_DATA_COVERAGE_UNVERIFIED",
         "NONPOSITIVE_STRESS_NET_R_TRAIN,VALIDATION,HOLDOUT",
-        "SINGLE_COMPARISON_95_LOWER_NOT_POSITIVE",
+        "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
         "MULTIPLE_TESTING_NOT_CORRECTED",
         "UNVERIFIED_INSTRUCTOR_NUMERIC_CONTRACT",
         "INDEPENDENT_FORWARD_MARKET_EVIDENCE_MISSING",
@@ -213,24 +261,30 @@
         "validation": 104,
         "holdout": 113
       },
+      "spotLongOnlyAudited": false,
+      "spotLongOnlySampleSize": null,
       "netStressMeanR": {
         "train": -1.06353,
         "validation": -0.91921,
         "holdout": -1.08734
       },
-      "holdout5thPercentileBaseR": -0.72471,
+      "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": false,
-      "overlapAudited": false
+      "overlapAudited": false,
+      "overlappingPaperOutcomesExcluded": null
     },
     {
       "symbol": "BTCUSDT",
       "timeframe": "1h",
       "width": 4,
-      "status": "HISTORICAL_COST_FAIL",
+      "status": "SPOT_LONG_ONLY_AUDIT_PENDING",
       "reasons": [
+        "CAUSAL_UNRESOLVED_EXPOSURE_AUDIT_PENDING",
+        "BINANCE_SPOT_LONG_ONLY_AUDIT_PENDING",
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "FIVE_YEAR_DATA_COVERAGE_UNVERIFIED",
         "NONPOSITIVE_STRESS_NET_R_TRAIN,VALIDATION,HOLDOUT",
-        "SINGLE_COMPARISON_95_LOWER_NOT_POSITIVE",
+        "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
         "MULTIPLE_TESTING_NOT_CORRECTED",
         "UNVERIFIED_INSTRUCTOR_NUMERIC_CONTRACT",
         "INDEPENDENT_FORWARD_MARKET_EVIDENCE_MISSING",
@@ -241,24 +295,27 @@
         "validation": 86,
         "holdout": 75
       },
+      "spotLongOnlyAudited": false,
+      "spotLongOnlySampleSize": null,
       "netStressMeanR": {
         "train": -0.64869,
         "validation": -0.78618,
         "holdout": -1.02098
       },
-      "holdout5thPercentileBaseR": -0.86382,
+      "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": false,
-      "overlapAudited": false
+      "overlapAudited": false,
+      "overlappingPaperOutcomesExcluded": null
     },
     {
       "symbol": "BTCUSDT",
       "timeframe": "1w",
       "width": 2,
-      "status": "HISTORICAL_COST_FAIL",
+      "status": "INSUFFICIENT_SAMPLES",
       "reasons": [
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "LOW_TRAIN_VALIDATION_OR_HOLDOUT_SAMPLE",
         "MISSING_NET_COST_STRESS_ESTIMATE",
-        "NONPOSITIVE_STRESS_NET_R_VALIDATION",
         "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
         "MULTIPLE_TESTING_NOT_CORRECTED",
         "UNVERIFIED_INSTRUCTOR_NUMERIC_CONTRACT",
@@ -267,27 +324,34 @@
       ],
       "sampleSize": {
         "train": 0,
-        "validation": 2,
+        "validation": 0,
+        "holdout": 0
+      },
+      "spotLongOnlyAudited": true,
+      "spotLongOnlySampleSize": {
+        "train": 0,
+        "validation": 0,
         "holdout": 0
       },
       "netStressMeanR": {
         "train": null,
-        "validation": -1.10581,
+        "validation": null,
         "holdout": null
       },
       "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": true,
-      "overlapAudited": false
+      "overlapAudited": true,
+      "overlappingPaperOutcomesExcluded": 0
     },
     {
       "symbol": "BTCUSDT",
       "timeframe": "1w",
       "width": 4,
-      "status": "HISTORICAL_COST_FAIL",
+      "status": "INSUFFICIENT_SAMPLES",
       "reasons": [
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "LOW_TRAIN_VALIDATION_OR_HOLDOUT_SAMPLE",
         "MISSING_NET_COST_STRESS_ESTIMATE",
-        "NONPOSITIVE_STRESS_NET_R_VALIDATION",
         "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
         "MULTIPLE_TESTING_NOT_CORRECTED",
         "UNVERIFIED_INSTRUCTOR_NUMERIC_CONTRACT",
@@ -296,17 +360,24 @@
       ],
       "sampleSize": {
         "train": 0,
-        "validation": 1,
+        "validation": 0,
+        "holdout": 0
+      },
+      "spotLongOnlyAudited": true,
+      "spotLongOnlySampleSize": {
+        "train": 0,
+        "validation": 0,
         "holdout": 0
       },
       "netStressMeanR": {
         "train": null,
-        "validation": -1.12501,
+        "validation": null,
         "holdout": null
       },
       "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": true,
-      "overlapAudited": false
+      "overlapAudited": true,
+      "overlappingPaperOutcomesExcluded": 0
     },
     {
       "symbol": "BTCUSDT",
@@ -314,8 +385,10 @@
       "width": 2,
       "status": "HISTORICAL_COST_FAIL",
       "reasons": [
+        "RAW_BOOTSTRAP_INVALIDATED_BY_OVERLAP_FILTER",
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "LOW_TRAIN_VALIDATION_OR_HOLDOUT_SAMPLE",
-        "NONPOSITIVE_STRESS_NET_R_TRAIN,VALIDATION",
+        "NONPOSITIVE_STRESS_NET_R_TRAIN",
         "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
         "MULTIPLE_TESTING_NOT_CORRECTED",
         "UNVERIFIED_INSTRUCTOR_NUMERIC_CONTRACT",
@@ -323,18 +396,25 @@
         "REAL_EXECUTION_FILL_UNOBSERVED"
       ],
       "sampleSize": {
-        "train": 76,
-        "validation": 36,
-        "holdout": 25
+        "train": 27,
+        "validation": 16,
+        "holdout": 10
+      },
+      "spotLongOnlyAudited": true,
+      "spotLongOnlySampleSize": {
+        "train": 27,
+        "validation": 16,
+        "holdout": 10
       },
       "netStressMeanR": {
-        "train": -0.32723,
-        "validation": -0.54522,
-        "holdout": 0.08938
+        "train": -0.03003,
+        "validation": 0.10385,
+        "holdout": 0.2912
       },
       "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": true,
-      "overlapAudited": false
+      "overlapAudited": true,
+      "overlappingPaperOutcomesExcluded": 9
     },
     {
       "symbol": "BTCUSDT",
@@ -342,37 +422,49 @@
       "width": 4,
       "status": "HISTORICAL_COST_FAIL",
       "reasons": [
+        "RAW_BOOTSTRAP_INVALIDATED_BY_OVERLAP_FILTER",
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "LOW_TRAIN_VALIDATION_OR_HOLDOUT_SAMPLE",
-        "NONPOSITIVE_STRESS_NET_R_TRAIN,VALIDATION",
-        "SINGLE_COMPARISON_95_LOWER_NOT_POSITIVE",
+        "NONPOSITIVE_STRESS_NET_R_VALIDATION,HOLDOUT",
+        "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
         "MULTIPLE_TESTING_NOT_CORRECTED",
         "UNVERIFIED_INSTRUCTOR_NUMERIC_CONTRACT",
         "INDEPENDENT_FORWARD_MARKET_EVIDENCE_MISSING",
         "REAL_EXECUTION_FILL_UNOBSERVED"
       ],
       "sampleSize": {
-        "train": 49,
-        "validation": 29,
-        "holdout": 31
+        "train": 20,
+        "validation": 9,
+        "holdout": 13
+      },
+      "spotLongOnlyAudited": true,
+      "spotLongOnlySampleSize": {
+        "train": 20,
+        "validation": 9,
+        "holdout": 13
       },
       "netStressMeanR": {
-        "train": -0.02822,
-        "validation": -0.61578,
-        "holdout": 0.03088
+        "train": 0.8232,
+        "validation": -0.44662,
+        "holdout": -0.26435
       },
-      "holdout5thPercentileBaseR": -0.37422,
+      "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": true,
-      "overlapAudited": false
+      "overlapAudited": true,
+      "overlappingPaperOutcomesExcluded": 9
     },
     {
       "symbol": "BTCUSDT",
       "timeframe": "5m",
       "width": 2,
-      "status": "HISTORICAL_COST_FAIL",
+      "status": "SPOT_LONG_ONLY_AUDIT_PENDING",
       "reasons": [
+        "CAUSAL_UNRESOLVED_EXPOSURE_AUDIT_PENDING",
+        "BINANCE_SPOT_LONG_ONLY_AUDIT_PENDING",
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "FIVE_YEAR_DATA_COVERAGE_UNVERIFIED",
         "NONPOSITIVE_STRESS_NET_R_TRAIN,VALIDATION,HOLDOUT",
-        "SINGLE_COMPARISON_95_LOWER_NOT_POSITIVE",
+        "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
         "MULTIPLE_TESTING_NOT_CORRECTED",
         "UNVERIFIED_INSTRUCTOR_NUMERIC_CONTRACT",
         "INDEPENDENT_FORWARD_MARKET_EVIDENCE_MISSING",
@@ -383,24 +475,30 @@
         "validation": 1513,
         "holdout": 1437
       },
+      "spotLongOnlyAudited": false,
+      "spotLongOnlySampleSize": null,
       "netStressMeanR": {
         "train": -4.33691,
         "validation": -4.78475,
         "holdout": -5.1219
       },
-      "holdout5thPercentileBaseR": -2.81256,
+      "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": false,
-      "overlapAudited": false
+      "overlapAudited": false,
+      "overlappingPaperOutcomesExcluded": null
     },
     {
       "symbol": "BTCUSDT",
       "timeframe": "5m",
       "width": 4,
-      "status": "HISTORICAL_COST_FAIL",
+      "status": "SPOT_LONG_ONLY_AUDIT_PENDING",
       "reasons": [
+        "CAUSAL_UNRESOLVED_EXPOSURE_AUDIT_PENDING",
+        "BINANCE_SPOT_LONG_ONLY_AUDIT_PENDING",
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "FIVE_YEAR_DATA_COVERAGE_UNVERIFIED",
         "NONPOSITIVE_STRESS_NET_R_TRAIN,VALIDATION,HOLDOUT",
-        "SINGLE_COMPARISON_95_LOWER_NOT_POSITIVE",
+        "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
         "MULTIPLE_TESTING_NOT_CORRECTED",
         "UNVERIFIED_INSTRUCTOR_NUMERIC_CONTRACT",
         "INDEPENDENT_FORWARD_MARKET_EVIDENCE_MISSING",
@@ -411,21 +509,27 @@
         "validation": 1215,
         "holdout": 1141
       },
+      "spotLongOnlyAudited": false,
+      "spotLongOnlySampleSize": null,
       "netStressMeanR": {
         "train": -3.22002,
         "validation": -3.91456,
         "holdout": -3.79935
       },
-      "holdout5thPercentileBaseR": -2.14471,
+      "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": false,
-      "overlapAudited": false
+      "overlapAudited": false,
+      "overlappingPaperOutcomesExcluded": null
     },
     {
       "symbol": "BTCUSDT",
       "timeframe": "6h",
       "width": 2,
-      "status": "HISTORICAL_COST_FAIL",
+      "status": "SPOT_LONG_ONLY_AUDIT_PENDING",
       "reasons": [
+        "CAUSAL_UNRESOLVED_EXPOSURE_AUDIT_PENDING",
+        "BINANCE_SPOT_LONG_ONLY_AUDIT_PENDING",
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "LOW_TRAIN_VALIDATION_OR_HOLDOUT_SAMPLE",
         "NONPOSITIVE_STRESS_NET_R_TRAIN,VALIDATION",
         "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
@@ -439,6 +543,8 @@
         "validation": 23,
         "holdout": 14
       },
+      "spotLongOnlyAudited": false,
+      "spotLongOnlySampleSize": null,
       "netStressMeanR": {
         "train": -0.14909,
         "validation": -0.75047,
@@ -446,14 +552,18 @@
       },
       "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": true,
-      "overlapAudited": false
+      "overlapAudited": false,
+      "overlappingPaperOutcomesExcluded": null
     },
     {
       "symbol": "BTCUSDT",
       "timeframe": "6h",
       "width": 4,
-      "status": "HISTORICAL_COST_FAIL",
+      "status": "SPOT_LONG_ONLY_AUDIT_PENDING",
       "reasons": [
+        "CAUSAL_UNRESOLVED_EXPOSURE_AUDIT_PENDING",
+        "BINANCE_SPOT_LONG_ONLY_AUDIT_PENDING",
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "LOW_TRAIN_VALIDATION_OR_HOLDOUT_SAMPLE",
         "NONPOSITIVE_STRESS_NET_R_VALIDATION",
         "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
@@ -467,6 +577,8 @@
         "validation": 12,
         "holdout": 14
       },
+      "spotLongOnlyAudited": false,
+      "spotLongOnlySampleSize": null,
       "netStressMeanR": {
         "train": 0.13535,
         "validation": -0.43896,
@@ -474,17 +586,21 @@
       },
       "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": true,
-      "overlapAudited": false
+      "overlapAudited": false,
+      "overlappingPaperOutcomesExcluded": null
     },
     {
       "symbol": "DODOUSDT",
       "timeframe": "15m",
       "width": 2,
-      "status": "HISTORICAL_COST_FAIL",
+      "status": "SPOT_LONG_ONLY_AUDIT_PENDING",
       "reasons": [
+        "CAUSAL_UNRESOLVED_EXPOSURE_AUDIT_PENDING",
+        "BINANCE_SPOT_LONG_ONLY_AUDIT_PENDING",
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "FIVE_YEAR_DATA_COVERAGE_UNVERIFIED",
         "NONPOSITIVE_STRESS_NET_R_TRAIN,VALIDATION,HOLDOUT",
-        "SINGLE_COMPARISON_95_LOWER_NOT_POSITIVE",
+        "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
         "MULTIPLE_TESTING_NOT_CORRECTED",
         "UNVERIFIED_INSTRUCTOR_NUMERIC_CONTRACT",
         "INDEPENDENT_FORWARD_MARKET_EVIDENCE_MISSING",
@@ -495,24 +611,30 @@
         "validation": 215,
         "holdout": 247
       },
+      "spotLongOnlyAudited": false,
+      "spotLongOnlySampleSize": null,
       "netStressMeanR": {
         "train": -0.56885,
         "validation": -0.55057,
         "holdout": -0.80934
       },
-      "holdout5thPercentileBaseR": -0.60706,
+      "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": false,
-      "overlapAudited": false
+      "overlapAudited": false,
+      "overlappingPaperOutcomesExcluded": null
     },
     {
       "symbol": "DODOUSDT",
       "timeframe": "15m",
       "width": 4,
-      "status": "HISTORICAL_COST_FAIL",
+      "status": "SPOT_LONG_ONLY_AUDIT_PENDING",
       "reasons": [
+        "CAUSAL_UNRESOLVED_EXPOSURE_AUDIT_PENDING",
+        "BINANCE_SPOT_LONG_ONLY_AUDIT_PENDING",
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "FIVE_YEAR_DATA_COVERAGE_UNVERIFIED",
         "NONPOSITIVE_STRESS_NET_R_TRAIN,VALIDATION,HOLDOUT",
-        "SINGLE_COMPARISON_95_LOWER_NOT_POSITIVE",
+        "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
         "MULTIPLE_TESTING_NOT_CORRECTED",
         "UNVERIFIED_INSTRUCTOR_NUMERIC_CONTRACT",
         "INDEPENDENT_FORWARD_MARKET_EVIDENCE_MISSING",
@@ -523,14 +645,17 @@
         "validation": 204,
         "holdout": 198
       },
+      "spotLongOnlyAudited": false,
+      "spotLongOnlySampleSize": null,
       "netStressMeanR": {
         "train": -0.30312,
         "validation": -0.48509,
         "holdout": -0.50492
       },
-      "holdout5thPercentileBaseR": -0.4295,
+      "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": false,
-      "overlapAudited": false
+      "overlapAudited": false,
+      "overlappingPaperOutcomesExcluded": null
     },
     {
       "symbol": "DODOUSDT",
@@ -538,6 +663,7 @@
       "width": 2,
       "status": "INSUFFICIENT_SAMPLES",
       "reasons": [
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "LOW_TRAIN_VALIDATION_OR_HOLDOUT_SAMPLE",
         "MISSING_NET_COST_STRESS_ESTIMATE",
         "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
@@ -551,6 +677,12 @@
         "validation": 0,
         "holdout": 0
       },
+      "spotLongOnlyAudited": true,
+      "spotLongOnlySampleSize": {
+        "train": 0,
+        "validation": 0,
+        "holdout": 0
+      },
       "netStressMeanR": {
         "train": null,
         "validation": null,
@@ -558,7 +690,8 @@
       },
       "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": true,
-      "overlapAudited": false
+      "overlapAudited": true,
+      "overlappingPaperOutcomesExcluded": 0
     },
     {
       "symbol": "DODOUSDT",
@@ -566,6 +699,7 @@
       "width": 4,
       "status": "INSUFFICIENT_SAMPLES",
       "reasons": [
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "LOW_TRAIN_VALIDATION_OR_HOLDOUT_SAMPLE",
         "MISSING_NET_COST_STRESS_ESTIMATE",
         "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
@@ -579,6 +713,12 @@
         "validation": 0,
         "holdout": 0
       },
+      "spotLongOnlyAudited": true,
+      "spotLongOnlySampleSize": {
+        "train": 0,
+        "validation": 0,
+        "holdout": 0
+      },
       "netStressMeanR": {
         "train": null,
         "validation": null,
@@ -586,7 +726,8 @@
       },
       "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": true,
-      "overlapAudited": false
+      "overlapAudited": true,
+      "overlappingPaperOutcomesExcluded": 0
     },
     {
       "symbol": "DODOUSDT",
@@ -594,6 +735,7 @@
       "width": 2,
       "status": "HISTORICAL_COST_FAIL",
       "reasons": [
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "LOW_TRAIN_VALIDATION_OR_HOLDOUT_SAMPLE",
         "NONPOSITIVE_STRESS_NET_R_TRAIN,VALIDATION",
         "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
@@ -603,18 +745,25 @@
         "REAL_EXECUTION_FILL_UNOBSERVED"
       ],
       "sampleSize": {
-        "train": 7,
+        "train": 4,
+        "validation": 4,
+        "holdout": 2
+      },
+      "spotLongOnlyAudited": true,
+      "spotLongOnlySampleSize": {
+        "train": 4,
         "validation": 4,
         "holdout": 2
       },
       "netStressMeanR": {
-        "train": -1.04808,
+        "train": -1.03864,
         "validation": -0.67633,
         "holdout": 0.34124
       },
       "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": true,
-      "overlapAudited": false
+      "overlapAudited": true,
+      "overlappingPaperOutcomesExcluded": 0
     },
     {
       "symbol": "DODOUSDT",
@@ -622,8 +771,10 @@
       "width": 4,
       "status": "HISTORICAL_COST_FAIL",
       "reasons": [
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "LOW_TRAIN_VALIDATION_OR_HOLDOUT_SAMPLE",
-        "NONPOSITIVE_STRESS_NET_R_TRAIN,VALIDATION",
+        "MISSING_NET_COST_STRESS_ESTIMATE",
+        "NONPOSITIVE_STRESS_NET_R_VALIDATION",
         "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
         "MULTIPLE_TESTING_NOT_CORRECTED",
         "UNVERIFIED_INSTRUCTOR_NUMERIC_CONTRACT",
@@ -631,28 +782,38 @@
         "REAL_EXECUTION_FILL_UNOBSERVED"
       ],
       "sampleSize": {
-        "train": 3,
-        "validation": 6,
+        "train": 0,
+        "validation": 4,
+        "holdout": 1
+      },
+      "spotLongOnlyAudited": true,
+      "spotLongOnlySampleSize": {
+        "train": 0,
+        "validation": 4,
         "holdout": 1
       },
       "netStressMeanR": {
-        "train": -1.06846,
-        "validation": -0.5049,
+        "train": null,
+        "validation": -1.03298,
         "holdout": 1.7262
       },
       "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": true,
-      "overlapAudited": false
+      "overlapAudited": true,
+      "overlappingPaperOutcomesExcluded": 0
     },
     {
       "symbol": "DODOUSDT",
       "timeframe": "1h",
       "width": 2,
-      "status": "HISTORICAL_COST_FAIL",
+      "status": "SPOT_LONG_ONLY_AUDIT_PENDING",
       "reasons": [
+        "CAUSAL_UNRESOLVED_EXPOSURE_AUDIT_PENDING",
+        "BINANCE_SPOT_LONG_ONLY_AUDIT_PENDING",
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "FIVE_YEAR_DATA_COVERAGE_UNVERIFIED",
         "NONPOSITIVE_STRESS_NET_R_HOLDOUT",
-        "SINGLE_COMPARISON_95_LOWER_NOT_POSITIVE",
+        "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
         "MULTIPLE_TESTING_NOT_CORRECTED",
         "UNVERIFIED_INSTRUCTOR_NUMERIC_CONTRACT",
         "INDEPENDENT_FORWARD_MARKET_EVIDENCE_MISSING",
@@ -663,24 +824,30 @@
         "validation": 65,
         "holdout": 66
       },
+      "spotLongOnlyAudited": false,
+      "spotLongOnlySampleSize": null,
       "netStressMeanR": {
         "train": 0.00106,
         "validation": 0.09207,
         "holdout": -0.74946
       },
-      "holdout5thPercentileBaseR": -0.76729,
+      "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": false,
-      "overlapAudited": false
+      "overlapAudited": false,
+      "overlappingPaperOutcomesExcluded": null
     },
     {
       "symbol": "DODOUSDT",
       "timeframe": "1h",
       "width": 4,
-      "status": "HISTORICAL_COST_FAIL",
+      "status": "SPOT_LONG_ONLY_AUDIT_PENDING",
       "reasons": [
+        "CAUSAL_UNRESOLVED_EXPOSURE_AUDIT_PENDING",
+        "BINANCE_SPOT_LONG_ONLY_AUDIT_PENDING",
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "FIVE_YEAR_DATA_COVERAGE_UNVERIFIED",
         "NONPOSITIVE_STRESS_NET_R_TRAIN,VALIDATION,HOLDOUT",
-        "SINGLE_COMPARISON_95_LOWER_NOT_POSITIVE",
+        "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
         "MULTIPLE_TESTING_NOT_CORRECTED",
         "UNVERIFIED_INSTRUCTOR_NUMERIC_CONTRACT",
         "INDEPENDENT_FORWARD_MARKET_EVIDENCE_MISSING",
@@ -691,14 +858,17 @@
         "validation": 54,
         "holdout": 56
       },
+      "spotLongOnlyAudited": false,
+      "spotLongOnlySampleSize": null,
       "netStressMeanR": {
         "train": -0.08387,
         "validation": -0.09798,
         "holdout": -0.05228
       },
-      "holdout5thPercentileBaseR": -0.29649,
+      "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": false,
-      "overlapAudited": false
+      "overlapAudited": false,
+      "overlappingPaperOutcomesExcluded": null
     },
     {
       "symbol": "DODOUSDT",
@@ -706,6 +876,7 @@
       "width": 2,
       "status": "INSUFFICIENT_SAMPLES",
       "reasons": [
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "LOW_TRAIN_VALIDATION_OR_HOLDOUT_SAMPLE",
         "MISSING_NET_COST_STRESS_ESTIMATE",
         "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
@@ -719,6 +890,12 @@
         "validation": 0,
         "holdout": 0
       },
+      "spotLongOnlyAudited": true,
+      "spotLongOnlySampleSize": {
+        "train": 0,
+        "validation": 0,
+        "holdout": 0
+      },
       "netStressMeanR": {
         "train": null,
         "validation": null,
@@ -726,7 +903,8 @@
       },
       "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": true,
-      "overlapAudited": false
+      "overlapAudited": true,
+      "overlappingPaperOutcomesExcluded": 0
     },
     {
       "symbol": "DODOUSDT",
@@ -734,6 +912,7 @@
       "width": 4,
       "status": "INSUFFICIENT_SAMPLES",
       "reasons": [
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "LOW_TRAIN_VALIDATION_OR_HOLDOUT_SAMPLE",
         "MISSING_NET_COST_STRESS_ESTIMATE",
         "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
@@ -747,6 +926,12 @@
         "validation": 0,
         "holdout": 0
       },
+      "spotLongOnlyAudited": true,
+      "spotLongOnlySampleSize": {
+        "train": 0,
+        "validation": 0,
+        "holdout": 0
+      },
       "netStressMeanR": {
         "train": null,
         "validation": null,
@@ -754,7 +939,8 @@
       },
       "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": true,
-      "overlapAudited": false
+      "overlapAudited": true,
+      "overlappingPaperOutcomesExcluded": 0
     },
     {
       "symbol": "DODOUSDT",
@@ -762,6 +948,8 @@
       "width": 2,
       "status": "HISTORICAL_COST_FAIL",
       "reasons": [
+        "RAW_BOOTSTRAP_INVALIDATED_BY_OVERLAP_FILTER",
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "LOW_TRAIN_VALIDATION_OR_HOLDOUT_SAMPLE",
         "NONPOSITIVE_STRESS_NET_R_TRAIN",
         "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
@@ -771,18 +959,25 @@
         "REAL_EXECUTION_FILL_UNOBSERVED"
       ],
       "sampleSize": {
-        "train": 70,
-        "validation": 19,
-        "holdout": 21
+        "train": 27,
+        "validation": 11,
+        "holdout": 9
+      },
+      "spotLongOnlyAudited": true,
+      "spotLongOnlySampleSize": {
+        "train": 27,
+        "validation": 11,
+        "holdout": 9
       },
       "netStressMeanR": {
-        "train": -0.22124,
-        "validation": 0.40971,
-        "holdout": 0.90779
+        "train": -0.20492,
+        "validation": 0.31905,
+        "holdout": 1.48781
       },
       "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": true,
-      "overlapAudited": false
+      "overlapAudited": true,
+      "overlappingPaperOutcomesExcluded": 9
     },
     {
       "symbol": "DODOUSDT",
@@ -790,8 +985,10 @@
       "width": 4,
       "status": "HISTORICAL_COST_FAIL",
       "reasons": [
+        "RAW_BOOTSTRAP_INVALIDATED_BY_OVERLAP_FILTER",
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "LOW_TRAIN_VALIDATION_OR_HOLDOUT_SAMPLE",
-        "NONPOSITIVE_STRESS_NET_R_TRAIN",
+        "NONPOSITIVE_STRESS_NET_R_TRAIN,VALIDATION",
         "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
         "MULTIPLE_TESTING_NOT_CORRECTED",
         "UNVERIFIED_INSTRUCTOR_NUMERIC_CONTRACT",
@@ -799,28 +996,38 @@
         "REAL_EXECUTION_FILL_UNOBSERVED"
       ],
       "sampleSize": {
-        "train": 63,
-        "validation": 23,
-        "holdout": 14
+        "train": 23,
+        "validation": 9,
+        "holdout": 7
+      },
+      "spotLongOnlyAudited": true,
+      "spotLongOnlySampleSize": {
+        "train": 23,
+        "validation": 9,
+        "holdout": 7
       },
       "netStressMeanR": {
-        "train": -0.13465,
-        "validation": 0.02567,
-        "holdout": 0.98396
+        "train": -0.24265,
+        "validation": -0.13861,
+        "holdout": 1.79868
       },
       "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": true,
-      "overlapAudited": false
+      "overlapAudited": true,
+      "overlappingPaperOutcomesExcluded": 19
     },
     {
       "symbol": "DODOUSDT",
       "timeframe": "5m",
       "width": 2,
-      "status": "HISTORICAL_COST_FAIL",
+      "status": "SPOT_LONG_ONLY_AUDIT_PENDING",
       "reasons": [
+        "CAUSAL_UNRESOLVED_EXPOSURE_AUDIT_PENDING",
+        "BINANCE_SPOT_LONG_ONLY_AUDIT_PENDING",
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "FIVE_YEAR_DATA_COVERAGE_UNVERIFIED",
         "NONPOSITIVE_STRESS_NET_R_TRAIN,VALIDATION,HOLDOUT",
-        "SINGLE_COMPARISON_95_LOWER_NOT_POSITIVE",
+        "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
         "MULTIPLE_TESTING_NOT_CORRECTED",
         "UNVERIFIED_INSTRUCTOR_NUMERIC_CONTRACT",
         "INDEPENDENT_FORWARD_MARKET_EVIDENCE_MISSING",
@@ -831,24 +1038,30 @@
         "validation": 557,
         "holdout": 611
       },
+      "spotLongOnlyAudited": false,
+      "spotLongOnlySampleSize": null,
       "netStressMeanR": {
         "train": -0.91781,
         "validation": -0.86101,
         "holdout": -1.02888
       },
-      "holdout5thPercentileBaseR": -0.62811,
+      "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": false,
-      "overlapAudited": false
+      "overlapAudited": false,
+      "overlappingPaperOutcomesExcluded": null
     },
     {
       "symbol": "DODOUSDT",
       "timeframe": "5m",
       "width": 4,
-      "status": "HISTORICAL_COST_FAIL",
+      "status": "SPOT_LONG_ONLY_AUDIT_PENDING",
       "reasons": [
+        "CAUSAL_UNRESOLVED_EXPOSURE_AUDIT_PENDING",
+        "BINANCE_SPOT_LONG_ONLY_AUDIT_PENDING",
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "FIVE_YEAR_DATA_COVERAGE_UNVERIFIED",
         "NONPOSITIVE_STRESS_NET_R_TRAIN,VALIDATION,HOLDOUT",
-        "SINGLE_COMPARISON_95_LOWER_NOT_POSITIVE",
+        "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
         "MULTIPLE_TESTING_NOT_CORRECTED",
         "UNVERIFIED_INSTRUCTOR_NUMERIC_CONTRACT",
         "INDEPENDENT_FORWARD_MARKET_EVIDENCE_MISSING",
@@ -859,21 +1072,27 @@
         "validation": 481,
         "holdout": 537
       },
+      "spotLongOnlyAudited": false,
+      "spotLongOnlySampleSize": null,
       "netStressMeanR": {
         "train": -0.78302,
         "validation": -0.37725,
         "holdout": -0.69
       },
-      "holdout5thPercentileBaseR": -0.42381,
+      "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": false,
-      "overlapAudited": false
+      "overlapAudited": false,
+      "overlappingPaperOutcomesExcluded": null
     },
     {
       "symbol": "DODOUSDT",
       "timeframe": "6h",
       "width": 2,
-      "status": "HISTORICAL_COST_FAIL",
+      "status": "SPOT_LONG_ONLY_AUDIT_PENDING",
       "reasons": [
+        "CAUSAL_UNRESOLVED_EXPOSURE_AUDIT_PENDING",
+        "BINANCE_SPOT_LONG_ONLY_AUDIT_PENDING",
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "LOW_TRAIN_VALIDATION_OR_HOLDOUT_SAMPLE",
         "NONPOSITIVE_STRESS_NET_R_HOLDOUT",
         "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
@@ -887,6 +1106,8 @@
         "validation": 18,
         "holdout": 12
       },
+      "spotLongOnlyAudited": false,
+      "spotLongOnlySampleSize": null,
       "netStressMeanR": {
         "train": 0.3812,
         "validation": 0.19803,
@@ -894,14 +1115,18 @@
       },
       "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": true,
-      "overlapAudited": false
+      "overlapAudited": false,
+      "overlappingPaperOutcomesExcluded": null
     },
     {
       "symbol": "DODOUSDT",
       "timeframe": "6h",
       "width": 4,
-      "status": "HISTORICAL_COST_FAIL",
+      "status": "SPOT_LONG_ONLY_AUDIT_PENDING",
       "reasons": [
+        "CAUSAL_UNRESOLVED_EXPOSURE_AUDIT_PENDING",
+        "BINANCE_SPOT_LONG_ONLY_AUDIT_PENDING",
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "LOW_TRAIN_VALIDATION_OR_HOLDOUT_SAMPLE",
         "NONPOSITIVE_STRESS_NET_R_VALIDATION,HOLDOUT",
         "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
@@ -915,6 +1140,8 @@
         "validation": 12,
         "holdout": 14
       },
+      "spotLongOnlyAudited": false,
+      "spotLongOnlySampleSize": null,
       "netStressMeanR": {
         "train": 0.44066,
         "validation": -0.3937,
@@ -922,17 +1149,21 @@
       },
       "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": true,
-      "overlapAudited": false
+      "overlapAudited": false,
+      "overlappingPaperOutcomesExcluded": null
     },
     {
       "symbol": "ETHUSDT",
       "timeframe": "15m",
       "width": 2,
-      "status": "HISTORICAL_COST_FAIL",
+      "status": "SPOT_LONG_ONLY_AUDIT_PENDING",
       "reasons": [
+        "CAUSAL_UNRESOLVED_EXPOSURE_AUDIT_PENDING",
+        "BINANCE_SPOT_LONG_ONLY_AUDIT_PENDING",
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "FIVE_YEAR_DATA_COVERAGE_UNVERIFIED",
         "NONPOSITIVE_STRESS_NET_R_TRAIN,VALIDATION,HOLDOUT",
-        "SINGLE_COMPARISON_95_LOWER_NOT_POSITIVE",
+        "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
         "MULTIPLE_TESTING_NOT_CORRECTED",
         "UNVERIFIED_INSTRUCTOR_NUMERIC_CONTRACT",
         "INDEPENDENT_FORWARD_MARKET_EVIDENCE_MISSING",
@@ -943,24 +1174,30 @@
         "validation": 435,
         "holdout": 489
       },
+      "spotLongOnlyAudited": false,
+      "spotLongOnlySampleSize": null,
       "netStressMeanR": {
         "train": -1.8303,
         "validation": -1.38179,
         "holdout": -2.02373
       },
-      "holdout5thPercentileBaseR": -1.06832,
+      "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": false,
-      "overlapAudited": false
+      "overlapAudited": false,
+      "overlappingPaperOutcomesExcluded": null
     },
     {
       "symbol": "ETHUSDT",
       "timeframe": "15m",
       "width": 4,
-      "status": "HISTORICAL_COST_FAIL",
+      "status": "SPOT_LONG_ONLY_AUDIT_PENDING",
       "reasons": [
+        "CAUSAL_UNRESOLVED_EXPOSURE_AUDIT_PENDING",
+        "BINANCE_SPOT_LONG_ONLY_AUDIT_PENDING",
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "FIVE_YEAR_DATA_COVERAGE_UNVERIFIED",
         "NONPOSITIVE_STRESS_NET_R_TRAIN,VALIDATION,HOLDOUT",
-        "SINGLE_COMPARISON_95_LOWER_NOT_POSITIVE",
+        "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
         "MULTIPLE_TESTING_NOT_CORRECTED",
         "UNVERIFIED_INSTRUCTOR_NUMERIC_CONTRACT",
         "INDEPENDENT_FORWARD_MARKET_EVIDENCE_MISSING",
@@ -971,14 +1208,17 @@
         "validation": 338,
         "holdout": 354
       },
+      "spotLongOnlyAudited": false,
+      "spotLongOnlySampleSize": null,
       "netStressMeanR": {
         "train": -1.35294,
         "validation": -1.08858,
         "holdout": -1.4408
       },
-      "holdout5thPercentileBaseR": -0.80396,
+      "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": false,
-      "overlapAudited": false
+      "overlapAudited": false,
+      "overlappingPaperOutcomesExcluded": null
     },
     {
       "symbol": "ETHUSDT",
@@ -986,6 +1226,7 @@
       "width": 2,
       "status": "INSUFFICIENT_SAMPLES",
       "reasons": [
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "LOW_TRAIN_VALIDATION_OR_HOLDOUT_SAMPLE",
         "MISSING_NET_COST_STRESS_ESTIMATE",
         "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
@@ -999,6 +1240,12 @@
         "validation": 0,
         "holdout": 0
       },
+      "spotLongOnlyAudited": true,
+      "spotLongOnlySampleSize": {
+        "train": 0,
+        "validation": 0,
+        "holdout": 0
+      },
       "netStressMeanR": {
         "train": null,
         "validation": null,
@@ -1006,7 +1253,8 @@
       },
       "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": true,
-      "overlapAudited": false
+      "overlapAudited": true,
+      "overlappingPaperOutcomesExcluded": 0
     },
     {
       "symbol": "ETHUSDT",
@@ -1014,6 +1262,7 @@
       "width": 4,
       "status": "INSUFFICIENT_SAMPLES",
       "reasons": [
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "LOW_TRAIN_VALIDATION_OR_HOLDOUT_SAMPLE",
         "MISSING_NET_COST_STRESS_ESTIMATE",
         "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
@@ -1027,6 +1276,12 @@
         "validation": 0,
         "holdout": 0
       },
+      "spotLongOnlyAudited": true,
+      "spotLongOnlySampleSize": {
+        "train": 0,
+        "validation": 0,
+        "holdout": 0
+      },
       "netStressMeanR": {
         "train": null,
         "validation": null,
@@ -1034,7 +1289,8 @@
       },
       "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": true,
-      "overlapAudited": false
+      "overlapAudited": true,
+      "overlappingPaperOutcomesExcluded": 0
     },
     {
       "symbol": "ETHUSDT",
@@ -1042,8 +1298,9 @@
       "width": 2,
       "status": "HISTORICAL_COST_FAIL",
       "reasons": [
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "LOW_TRAIN_VALIDATION_OR_HOLDOUT_SAMPLE",
-        "NONPOSITIVE_STRESS_NET_R_TRAIN,VALIDATION,HOLDOUT",
+        "NONPOSITIVE_STRESS_NET_R_TRAIN,VALIDATION",
         "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
         "MULTIPLE_TESTING_NOT_CORRECTED",
         "UNVERIFIED_INSTRUCTOR_NUMERIC_CONTRACT",
@@ -1051,18 +1308,25 @@
         "REAL_EXECUTION_FILL_UNOBSERVED"
       ],
       "sampleSize": {
-        "train": 6,
-        "validation": 5,
-        "holdout": 6
+        "train": 2,
+        "validation": 2,
+        "holdout": 1
+      },
+      "spotLongOnlyAudited": true,
+      "spotLongOnlySampleSize": {
+        "train": 2,
+        "validation": 2,
+        "holdout": 1
       },
       "netStressMeanR": {
-        "train": -0.99306,
-        "validation": -0.25482,
-        "holdout": -0.16674
+        "train": -1.37037,
+        "validation": -0.08315,
+        "holdout": 0.46997
       },
       "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": true,
-      "overlapAudited": false
+      "overlapAudited": true,
+      "overlappingPaperOutcomesExcluded": 0
     },
     {
       "symbol": "ETHUSDT",
@@ -1070,6 +1334,7 @@
       "width": 4,
       "status": "HISTORICAL_COST_FAIL",
       "reasons": [
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "LOW_TRAIN_VALIDATION_OR_HOLDOUT_SAMPLE",
         "MISSING_NET_COST_STRESS_ESTIMATE",
         "NONPOSITIVE_STRESS_NET_R_TRAIN",
@@ -1080,28 +1345,38 @@
         "REAL_EXECUTION_FILL_UNOBSERVED"
       ],
       "sampleSize": {
-        "train": 7,
+        "train": 5,
         "validation": 0,
-        "holdout": 2
+        "holdout": 0
+      },
+      "spotLongOnlyAudited": true,
+      "spotLongOnlySampleSize": {
+        "train": 5,
+        "validation": 0,
+        "holdout": 0
       },
       "netStressMeanR": {
-        "train": -1.12661,
+        "train": -1.14591,
         "validation": null,
-        "holdout": 0.90689
+        "holdout": null
       },
       "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": true,
-      "overlapAudited": false
+      "overlapAudited": true,
+      "overlappingPaperOutcomesExcluded": 0
     },
     {
       "symbol": "ETHUSDT",
       "timeframe": "1h",
       "width": 2,
-      "status": "HISTORICAL_COST_FAIL",
+      "status": "SPOT_LONG_ONLY_AUDIT_PENDING",
       "reasons": [
+        "CAUSAL_UNRESOLVED_EXPOSURE_AUDIT_PENDING",
+        "BINANCE_SPOT_LONG_ONLY_AUDIT_PENDING",
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "FIVE_YEAR_DATA_COVERAGE_UNVERIFIED",
         "NONPOSITIVE_STRESS_NET_R_TRAIN,VALIDATION,HOLDOUT",
-        "SINGLE_COMPARISON_95_LOWER_NOT_POSITIVE",
+        "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
         "MULTIPLE_TESTING_NOT_CORRECTED",
         "UNVERIFIED_INSTRUCTOR_NUMERIC_CONTRACT",
         "INDEPENDENT_FORWARD_MARKET_EVIDENCE_MISSING",
@@ -1112,24 +1387,30 @@
         "validation": 94,
         "holdout": 88
       },
+      "spotLongOnlyAudited": false,
+      "spotLongOnlySampleSize": null,
       "netStressMeanR": {
         "train": -0.56463,
         "validation": -0.49948,
         "holdout": -0.7525
       },
-      "holdout5thPercentileBaseR": -0.68869,
+      "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": false,
-      "overlapAudited": false
+      "overlapAudited": false,
+      "overlappingPaperOutcomesExcluded": null
     },
     {
       "symbol": "ETHUSDT",
       "timeframe": "1h",
       "width": 4,
-      "status": "HISTORICAL_COST_FAIL",
+      "status": "SPOT_LONG_ONLY_AUDIT_PENDING",
       "reasons": [
+        "CAUSAL_UNRESOLVED_EXPOSURE_AUDIT_PENDING",
+        "BINANCE_SPOT_LONG_ONLY_AUDIT_PENDING",
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "FIVE_YEAR_DATA_COVERAGE_UNVERIFIED",
         "NONPOSITIVE_STRESS_NET_R_TRAIN,VALIDATION,HOLDOUT",
-        "SINGLE_COMPARISON_95_LOWER_NOT_POSITIVE",
+        "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
         "MULTIPLE_TESTING_NOT_CORRECTED",
         "UNVERIFIED_INSTRUCTOR_NUMERIC_CONTRACT",
         "INDEPENDENT_FORWARD_MARKET_EVIDENCE_MISSING",
@@ -1140,50 +1421,25 @@
         "validation": 73,
         "holdout": 73
       },
+      "spotLongOnlyAudited": false,
+      "spotLongOnlySampleSize": null,
       "netStressMeanR": {
         "train": -0.35456,
         "validation": -0.26627,
         "holdout": -0.25415
       },
-      "holdout5thPercentileBaseR": -0.32258,
+      "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": false,
-      "overlapAudited": false
+      "overlapAudited": false,
+      "overlappingPaperOutcomesExcluded": null
     },
     {
       "symbol": "ETHUSDT",
       "timeframe": "1w",
       "width": 2,
-      "status": "HISTORICAL_COST_FAIL",
-      "reasons": [
-        "LOW_TRAIN_VALIDATION_OR_HOLDOUT_SAMPLE",
-        "MISSING_NET_COST_STRESS_ESTIMATE",
-        "NONPOSITIVE_STRESS_NET_R_TRAIN",
-        "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
-        "MULTIPLE_TESTING_NOT_CORRECTED",
-        "UNVERIFIED_INSTRUCTOR_NUMERIC_CONTRACT",
-        "INDEPENDENT_FORWARD_MARKET_EVIDENCE_MISSING",
-        "REAL_EXECUTION_FILL_UNOBSERVED"
-      ],
-      "sampleSize": {
-        "train": 1,
-        "validation": 0,
-        "holdout": 0
-      },
-      "netStressMeanR": {
-        "train": -1.03219,
-        "validation": null,
-        "holdout": null
-      },
-      "holdout5thPercentileBaseR": null,
-      "gapFreeFiveYearDataVerified": true,
-      "overlapAudited": false
-    },
-    {
-      "symbol": "ETHUSDT",
-      "timeframe": "1w",
-      "width": 4,
       "status": "INSUFFICIENT_SAMPLES",
       "reasons": [
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "LOW_TRAIN_VALIDATION_OR_HOLDOUT_SAMPLE",
         "MISSING_NET_COST_STRESS_ESTIMATE",
         "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
@@ -1197,6 +1453,12 @@
         "validation": 0,
         "holdout": 0
       },
+      "spotLongOnlyAudited": true,
+      "spotLongOnlySampleSize": {
+        "train": 0,
+        "validation": 0,
+        "holdout": 0
+      },
       "netStressMeanR": {
         "train": null,
         "validation": null,
@@ -1204,16 +1466,18 @@
       },
       "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": true,
-      "overlapAudited": false
+      "overlapAudited": true,
+      "overlappingPaperOutcomesExcluded": 0
     },
     {
       "symbol": "ETHUSDT",
-      "timeframe": "4h",
-      "width": 2,
-      "status": "HISTORICAL_COST_FAIL",
+      "timeframe": "1w",
+      "width": 4,
+      "status": "INSUFFICIENT_SAMPLES",
       "reasons": [
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "LOW_TRAIN_VALIDATION_OR_HOLDOUT_SAMPLE",
-        "NONPOSITIVE_STRESS_NET_R_TRAIN,VALIDATION",
+        "MISSING_NET_COST_STRESS_ESTIMATE",
         "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
         "MULTIPLE_TESTING_NOT_CORRECTED",
         "UNVERIFIED_INSTRUCTOR_NUMERIC_CONTRACT",
@@ -1221,18 +1485,62 @@
         "REAL_EXECUTION_FILL_UNOBSERVED"
       ],
       "sampleSize": {
-        "train": 77,
-        "validation": 29,
-        "holdout": 25
+        "train": 0,
+        "validation": 0,
+        "holdout": 0
+      },
+      "spotLongOnlyAudited": true,
+      "spotLongOnlySampleSize": {
+        "train": 0,
+        "validation": 0,
+        "holdout": 0
       },
       "netStressMeanR": {
-        "train": -0.22045,
-        "validation": -0.46272,
-        "holdout": 0.25819
+        "train": null,
+        "validation": null,
+        "holdout": null
       },
       "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": true,
-      "overlapAudited": false
+      "overlapAudited": true,
+      "overlappingPaperOutcomesExcluded": 0
+    },
+    {
+      "symbol": "ETHUSDT",
+      "timeframe": "4h",
+      "width": 2,
+      "status": "HISTORICAL_COST_FAIL",
+      "reasons": [
+        "RAW_BOOTSTRAP_INVALIDATED_BY_OVERLAP_FILTER",
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
+        "LOW_TRAIN_VALIDATION_OR_HOLDOUT_SAMPLE",
+        "NONPOSITIVE_STRESS_NET_R_TRAIN",
+        "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
+        "MULTIPLE_TESTING_NOT_CORRECTED",
+        "UNVERIFIED_INSTRUCTOR_NUMERIC_CONTRACT",
+        "INDEPENDENT_FORWARD_MARKET_EVIDENCE_MISSING",
+        "REAL_EXECUTION_FILL_UNOBSERVED"
+      ],
+      "sampleSize": {
+        "train": 34,
+        "validation": 11,
+        "holdout": 9
+      },
+      "spotLongOnlyAudited": true,
+      "spotLongOnlySampleSize": {
+        "train": 34,
+        "validation": 11,
+        "holdout": 9
+      },
+      "netStressMeanR": {
+        "train": -0.40323,
+        "validation": 0.27973,
+        "holdout": 0.53583
+      },
+      "holdout5thPercentileBaseR": null,
+      "gapFreeFiveYearDataVerified": true,
+      "overlapAudited": true,
+      "overlappingPaperOutcomesExcluded": 3
     },
     {
       "symbol": "ETHUSDT",
@@ -1240,8 +1548,10 @@
       "width": 4,
       "status": "HISTORICAL_COST_FAIL",
       "reasons": [
+        "RAW_BOOTSTRAP_INVALIDATED_BY_OVERLAP_FILTER",
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "LOW_TRAIN_VALIDATION_OR_HOLDOUT_SAMPLE",
-        "NONPOSITIVE_STRESS_NET_R_TRAIN,VALIDATION",
+        "NONPOSITIVE_STRESS_NET_R_TRAIN,VALIDATION,HOLDOUT",
         "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
         "MULTIPLE_TESTING_NOT_CORRECTED",
         "UNVERIFIED_INSTRUCTOR_NUMERIC_CONTRACT",
@@ -1249,28 +1559,38 @@
         "REAL_EXECUTION_FILL_UNOBSERVED"
       ],
       "sampleSize": {
-        "train": 60,
-        "validation": 17,
-        "holdout": 19
+        "train": 19,
+        "validation": 7,
+        "holdout": 5
+      },
+      "spotLongOnlyAudited": true,
+      "spotLongOnlySampleSize": {
+        "train": 19,
+        "validation": 7,
+        "holdout": 5
       },
       "netStressMeanR": {
-        "train": -0.11575,
-        "validation": -0.51701,
-        "holdout": 0.2426
+        "train": -0.22102,
+        "validation": -0.39432,
+        "holdout": -0.34264
       },
       "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": true,
-      "overlapAudited": false
+      "overlapAudited": true,
+      "overlappingPaperOutcomesExcluded": 11
     },
     {
       "symbol": "ETHUSDT",
       "timeframe": "5m",
       "width": 2,
-      "status": "HISTORICAL_COST_FAIL",
+      "status": "SPOT_LONG_ONLY_AUDIT_PENDING",
       "reasons": [
+        "CAUSAL_UNRESOLVED_EXPOSURE_AUDIT_PENDING",
+        "BINANCE_SPOT_LONG_ONLY_AUDIT_PENDING",
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "FIVE_YEAR_DATA_COVERAGE_UNVERIFIED",
         "NONPOSITIVE_STRESS_NET_R_TRAIN,VALIDATION,HOLDOUT",
-        "SINGLE_COMPARISON_95_LOWER_NOT_POSITIVE",
+        "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
         "MULTIPLE_TESTING_NOT_CORRECTED",
         "UNVERIFIED_INSTRUCTOR_NUMERIC_CONTRACT",
         "INDEPENDENT_FORWARD_MARKET_EVIDENCE_MISSING",
@@ -1281,24 +1601,30 @@
         "validation": 1470,
         "holdout": 1474
       },
+      "spotLongOnlyAudited": false,
+      "spotLongOnlySampleSize": null,
       "netStressMeanR": {
         "train": -3.4345,
         "validation": -2.74667,
         "holdout": -3.79474
       },
-      "holdout5thPercentileBaseR": -2.0223,
+      "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": false,
-      "overlapAudited": false
+      "overlapAudited": false,
+      "overlappingPaperOutcomesExcluded": null
     },
     {
       "symbol": "ETHUSDT",
       "timeframe": "5m",
       "width": 4,
-      "status": "HISTORICAL_COST_FAIL",
+      "status": "SPOT_LONG_ONLY_AUDIT_PENDING",
       "reasons": [
+        "CAUSAL_UNRESOLVED_EXPOSURE_AUDIT_PENDING",
+        "BINANCE_SPOT_LONG_ONLY_AUDIT_PENDING",
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "FIVE_YEAR_DATA_COVERAGE_UNVERIFIED",
         "NONPOSITIVE_STRESS_NET_R_TRAIN,VALIDATION,HOLDOUT",
-        "SINGLE_COMPARISON_95_LOWER_NOT_POSITIVE",
+        "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
         "MULTIPLE_TESTING_NOT_CORRECTED",
         "UNVERIFIED_INSTRUCTOR_NUMERIC_CONTRACT",
         "INDEPENDENT_FORWARD_MARKET_EVIDENCE_MISSING",
@@ -1309,21 +1635,27 @@
         "validation": 1107,
         "holdout": 1153
       },
+      "spotLongOnlyAudited": false,
+      "spotLongOnlySampleSize": null,
       "netStressMeanR": {
         "train": -2.45475,
         "validation": -2.08738,
         "holdout": -2.76458
       },
-      "holdout5thPercentileBaseR": -1.48259,
+      "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": false,
-      "overlapAudited": false
+      "overlapAudited": false,
+      "overlappingPaperOutcomesExcluded": null
     },
     {
       "symbol": "ETHUSDT",
       "timeframe": "6h",
       "width": 2,
-      "status": "INSUFFICIENT_SAMPLES",
+      "status": "SPOT_LONG_ONLY_AUDIT_PENDING",
       "reasons": [
+        "CAUSAL_UNRESOLVED_EXPOSURE_AUDIT_PENDING",
+        "BINANCE_SPOT_LONG_ONLY_AUDIT_PENDING",
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "LOW_TRAIN_VALIDATION_OR_HOLDOUT_SAMPLE",
         "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
         "MULTIPLE_TESTING_NOT_CORRECTED",
@@ -1336,6 +1668,8 @@
         "validation": 10,
         "holdout": 15
       },
+      "spotLongOnlyAudited": false,
+      "spotLongOnlySampleSize": null,
       "netStressMeanR": {
         "train": 0.02008,
         "validation": 0.71931,
@@ -1343,14 +1677,18 @@
       },
       "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": true,
-      "overlapAudited": false
+      "overlapAudited": false,
+      "overlappingPaperOutcomesExcluded": null
     },
     {
       "symbol": "ETHUSDT",
       "timeframe": "6h",
       "width": 4,
-      "status": "HISTORICAL_COST_FAIL",
+      "status": "SPOT_LONG_ONLY_AUDIT_PENDING",
       "reasons": [
+        "CAUSAL_UNRESOLVED_EXPOSURE_AUDIT_PENDING",
+        "BINANCE_SPOT_LONG_ONLY_AUDIT_PENDING",
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "LOW_TRAIN_VALIDATION_OR_HOLDOUT_SAMPLE",
         "NONPOSITIVE_STRESS_NET_R_TRAIN,VALIDATION",
         "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
@@ -1364,6 +1702,8 @@
         "validation": 15,
         "holdout": 17
       },
+      "spotLongOnlyAudited": false,
+      "spotLongOnlySampleSize": null,
       "netStressMeanR": {
         "train": -0.26002,
         "validation": -0.51106,
@@ -1371,17 +1711,21 @@
       },
       "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": true,
-      "overlapAudited": false
+      "overlapAudited": false,
+      "overlappingPaperOutcomesExcluded": null
     },
     {
       "symbol": "SOLUSDT",
       "timeframe": "15m",
       "width": 2,
-      "status": "HISTORICAL_COST_FAIL",
+      "status": "SPOT_LONG_ONLY_AUDIT_PENDING",
       "reasons": [
+        "CAUSAL_UNRESOLVED_EXPOSURE_AUDIT_PENDING",
+        "BINANCE_SPOT_LONG_ONLY_AUDIT_PENDING",
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "FIVE_YEAR_DATA_COVERAGE_UNVERIFIED",
         "NONPOSITIVE_STRESS_NET_R_TRAIN,VALIDATION,HOLDOUT",
-        "SINGLE_COMPARISON_95_LOWER_NOT_POSITIVE",
+        "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
         "MULTIPLE_TESTING_NOT_CORRECTED",
         "UNVERIFIED_INSTRUCTOR_NUMERIC_CONTRACT",
         "INDEPENDENT_FORWARD_MARKET_EVIDENCE_MISSING",
@@ -1392,24 +1736,30 @@
         "validation": 440,
         "holdout": 407
       },
+      "spotLongOnlyAudited": false,
+      "spotLongOnlySampleSize": null,
       "netStressMeanR": {
         "train": -0.80729,
         "validation": -1.21017,
         "holdout": -1.32808
       },
-      "holdout5thPercentileBaseR": -0.74814,
+      "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": false,
-      "overlapAudited": false
+      "overlapAudited": false,
+      "overlappingPaperOutcomesExcluded": null
     },
     {
       "symbol": "SOLUSDT",
       "timeframe": "15m",
       "width": 4,
-      "status": "HISTORICAL_COST_FAIL",
+      "status": "SPOT_LONG_ONLY_AUDIT_PENDING",
       "reasons": [
+        "CAUSAL_UNRESOLVED_EXPOSURE_AUDIT_PENDING",
+        "BINANCE_SPOT_LONG_ONLY_AUDIT_PENDING",
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "FIVE_YEAR_DATA_COVERAGE_UNVERIFIED",
         "NONPOSITIVE_STRESS_NET_R_TRAIN,VALIDATION,HOLDOUT",
-        "SINGLE_COMPARISON_95_LOWER_NOT_POSITIVE",
+        "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
         "MULTIPLE_TESTING_NOT_CORRECTED",
         "UNVERIFIED_INSTRUCTOR_NUMERIC_CONTRACT",
         "INDEPENDENT_FORWARD_MARKET_EVIDENCE_MISSING",
@@ -1420,14 +1770,17 @@
         "validation": 355,
         "holdout": 311
       },
+      "spotLongOnlyAudited": false,
+      "spotLongOnlySampleSize": null,
       "netStressMeanR": {
         "train": -0.60989,
         "validation": -0.9364,
         "holdout": -0.98515
       },
-      "holdout5thPercentileBaseR": -0.59351,
+      "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": false,
-      "overlapAudited": false
+      "overlapAudited": false,
+      "overlappingPaperOutcomesExcluded": null
     },
     {
       "symbol": "SOLUSDT",
@@ -1435,6 +1788,7 @@
       "width": 2,
       "status": "INSUFFICIENT_SAMPLES",
       "reasons": [
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "LOW_TRAIN_VALIDATION_OR_HOLDOUT_SAMPLE",
         "MISSING_NET_COST_STRESS_ESTIMATE",
         "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
@@ -1448,6 +1802,12 @@
         "validation": 0,
         "holdout": 0
       },
+      "spotLongOnlyAudited": true,
+      "spotLongOnlySampleSize": {
+        "train": 0,
+        "validation": 0,
+        "holdout": 0
+      },
       "netStressMeanR": {
         "train": null,
         "validation": null,
@@ -1455,7 +1815,8 @@
       },
       "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": true,
-      "overlapAudited": false
+      "overlapAudited": true,
+      "overlappingPaperOutcomesExcluded": 0
     },
     {
       "symbol": "SOLUSDT",
@@ -1463,6 +1824,7 @@
       "width": 4,
       "status": "INSUFFICIENT_SAMPLES",
       "reasons": [
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "LOW_TRAIN_VALIDATION_OR_HOLDOUT_SAMPLE",
         "MISSING_NET_COST_STRESS_ESTIMATE",
         "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
@@ -1476,6 +1838,12 @@
         "validation": 0,
         "holdout": 0
       },
+      "spotLongOnlyAudited": true,
+      "spotLongOnlySampleSize": {
+        "train": 0,
+        "validation": 0,
+        "holdout": 0
+      },
       "netStressMeanR": {
         "train": null,
         "validation": null,
@@ -1483,7 +1851,8 @@
       },
       "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": true,
-      "overlapAudited": false
+      "overlapAudited": true,
+      "overlappingPaperOutcomesExcluded": 0
     },
     {
       "symbol": "SOLUSDT",
@@ -1491,6 +1860,7 @@
       "width": 2,
       "status": "HISTORICAL_COST_FAIL",
       "reasons": [
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "LOW_TRAIN_VALIDATION_OR_HOLDOUT_SAMPLE",
         "NONPOSITIVE_STRESS_NET_R_TRAIN,VALIDATION",
         "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
@@ -1500,26 +1870,35 @@
         "REAL_EXECUTION_FILL_UNOBSERVED"
       ],
       "sampleSize": {
-        "train": 14,
-        "validation": 3,
-        "holdout": 3
+        "train": 5,
+        "validation": 2,
+        "holdout": 1
+      },
+      "spotLongOnlyAudited": true,
+      "spotLongOnlySampleSize": {
+        "train": 5,
+        "validation": 2,
+        "holdout": 1
       },
       "netStressMeanR": {
-        "train": -0.88913,
-        "validation": -0.64093,
-        "holdout": 0.00302
+        "train": -1.09957,
+        "validation": -0.37332,
+        "holdout": 2.15447
       },
       "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": true,
-      "overlapAudited": false
+      "overlapAudited": true,
+      "overlappingPaperOutcomesExcluded": 0
     },
     {
       "symbol": "SOLUSDT",
       "timeframe": "1d",
       "width": 4,
-      "status": "INSUFFICIENT_SAMPLES",
+      "status": "HISTORICAL_COST_FAIL",
       "reasons": [
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "LOW_TRAIN_VALIDATION_OR_HOLDOUT_SAMPLE",
+        "NONPOSITIVE_STRESS_NET_R_TRAIN",
         "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
         "MULTIPLE_TESTING_NOT_CORRECTED",
         "UNVERIFIED_INSTRUCTOR_NUMERIC_CONTRACT",
@@ -1527,28 +1906,38 @@
         "REAL_EXECUTION_FILL_UNOBSERVED"
       ],
       "sampleSize": {
-        "train": 7,
-        "validation": 3,
+        "train": 5,
+        "validation": 1,
+        "holdout": 1
+      },
+      "spotLongOnlyAudited": true,
+      "spotLongOnlySampleSize": {
+        "train": 5,
+        "validation": 1,
         "holdout": 1
       },
       "netStressMeanR": {
-        "train": 0.08695,
-        "validation": 1.23353,
+        "train": -1.11754,
+        "validation": 0.31883,
         "holdout": 1.39724
       },
       "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": true,
-      "overlapAudited": false
+      "overlapAudited": true,
+      "overlappingPaperOutcomesExcluded": 0
     },
     {
       "symbol": "SOLUSDT",
       "timeframe": "1h",
       "width": 2,
-      "status": "HISTORICAL_COST_FAIL",
+      "status": "SPOT_LONG_ONLY_AUDIT_PENDING",
       "reasons": [
+        "CAUSAL_UNRESOLVED_EXPOSURE_AUDIT_PENDING",
+        "BINANCE_SPOT_LONG_ONLY_AUDIT_PENDING",
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "FIVE_YEAR_DATA_COVERAGE_UNVERIFIED",
         "NONPOSITIVE_STRESS_NET_R_TRAIN,VALIDATION,HOLDOUT",
-        "SINGLE_COMPARISON_95_LOWER_NOT_POSITIVE",
+        "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
         "MULTIPLE_TESTING_NOT_CORRECTED",
         "UNVERIFIED_INSTRUCTOR_NUMERIC_CONTRACT",
         "INDEPENDENT_FORWARD_MARKET_EVIDENCE_MISSING",
@@ -1559,24 +1948,30 @@
         "validation": 102,
         "holdout": 96
       },
+      "spotLongOnlyAudited": false,
+      "spotLongOnlySampleSize": null,
       "netStressMeanR": {
         "train": -0.17098,
         "validation": -0.50854,
         "holdout": -0.50569
       },
-      "holdout5thPercentileBaseR": -0.44038,
+      "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": false,
-      "overlapAudited": false
+      "overlapAudited": false,
+      "overlappingPaperOutcomesExcluded": null
     },
     {
       "symbol": "SOLUSDT",
       "timeframe": "1h",
       "width": 4,
-      "status": "HISTORICAL_COST_FAIL",
+      "status": "SPOT_LONG_ONLY_AUDIT_PENDING",
       "reasons": [
+        "CAUSAL_UNRESOLVED_EXPOSURE_AUDIT_PENDING",
+        "BINANCE_SPOT_LONG_ONLY_AUDIT_PENDING",
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "FIVE_YEAR_DATA_COVERAGE_UNVERIFIED",
         "NONPOSITIVE_STRESS_NET_R_TRAIN,VALIDATION,HOLDOUT",
-        "SINGLE_COMPARISON_95_LOWER_NOT_POSITIVE",
+        "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
         "MULTIPLE_TESTING_NOT_CORRECTED",
         "UNVERIFIED_INSTRUCTOR_NUMERIC_CONTRACT",
         "INDEPENDENT_FORWARD_MARKET_EVIDENCE_MISSING",
@@ -1587,14 +1982,17 @@
         "validation": 66,
         "holdout": 92
       },
+      "spotLongOnlyAudited": false,
+      "spotLongOnlySampleSize": null,
       "netStressMeanR": {
         "train": -0.41523,
         "validation": -0.36302,
         "holdout": -0.39727
       },
-      "holdout5thPercentileBaseR": -0.4882,
+      "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": false,
-      "overlapAudited": false
+      "overlapAudited": false,
+      "overlappingPaperOutcomesExcluded": null
     },
     {
       "symbol": "SOLUSDT",
@@ -1602,6 +2000,7 @@
       "width": 2,
       "status": "INSUFFICIENT_SAMPLES",
       "reasons": [
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "LOW_TRAIN_VALIDATION_OR_HOLDOUT_SAMPLE",
         "MISSING_NET_COST_STRESS_ESTIMATE",
         "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
@@ -1615,6 +2014,12 @@
         "validation": 0,
         "holdout": 0
       },
+      "spotLongOnlyAudited": true,
+      "spotLongOnlySampleSize": {
+        "train": 1,
+        "validation": 0,
+        "holdout": 0
+      },
       "netStressMeanR": {
         "train": 13.27902,
         "validation": null,
@@ -1622,7 +2027,8 @@
       },
       "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": true,
-      "overlapAudited": false
+      "overlapAudited": true,
+      "overlappingPaperOutcomesExcluded": 0
     },
     {
       "symbol": "SOLUSDT",
@@ -1630,6 +2036,7 @@
       "width": 4,
       "status": "INSUFFICIENT_SAMPLES",
       "reasons": [
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "LOW_TRAIN_VALIDATION_OR_HOLDOUT_SAMPLE",
         "MISSING_NET_COST_STRESS_ESTIMATE",
         "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
@@ -1643,6 +2050,12 @@
         "validation": 0,
         "holdout": 0
       },
+      "spotLongOnlyAudited": true,
+      "spotLongOnlySampleSize": {
+        "train": 0,
+        "validation": 0,
+        "holdout": 0
+      },
       "netStressMeanR": {
         "train": null,
         "validation": null,
@@ -1650,7 +2063,8 @@
       },
       "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": true,
-      "overlapAudited": false
+      "overlapAudited": true,
+      "overlappingPaperOutcomesExcluded": 0
     },
     {
       "symbol": "SOLUSDT",
@@ -1658,35 +2072,10 @@
       "width": 2,
       "status": "HISTORICAL_COST_FAIL",
       "reasons": [
-        "NONPOSITIVE_STRESS_NET_R_TRAIN,VALIDATION,HOLDOUT",
-        "SINGLE_COMPARISON_95_LOWER_NOT_POSITIVE",
-        "MULTIPLE_TESTING_NOT_CORRECTED",
-        "UNVERIFIED_INSTRUCTOR_NUMERIC_CONTRACT",
-        "INDEPENDENT_FORWARD_MARKET_EVIDENCE_MISSING",
-        "REAL_EXECUTION_FILL_UNOBSERVED"
-      ],
-      "sampleSize": {
-        "train": 78,
-        "validation": 34,
-        "holdout": 31
-      },
-      "netStressMeanR": {
-        "train": -0.09953,
-        "validation": -0.09397,
-        "holdout": -0.0082
-      },
-      "holdout5thPercentileBaseR": -0.5517,
-      "gapFreeFiveYearDataVerified": true,
-      "overlapAudited": false
-    },
-    {
-      "symbol": "SOLUSDT",
-      "timeframe": "4h",
-      "width": 4,
-      "status": "HISTORICAL_COST_FAIL",
-      "reasons": [
+        "RAW_BOOTSTRAP_INVALIDATED_BY_OVERLAP_FILTER",
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "LOW_TRAIN_VALIDATION_OR_HOLDOUT_SAMPLE",
-        "NONPOSITIVE_STRESS_NET_R_TRAIN,VALIDATION,HOLDOUT",
+        "NONPOSITIVE_STRESS_NET_R_HOLDOUT",
         "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
         "MULTIPLE_TESTING_NOT_CORRECTED",
         "UNVERIFIED_INSTRUCTOR_NUMERIC_CONTRACT",
@@ -1694,28 +2083,75 @@
         "REAL_EXECUTION_FILL_UNOBSERVED"
       ],
       "sampleSize": {
-        "train": 59,
-        "validation": 27,
-        "holdout": 25
+        "train": 34,
+        "validation": 10,
+        "holdout": 14
+      },
+      "spotLongOnlyAudited": true,
+      "spotLongOnlySampleSize": {
+        "train": 34,
+        "validation": 10,
+        "holdout": 14
       },
       "netStressMeanR": {
-        "train": -0.18759,
-        "validation": -0.13236,
-        "holdout": -0.39054
+        "train": 0.10587,
+        "validation": 0.70078,
+        "holdout": -0.16888
       },
       "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": true,
-      "overlapAudited": false
+      "overlapAudited": true,
+      "overlappingPaperOutcomesExcluded": 10
+    },
+    {
+      "symbol": "SOLUSDT",
+      "timeframe": "4h",
+      "width": 4,
+      "status": "HISTORICAL_COST_FAIL",
+      "reasons": [
+        "RAW_BOOTSTRAP_INVALIDATED_BY_OVERLAP_FILTER",
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
+        "LOW_TRAIN_VALIDATION_OR_HOLDOUT_SAMPLE",
+        "NONPOSITIVE_STRESS_NET_R_TRAIN,HOLDOUT",
+        "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
+        "MULTIPLE_TESTING_NOT_CORRECTED",
+        "UNVERIFIED_INSTRUCTOR_NUMERIC_CONTRACT",
+        "INDEPENDENT_FORWARD_MARKET_EVIDENCE_MISSING",
+        "REAL_EXECUTION_FILL_UNOBSERVED"
+      ],
+      "sampleSize": {
+        "train": 26,
+        "validation": 7,
+        "holdout": 10
+      },
+      "spotLongOnlyAudited": true,
+      "spotLongOnlySampleSize": {
+        "train": 26,
+        "validation": 7,
+        "holdout": 10
+      },
+      "netStressMeanR": {
+        "train": -0.28814,
+        "validation": 0.22791,
+        "holdout": -0.64704
+      },
+      "holdout5thPercentileBaseR": null,
+      "gapFreeFiveYearDataVerified": true,
+      "overlapAudited": true,
+      "overlappingPaperOutcomesExcluded": 11
     },
     {
       "symbol": "SOLUSDT",
       "timeframe": "5m",
       "width": 2,
-      "status": "HISTORICAL_COST_FAIL",
+      "status": "SPOT_LONG_ONLY_AUDIT_PENDING",
       "reasons": [
+        "CAUSAL_UNRESOLVED_EXPOSURE_AUDIT_PENDING",
+        "BINANCE_SPOT_LONG_ONLY_AUDIT_PENDING",
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "FIVE_YEAR_DATA_COVERAGE_UNVERIFIED",
         "NONPOSITIVE_STRESS_NET_R_TRAIN,VALIDATION,HOLDOUT",
-        "SINGLE_COMPARISON_95_LOWER_NOT_POSITIVE",
+        "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
         "MULTIPLE_TESTING_NOT_CORRECTED",
         "UNVERIFIED_INSTRUCTOR_NUMERIC_CONTRACT",
         "INDEPENDENT_FORWARD_MARKET_EVIDENCE_MISSING",
@@ -1726,24 +2162,30 @@
         "validation": 1342,
         "holdout": 1197
       },
+      "spotLongOnlyAudited": false,
+      "spotLongOnlySampleSize": null,
       "netStressMeanR": {
         "train": -1.42324,
         "validation": -2.08123,
         "holdout": -2.4812
       },
-      "holdout5thPercentileBaseR": -1.29636,
+      "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": false,
-      "overlapAudited": false
+      "overlapAudited": false,
+      "overlappingPaperOutcomesExcluded": null
     },
     {
       "symbol": "SOLUSDT",
       "timeframe": "5m",
       "width": 4,
-      "status": "HISTORICAL_COST_FAIL",
+      "status": "SPOT_LONG_ONLY_AUDIT_PENDING",
       "reasons": [
+        "CAUSAL_UNRESOLVED_EXPOSURE_AUDIT_PENDING",
+        "BINANCE_SPOT_LONG_ONLY_AUDIT_PENDING",
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "FIVE_YEAR_DATA_COVERAGE_UNVERIFIED",
         "NONPOSITIVE_STRESS_NET_R_TRAIN,VALIDATION,HOLDOUT",
-        "SINGLE_COMPARISON_95_LOWER_NOT_POSITIVE",
+        "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
         "MULTIPLE_TESTING_NOT_CORRECTED",
         "UNVERIFIED_INSTRUCTOR_NUMERIC_CONTRACT",
         "INDEPENDENT_FORWARD_MARKET_EVIDENCE_MISSING",
@@ -1754,21 +2196,27 @@
         "validation": 1081,
         "holdout": 962
       },
+      "spotLongOnlyAudited": false,
+      "spotLongOnlySampleSize": null,
       "netStressMeanR": {
         "train": -1.17287,
         "validation": -1.49436,
         "holdout": -1.94049
       },
-      "holdout5thPercentileBaseR": -1.05407,
+      "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": false,
-      "overlapAudited": false
+      "overlapAudited": false,
+      "overlappingPaperOutcomesExcluded": null
     },
     {
       "symbol": "SOLUSDT",
       "timeframe": "6h",
       "width": 2,
-      "status": "HISTORICAL_COST_FAIL",
+      "status": "SPOT_LONG_ONLY_AUDIT_PENDING",
       "reasons": [
+        "CAUSAL_UNRESOLVED_EXPOSURE_AUDIT_PENDING",
+        "BINANCE_SPOT_LONG_ONLY_AUDIT_PENDING",
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "LOW_TRAIN_VALIDATION_OR_HOLDOUT_SAMPLE",
         "NONPOSITIVE_STRESS_NET_R_TRAIN,HOLDOUT",
         "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
@@ -1782,6 +2230,8 @@
         "validation": 13,
         "holdout": 18
       },
+      "spotLongOnlyAudited": false,
+      "spotLongOnlySampleSize": null,
       "netStressMeanR": {
         "train": -0.39295,
         "validation": 0.19433,
@@ -1789,14 +2239,18 @@
       },
       "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": true,
-      "overlapAudited": false
+      "overlapAudited": false,
+      "overlappingPaperOutcomesExcluded": null
     },
     {
       "symbol": "SOLUSDT",
       "timeframe": "6h",
       "width": 4,
-      "status": "HISTORICAL_COST_FAIL",
+      "status": "SPOT_LONG_ONLY_AUDIT_PENDING",
       "reasons": [
+        "CAUSAL_UNRESOLVED_EXPOSURE_AUDIT_PENDING",
+        "BINANCE_SPOT_LONG_ONLY_AUDIT_PENDING",
+        "SPOT_LONG_ONLY_95_CONFIDENCE_NOT_ESTABLISHED",
         "LOW_TRAIN_VALIDATION_OR_HOLDOUT_SAMPLE",
         "NONPOSITIVE_STRESS_NET_R_TRAIN,VALIDATION,HOLDOUT",
         "SINGLE_COMPARISON_95_LOWER_UNAVAILABLE",
@@ -1810,6 +2264,8 @@
         "validation": 11,
         "holdout": 11
       },
+      "spotLongOnlyAudited": false,
+      "spotLongOnlySampleSize": null,
       "netStressMeanR": {
         "train": -0.00775,
         "validation": -0.241,
@@ -1817,7 +2273,8 @@
       },
       "holdout5thPercentileBaseR": null,
       "gapFreeFiveYearDataVerified": true,
-      "overlapAudited": false
+      "overlapAudited": false,
+      "overlappingPaperOutcomesExcluded": null
     }
   ]
 }
