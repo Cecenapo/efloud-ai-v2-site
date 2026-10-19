@@ -92,3 +92,17 @@ test("separate Spot LONG-only table is fail-closed for unavailable audit cohorts
  assert.ok(ui.includes('spotAudited?fmt(m.spotLongOnlyAudit.nonOverlappingMeanEstimatedNetRStress):"—"'));
  assert.ok(ui.includes("const verifiedLower=false"));
 });
+
+test("separate Spot LONG risk display excludes unverifiable and real-cash claims",()=>{
+ const html=get("index.html"),ui=get("fiveyear-report.js");
+ for(const token of ['id="fiveyear-risk-rows"','id="fiveyear-risk-status"',
+  "Azami DD (R)","En uzun kayıp serisi"]){
+   assert.ok(html.includes(token),"missing "+token);
+ }
+ for(const token of ["p?.sampleSize===a.nonOverlappingResolvedPaperOutcomes",
+   "p?.realAccountPnL===null",
+   "p?.notionalAndPortfolioCapitalSimulated===false",
+   'values.push("—","—","—","—","—")']){
+   assert.ok(ui.includes(token),"unverified risk gate "+token);
+ }
+});
