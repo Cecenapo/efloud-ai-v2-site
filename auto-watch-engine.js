@@ -10,10 +10,11 @@
 const WIDTHS=[2,4],HISTORY=180,MAX_ZONE_BARS=50;
 const SYMBOLS=["BTCUSDT","ETHUSDT","SOLUSDT","DODOUSDT"];
 const FRAMES=["5m","15m","1h","4h","6h","1d","1w","1M"];
+const PERIOD={ "5m":300,"15m":900,"1h":3600,"4h":14400,"6h":21600,"1d":86400,"1w":604800,"1M":null };
 const SOURCE={sfp:["K26.3","K26.4","K26.7"],msb:["K19.1","K19.9","K19.12"],
  ob:["K18.1","K18.4","K18.7"],fvg:["K13.1","K13.15"],
  target:["K22.2","K22.5","K28.8"]};
-function check(rows){
+function check(rows,timeframe=null){
  if(!Array.isArray(rows)||rows.length<18)throw Error("En az 18 gerçek kapanmış mum gerekli.");
  const b=rows.slice(-HISTORY);let prev=-Infinity;
  return b.map((x,i)=>{
@@ -23,6 +24,12 @@ function check(rows){
   if(!Number.isSafeInteger(t)||t<=prev||
      vals.some(z=>!Number.isFinite(z)||z<=0)||h<Math.max(o,c)||l>Math.min(o,c))
     throw Error("Hatalı/sırasız Binance fiyat mumları");
+  if(i>0&&timeframe){
+    const old=b[i-1].time;
+    const expected=timeframe==="1M"?(d=>Date.UTC(d.getUTCFullYear(),d.getUTCMonth()+1,1)/1000)(new Date(old*1000)):
+      old+PERIOD[timeframe];
+    if(t!==expected)throw Error("Eksik veya düzensiz Binance mum serisi");
+  }
   prev=t;return {time:t,o,h,l,c};
  });
 }
@@ -79,7 +86,7 @@ function scan({symbol,timeframe,bars}){
  if(!SYMBOLS.includes(symbol)||!FRAMES.includes(timeframe))
   throw Error("Yalnız dört Binance Spot paritesi ve sekiz periyot geçerli");
  // The user sees hypotheses only if authentic, fully closed bars exist.
- const b=check(bars),list=[],contexts=[];
+ const b=check(bars,timeframe),list=[],contexts=[];
  for(const k of WIDTHS){
   const {high,low}=pivots(b,k,b.length-2);
   const ev=events(b,high,low);
