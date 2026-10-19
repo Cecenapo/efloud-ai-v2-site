@@ -35,6 +35,22 @@ test("SFP observes next closed candle after causally confirmed low",()=>{
  const p=engine.scan({symbol:"BTCUSDT",timeframe:"5m",bars:make()});
  assert.ok(p.contexts.some(c=>c.observedEvents.includes("SFP+NEXT_GREEN")));
 });
+test("valid synthetic SFP + fresh FVG + untouched high gives CONDITIONAL watch only",()=>{
+ const b=make();
+ Object.assign(b[21],{open:98,high:98.5,low:97.5,close:98});
+ Object.assign(b[22],{open:96,high:103,low:94,close:100});
+ Object.assign(b[23],{open:100,high:105,low:99,close:103});
+ const out=engine.scan({symbol:"BTCUSDT",timeframe:"5m",bars:b});
+ const c=out.items.find(x=>x.side==="LONG"&&x.zone.type==="FVG_PROXY");
+ assert.ok(c,"a closed-candle conditional watch should be discovered");
+ assert.equal(c.indicativeEntry,98.75);
+ assert.equal(c.stop,94);
+ assert.ok(c.targets[0].price>c.indicativeEntry);
+ assert.ok(c.targets[0].grossR>0);
+ assert.equal(c.tradeAllowed,false);
+ assert.equal(c.netR,null);
+ assert.equal(c.orderPlaced,false);
+});
 test("strictly rejects current open candle and missing intervals",()=>{
  const b=make();
  assert.throws(()=>engine.scan({symbol:"BTCUSDT",timeframe:"5m",
