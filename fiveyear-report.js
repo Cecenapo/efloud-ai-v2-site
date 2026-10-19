@@ -16,14 +16,18 @@ function render(){
   const r=document.createElement("tr");
   const audited=m.overlapAudit?.unresolvedPaperExposureNotIgnored===true&&
     m.overlapAudit?.sameBarCloseAndNewTouchBlocked===true;
-  const verifiedLower=audited&&m.overlapAudit.overlappingOutcomesExcluded===0&&
-    m.overlapAudit.unresolvedOrAmbiguousOccupancyBlocks===0;
+  const spotAudited=m.spotLongOnlyAudit?.unresolvedPaperExposureNotIgnored===true&&
+    m.spotLongOnlyAudit?.sameBarCloseAndNewTouchBlocked===true&&
+    m.spotLongOnlyAudit?.onePaperPositionPerMarketAndPivot===true;
+  const verifiedLower=false; // Mixed raw bootstrap cannot certify Spot LONG.
   for(const val of [m.symbol.replace("USDT",""),m.timeframe,"k="+m.pivotWidth,
     m.split,m.frozenWatches,m.resolved,
     audited?m.overlapAudit.nonOverlappingResolvedPaperOutcomes:"—",
     audited?m.overlapAudit.overlappingOutcomesExcluded:"—",
     fmt(m.netBase),fmt(m.netStress),
     audited?fmt(m.overlapAudit.nonOverlappingMeanEstimatedNetRStress):"—",
+    spotAudited?m.spotLongOnlyAudit.nonOverlappingResolvedPaperOutcomes:"—",
+    spotAudited?fmt(m.spotLongOnlyAudit.nonOverlappingMeanEstimatedNetRStress):"—",
     !verifiedLower?"Yeniden hesaplanmalı":
       (m.bootstrapLower===null?"Ölçülemedi":fmt(m.bootstrapLower))]){
     const cell=document.createElement("td");txt(cell,val);r.appendChild(cell);
@@ -32,7 +36,7 @@ function render(){
  }
  if(!rows.length){
    const row=document.createElement("tr"),cell=document.createElement("td");
-   cell.colSpan=12;txt(cell,"Bu zaman dilimi için doğrulanmış yeni-motor raporu henüz yok.");
+   cell.colSpan=14;txt(cell,"Bu zaman dilimi için doğrulanmış yeni-motor raporu henüz yok.");
    row.appendChild(cell);tbody.appendChild(row);
  }
  txt($("fiveyear-count"),rows.length+" araştırma grubu gösteriliyor");
@@ -99,7 +103,7 @@ async function init(){
     "Son %20 testte baz net R pozitif gözlenen grup: "+positive+
     "/"+measured.length+" (bağımsız kanıt değil). "+
     "Açık pozisyon blokajını içeren denetim: "+causalAudited+"/"+holdout.length+
-    " grup. Eski çakışma sonuçları gizlenir. "+
+    " grup. Spot LONG sonuçları ayrıca gösterilir; eski çakışma ve SHORT kaynaklı sonuçlar Spot kanıtı sayılmaz. "+
     (certified>0?"Baz senaryoda alt güven sınırı pozitif grup: "+certified+
       " — araştırma düzeyi; canlı doğrulama yok. ":"")+
     "Eksik periyot: "+(absent.join(", ")||"yok")+
