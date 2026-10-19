@@ -3,11 +3,11 @@
   "kind": "EFLOUD_V2_PUBLIC_HISTORICAL_5Y_SNAPSHOT",
   "origin": "Cecenapo/efloud-ai-cloud",
   "engine": "EFLOUD_447_RULE_FIVE_YEAR_CAUSAL_REPLAY_V1",
-  "updatedUtc": "2026-10-19T18:00:34.551000+00:00",
-  "requestedFromUtc": "2021-10-19T18:00:34.551000+00:00",
+  "updatedUtc": "2026-10-19T18:18:08.017000+00:00",
+  "requestedFromUtc": "2021-10-19T18:18:08.017000+00:00",
   "reportStatus": "HISTORICAL_DEVELOPER_HYPOTHESES_NOT_LIVE_VALIDATION",
-  "historicalSeriesTested": 28,
-  "totalFrozenResearchWatches": 38159,
+  "historicalSeriesTested": 32,
+  "totalFrozenResearchWatches": 124587,
   "reportedTimeframes": [
     "15m",
     "1M",
@@ -15,6 +15,7 @@
     "1h",
     "1w",
     "4h",
+    "5m",
     "6h"
   ],
   "availableTimeframes": [
@@ -34,26 +35,9 @@
   "teacherApprovedStrategies": 0,
   "independentlyProvenStrategies": 0,
   "realOrders": 0,
-  "complete32Series": false,
+  "complete32Series": true,
   "fiveYearsGapFree": false,
-  "seriesStillMissing": [
-    {
-      "symbol": "BTCUSDT",
-      "timeframe": "5m"
-    },
-    {
-      "symbol": "ETHUSDT",
-      "timeframe": "5m"
-    },
-    {
-      "symbol": "SOLUSDT",
-      "timeframe": "5m"
-    },
-    {
-      "symbol": "DODOUSDT",
-      "timeframe": "5m"
-    }
-  ],
+  "seriesStillMissing": [],
   "seriesCoverage": [
     {
       "symbol": "BTCUSDT",
@@ -109,6 +93,16 @@
     },
     {
       "symbol": "BTCUSDT",
+      "timeframe": "5m",
+      "firstCandleUtc": "2021-10-19T18:20:00+00:00",
+      "lastCandleUtc": "2026-10-19T18:15:00+00:00",
+      "authenticBars": 525869,
+      "gapCount": 2,
+      "providerIrregularBars": 2,
+      "fiveYearDataCoverageVerified": false
+    },
+    {
+      "symbol": "BTCUSDT",
       "timeframe": "6h",
       "firstCandleUtc": "2021-10-19T18:00:00+00:00",
       "lastCandleUtc": "2026-10-19T12:00:00+00:00",
@@ -171,6 +165,16 @@
     },
     {
       "symbol": "DODOUSDT",
+      "timeframe": "5m",
+      "firstCandleUtc": "2021-10-19T18:20:00+00:00",
+      "lastCandleUtc": "2026-10-19T18:15:00+00:00",
+      "authenticBars": 525869,
+      "gapCount": 2,
+      "providerIrregularBars": 2,
+      "fiveYearDataCoverageVerified": false
+    },
+    {
+      "symbol": "DODOUSDT",
       "timeframe": "6h",
       "firstCandleUtc": "2021-10-19T18:00:00+00:00",
       "lastCandleUtc": "2026-10-19T12:00:00+00:00",
@@ -230,6 +234,16 @@
       "timeframe": "4h",
       "fiveYearDataCoverageVerified": false,
       "coverageMetadataMissing": true
+    },
+    {
+      "symbol": "ETHUSDT",
+      "timeframe": "5m",
+      "firstCandleUtc": "2021-10-19T18:20:00+00:00",
+      "lastCandleUtc": "2026-10-19T18:15:00+00:00",
+      "authenticBars": 525869,
+      "gapCount": 2,
+      "providerIrregularBars": 2,
+      "fiveYearDataCoverageVerified": false
     },
     {
       "symbol": "ETHUSDT",
@@ -295,6 +309,16 @@
     },
     {
       "symbol": "SOLUSDT",
+      "timeframe": "5m",
+      "firstCandleUtc": "2021-10-19T18:20:00+00:00",
+      "lastCandleUtc": "2026-10-19T18:15:00+00:00",
+      "authenticBars": 525870,
+      "gapCount": 1,
+      "providerIrregularBars": 1,
+      "fiveYearDataCoverageVerified": false
+    },
+    {
+      "symbol": "SOLUSDT",
       "timeframe": "6h",
       "firstCandleUtc": "2021-10-19T18:00:00+00:00",
       "lastCandleUtc": "2026-10-19T12:00:00+00:00",
@@ -305,7 +329,7 @@
     }
   ],
   "errorsOrUnavailableSeries": [],
-  "validationNote": "These are historical researcher-defined hypotheses. Not independent forward trading proof.",
+  "validationNote": "64 retrospective developer hypotheses, not instructor source verified or independent forward edge.",
   "metrics": [
     {
       "symbol": "BTCUSDT",
@@ -875,6 +899,115 @@
         "TARGET_FIRST": 9,
         "STOP_FIRST": 20,
         "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 4
+      }
+    },
+    {
+      "symbol": "BTCUSDT",
+      "timeframe": "5m",
+      "pivotWidth": 2,
+      "split": "holdout",
+      "frozenWatches": 3113,
+      "resolved": 1437,
+      "netBase": -2.55856,
+      "netStress": -5.1219,
+      "bootstrapLower": -2.81256,
+      "counts": {
+        "MISSED_TARGET_BEFORE_ENTRY": 1406,
+        "STOP_FIRST": 960,
+        "TARGET_FIRST": 477,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 266,
+        "AMBIGUOUS_TARGET_AND_STOP_SAME_BAR": 4
+      }
+    },
+    {
+      "symbol": "BTCUSDT",
+      "timeframe": "5m",
+      "pivotWidth": 2,
+      "split": "train",
+      "frozenWatches": 9390,
+      "resolved": 4575,
+      "netBase": -2.11082,
+      "netStress": -4.33691,
+      "bootstrapLower": null,
+      "counts": {
+        "MISSED_TARGET_BEFORE_ENTRY": 4028,
+        "TARGET_FIRST": 1686,
+        "STOP_FIRST": 2889,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 778,
+        "AMBIGUOUS_TARGET_AND_STOP_SAME_BAR": 9
+      }
+    },
+    {
+      "symbol": "BTCUSDT",
+      "timeframe": "5m",
+      "pivotWidth": 2,
+      "split": "validation",
+      "frozenWatches": 3199,
+      "resolved": 1513,
+      "netBase": -2.34345,
+      "netStress": -4.78475,
+      "bootstrapLower": null,
+      "counts": {
+        "MISSED_TARGET_BEFORE_ENTRY": 1409,
+        "TARGET_FIRST": 523,
+        "STOP_FIRST": 990,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 276,
+        "AMBIGUOUS_TARGET_AND_STOP_SAME_BAR": 1
+      }
+    },
+    {
+      "symbol": "BTCUSDT",
+      "timeframe": "5m",
+      "pivotWidth": 4,
+      "split": "holdout",
+      "frozenWatches": 2187,
+      "resolved": 1141,
+      "netBase": -1.92401,
+      "netStress": -3.79935,
+      "bootstrapLower": -2.14471,
+      "counts": {
+        "MISSED_TARGET_BEFORE_ENTRY": 899,
+        "TARGET_FIRST": 408,
+        "STOP_FIRST": 733,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 144,
+        "AMBIGUOUS_TARGET_AND_STOP_SAME_BAR": 2,
+        "CENSORED_HISTORY_END": 1
+      }
+    },
+    {
+      "symbol": "BTCUSDT",
+      "timeframe": "5m",
+      "pivotWidth": 4,
+      "split": "train",
+      "frozenWatches": 6796,
+      "resolved": 3709,
+      "netBase": -1.57207,
+      "netStress": -3.22002,
+      "bootstrapLower": null,
+      "counts": {
+        "STOP_FIRST": 2294,
+        "MISSED_TARGET_BEFORE_ENTRY": 2652,
+        "TARGET_FIRST": 1416,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 428,
+        "CENSORED_MARKET_GAP": 2,
+        "AMBIGUOUS_TARGET_AND_STOP_SAME_BAR": 4
+      }
+    },
+    {
+      "symbol": "BTCUSDT",
+      "timeframe": "5m",
+      "pivotWidth": 4,
+      "split": "validation",
+      "frozenWatches": 2268,
+      "resolved": 1215,
+      "netBase": -1.9402,
+      "netStress": -3.91456,
+      "bootstrapLower": null,
+      "counts": {
+        "STOP_FIRST": 761,
+        "MISSED_TARGET_BEFORE_ENTRY": 927,
+        "TARGET_FIRST": 455,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 125
       }
     },
     {
@@ -1544,6 +1677,117 @@
         "STOP_FIRST": 13,
         "MISSED_TARGET_BEFORE_ENTRY": 15,
         "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 3
+      }
+    },
+    {
+      "symbol": "DODOUSDT",
+      "timeframe": "5m",
+      "pivotWidth": 2,
+      "split": "holdout",
+      "frozenWatches": 1276,
+      "resolved": 611,
+      "netBase": -0.48324,
+      "netStress": -1.02888,
+      "bootstrapLower": -0.62811,
+      "counts": {
+        "TARGET_FIRST": 236,
+        "STOP_FIRST": 375,
+        "MISSED_TARGET_BEFORE_ENTRY": 544,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 96,
+        "INVALIDATED_BEFORE_ENTRY": 25
+      }
+    },
+    {
+      "symbol": "DODOUSDT",
+      "timeframe": "5m",
+      "pivotWidth": 2,
+      "split": "train",
+      "frozenWatches": 4459,
+      "resolved": 2257,
+      "netBase": -0.37656,
+      "netStress": -0.91781,
+      "bootstrapLower": null,
+      "counts": {
+        "TARGET_FIRST": 877,
+        "MISSED_TARGET_BEFORE_ENTRY": 1858,
+        "STOP_FIRST": 1381,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 311,
+        "AMBIGUOUS_TARGET_AND_STOP_SAME_BAR": 2,
+        "CENSORED_MARKET_GAP": 1,
+        "INVALIDATED_BEFORE_ENTRY": 29
+      }
+    },
+    {
+      "symbol": "DODOUSDT",
+      "timeframe": "5m",
+      "pivotWidth": 2,
+      "split": "validation",
+      "frozenWatches": 1062,
+      "resolved": 557,
+      "netBase": -0.42997,
+      "netStress": -0.86101,
+      "bootstrapLower": null,
+      "counts": {
+        "MISSED_TARGET_BEFORE_ENTRY": 423,
+        "STOP_FIRST": 355,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 74,
+        "TARGET_FIRST": 202,
+        "INVALIDATED_BEFORE_ENTRY": 8
+      }
+    },
+    {
+      "symbol": "DODOUSDT",
+      "timeframe": "5m",
+      "pivotWidth": 4,
+      "split": "holdout",
+      "frozenWatches": 974,
+      "resolved": 537,
+      "netBase": -0.24475,
+      "netStress": -0.69,
+      "bootstrapLower": -0.42381,
+      "counts": {
+        "TARGET_FIRST": 225,
+        "MISSED_TARGET_BEFORE_ENTRY": 373,
+        "STOP_FIRST": 312,
+        "INVALIDATED_BEFORE_ENTRY": 14,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 46,
+        "CENSORED_HISTORY_END": 4
+      }
+    },
+    {
+      "symbol": "DODOUSDT",
+      "timeframe": "5m",
+      "pivotWidth": 4,
+      "split": "train",
+      "frozenWatches": 3414,
+      "resolved": 1858,
+      "netBase": -0.37621,
+      "netStress": -0.78302,
+      "bootstrapLower": null,
+      "counts": {
+        "MISSED_TARGET_BEFORE_ENTRY": 1349,
+        "STOP_FIRST": 1131,
+        "TARGET_FIRST": 729,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 192,
+        "INVALIDATED_BEFORE_ENTRY": 13
+      }
+    },
+    {
+      "symbol": "DODOUSDT",
+      "timeframe": "5m",
+      "pivotWidth": 4,
+      "split": "validation",
+      "frozenWatches": 815,
+      "resolved": 481,
+      "netBase": -0.02551,
+      "netStress": -0.37725,
+      "bootstrapLower": null,
+      "counts": {
+        "MISSED_TARGET_BEFORE_ENTRY": 295,
+        "STOP_FIRST": 279,
+        "TARGET_FIRST": 203,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 35,
+        "INVALIDATED_BEFORE_ENTRY": 3
       }
     },
     {
@@ -2218,6 +2462,114 @@
     },
     {
       "symbol": "ETHUSDT",
+      "timeframe": "5m",
+      "pivotWidth": 2,
+      "split": "holdout",
+      "frozenWatches": 3086,
+      "resolved": 1474,
+      "netBase": -1.82453,
+      "netStress": -3.79474,
+      "bootstrapLower": -2.0223,
+      "counts": {
+        "MISSED_TARGET_BEFORE_ENTRY": 1331,
+        "TARGET_FIRST": 533,
+        "STOP_FIRST": 941,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 278,
+        "AMBIGUOUS_TARGET_AND_STOP_SAME_BAR": 3
+      }
+    },
+    {
+      "symbol": "ETHUSDT",
+      "timeframe": "5m",
+      "pivotWidth": 2,
+      "split": "train",
+      "frozenWatches": 9286,
+      "resolved": 4464,
+      "netBase": -1.67324,
+      "netStress": -3.4345,
+      "bootstrapLower": null,
+      "counts": {
+        "MISSED_TARGET_BEFORE_ENTRY": 3997,
+        "TARGET_FIRST": 1618,
+        "STOP_FIRST": 2846,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 814,
+        "CENSORED_MARKET_GAP": 3,
+        "AMBIGUOUS_TARGET_AND_STOP_SAME_BAR": 8
+      }
+    },
+    {
+      "symbol": "ETHUSDT",
+      "timeframe": "5m",
+      "pivotWidth": 2,
+      "split": "validation",
+      "frozenWatches": 3070,
+      "resolved": 1470,
+      "netBase": -1.27513,
+      "netStress": -2.74667,
+      "bootstrapLower": null,
+      "counts": {
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 256,
+        "STOP_FIRST": 939,
+        "MISSED_TARGET_BEFORE_ENTRY": 1344,
+        "TARGET_FIRST": 531
+      }
+    },
+    {
+      "symbol": "ETHUSDT",
+      "timeframe": "5m",
+      "pivotWidth": 4,
+      "split": "holdout",
+      "frozenWatches": 2172,
+      "resolved": 1153,
+      "netBase": -1.30294,
+      "netStress": -2.76458,
+      "bootstrapLower": -1.48259,
+      "counts": {
+        "MISSED_TARGET_BEFORE_ENTRY": 858,
+        "STOP_FIRST": 710,
+        "TARGET_FIRST": 443,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 160,
+        "AMBIGUOUS_TARGET_AND_STOP_SAME_BAR": 1
+      }
+    },
+    {
+      "symbol": "ETHUSDT",
+      "timeframe": "5m",
+      "pivotWidth": 4,
+      "split": "train",
+      "frozenWatches": 6762,
+      "resolved": 3645,
+      "netBase": -1.17731,
+      "netStress": -2.45475,
+      "bootstrapLower": null,
+      "counts": {
+        "STOP_FIRST": 2247,
+        "MISSED_TARGET_BEFORE_ENTRY": 2682,
+        "TARGET_FIRST": 1399,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 428,
+        "AMBIGUOUS_TARGET_AND_STOP_SAME_BAR": 5,
+        "CENSORED_MARKET_GAP": 1
+      }
+    },
+    {
+      "symbol": "ETHUSDT",
+      "timeframe": "5m",
+      "pivotWidth": 4,
+      "split": "validation",
+      "frozenWatches": 2128,
+      "resolved": 1107,
+      "netBase": -0.97113,
+      "netStress": -2.08738,
+      "bootstrapLower": null,
+      "counts": {
+        "MISSED_TARGET_BEFORE_ENTRY": 890,
+        "STOP_FIRST": 699,
+        "TARGET_FIRST": 409,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 130
+      }
+    },
+    {
+      "symbol": "ETHUSDT",
       "timeframe": "6h",
       "pivotWidth": 2,
       "split": "holdout",
@@ -2880,6 +3232,115 @@
         "TARGET_FIRST": 13,
         "STOP_FIRST": 14,
         "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 2
+      }
+    },
+    {
+      "symbol": "SOLUSDT",
+      "timeframe": "5m",
+      "pivotWidth": 2,
+      "split": "holdout",
+      "frozenWatches": 2499,
+      "resolved": 1197,
+      "netBase": -1.15949,
+      "netStress": -2.4812,
+      "bootstrapLower": -1.29636,
+      "counts": {
+        "MISSED_TARGET_BEFORE_ENTRY": 1088,
+        "STOP_FIRST": 757,
+        "TARGET_FIRST": 440,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 214
+      }
+    },
+    {
+      "symbol": "SOLUSDT",
+      "timeframe": "5m",
+      "pivotWidth": 2,
+      "split": "train",
+      "frozenWatches": 6700,
+      "resolved": 3307,
+      "netBase": -0.62738,
+      "netStress": -1.42324,
+      "bootstrapLower": null,
+      "counts": {
+        "STOP_FIRST": 2059,
+        "MISSED_TARGET_BEFORE_ENTRY": 2977,
+        "AMBIGUOUS_TARGET_AND_STOP_SAME_BAR": 2,
+        "TARGET_FIRST": 1248,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 413,
+        "CENSORED_MARKET_GAP": 1
+      }
+    },
+    {
+      "symbol": "SOLUSDT",
+      "timeframe": "5m",
+      "pivotWidth": 2,
+      "split": "validation",
+      "frozenWatches": 2784,
+      "resolved": 1342,
+      "netBase": -1.04971,
+      "netStress": -2.08123,
+      "bootstrapLower": null,
+      "counts": {
+        "MISSED_TARGET_BEFORE_ENTRY": 1224,
+        "STOP_FIRST": 900,
+        "TARGET_FIRST": 442,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 216,
+        "AMBIGUOUS_TARGET_AND_STOP_SAME_BAR": 2
+      }
+    },
+    {
+      "symbol": "SOLUSDT",
+      "timeframe": "5m",
+      "pivotWidth": 4,
+      "split": "holdout",
+      "frozenWatches": 1838,
+      "resolved": 962,
+      "netBase": -0.94008,
+      "netStress": -1.94049,
+      "bootstrapLower": -1.05407,
+      "counts": {
+        "MISSED_TARGET_BEFORE_ENTRY": 759,
+        "STOP_FIRST": 607,
+        "TARGET_FIRST": 355,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 115,
+        "AMBIGUOUS_TARGET_AND_STOP_SAME_BAR": 1,
+        "CENSORED_HISTORY_END": 1
+      }
+    },
+    {
+      "symbol": "SOLUSDT",
+      "timeframe": "5m",
+      "pivotWidth": 4,
+      "split": "train",
+      "frozenWatches": 5087,
+      "resolved": 2804,
+      "netBase": -0.5675,
+      "netStress": -1.17287,
+      "bootstrapLower": null,
+      "counts": {
+        "MISSED_TARGET_BEFORE_ENTRY": 2042,
+        "TARGET_FIRST": 1035,
+        "STOP_FIRST": 1771,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 238,
+        "AMBIGUOUS_TARGET_AND_STOP_SAME_BAR": 1
+      }
+    },
+    {
+      "symbol": "SOLUSDT",
+      "timeframe": "5m",
+      "pivotWidth": 4,
+      "split": "validation",
+      "frozenWatches": 2063,
+      "resolved": 1081,
+      "netBase": -0.7118,
+      "netStress": -1.49436,
+      "bootstrapLower": null,
+      "counts": {
+        "TARGET_FIRST": 398,
+        "STOP_FIRST": 684,
+        "MISSED_TARGET_BEFORE_ENTRY": 864,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 116,
+        "AMBIGUOUS_TARGET_AND_STOP_SAME_BAR": 1
       }
     },
     {
