@@ -81,3 +81,14 @@ test("UI conceals obsolete paper overlap results until unresolved exposure is au
    if(!good)assert.notEqual(m.overlapAudit.independentEvidenceEstablished,true);
  }
 });
+
+test("separate Spot LONG-only table is fail-closed for unavailable audit cohorts",()=>{
+ const html=get("index.html"),ui=get("fiveyear-report.js");
+ assert.ok(html.includes("Spot LONG adet"));
+ assert.ok(html.includes("Spot LONG net R"));
+ assert.ok(ui.includes("spotLongOnlyAudit?.unresolvedPaperExposureNotIgnored===true"));
+ assert.ok(ui.includes("spotLongOnlyAudit?.sameBarCloseAndNewTouchBlocked===true"));
+ assert.ok(ui.includes('spotAudited?m.spotLongOnlyAudit.nonOverlappingResolvedPaperOutcomes:"—"'));
+ assert.ok(ui.includes('spotAudited?fmt(m.spotLongOnlyAudit.nonOverlappingMeanEstimatedNetRStress):"—"'));
+ assert.ok(ui.includes("const verifiedLower=false"));
+});
