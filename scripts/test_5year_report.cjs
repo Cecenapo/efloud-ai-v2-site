@@ -106,3 +106,12 @@ test("separate Spot LONG risk display excludes unverifiable and real-cash claims
    assert.ok(ui.includes(token),"unverified risk gate "+token);
  }
 });
+
+test("annual paper R is descriptive within the selected train/validation/holdout slice",()=>{
+ const html=get("index.html"),script=get("fiveyear-report.js");
+ assert.ok(html.includes("Dönem içindeki yıllık R dağılımı"));
+ assert.ok(script.includes("annualPaperRiskProfilesStress"));
+ assert.ok(script.includes("detail.cumulativeEstimatedR"));
+ assert.ok(script.includes("year.localeCompare"));
+ assert.ok(script.includes('values.push("—","—","—","—","—","—")'));
+});
