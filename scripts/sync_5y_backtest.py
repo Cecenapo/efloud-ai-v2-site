@@ -100,6 +100,17 @@ def project(replay: dict,evidence: dict) -> tuple[dict,dict]:
                 type(o.get("nonOverlappingResolvedPaperOutcomes")) is not int or
                 o["nonOverlappingResolvedPaperOutcomes"]>m["resolvedWithinSplit"]):
                 raise ValueError("Malformed or promoted overlap research")
+        long_only=m.get("spotLongOnlyAudit")
+        if long_only is not None:
+            long_count=m.get("spotLongOnlyResolvedWithinSplit")
+            if (type(long_count) is not int or
+                not 0<=long_count<=m["resolvedWithinSplit"] or
+                not isinstance(long_only,dict) or
+                long_only.get("realOrderFills")!=0 or
+                long_only.get("independentEvidenceEstablished") is not False or
+                type(long_only.get("nonOverlappingResolvedPaperOutcomes")) is not int or
+                not 0<=long_only["nonOverlappingResolvedPaperOutcomes"]<=long_count):
+                raise ValueError("Malformed or promoted Spot LONG-only research")
         compact.append({
             "symbol":m["symbol"],"timeframe":m["timeframe"],
             "pivotWidth":m["experimentalPivotWidth"],"split":m["split"],
@@ -109,7 +120,9 @@ def project(replay: dict,evidence: dict) -> tuple[dict,dict]:
             "netStress":m.get("meanEstimatedNetRStress"),
             "bootstrapLower":m.get("blockBootstrapOneSided95LowerBaseR"),
             "counts":m.get("outcomeCounts",{}),
-            "overlapAudit":o
+            "overlapAudit":o,
+            "spotLongOnlyResolvedWithinSplit":m.get("spotLongOnlyResolvedWithinSplit"),
+            "spotLongOnlyAudit":long_only
         })
     if seen!=EXPECTED:
         raise ValueError("Historical matrix not complete")
@@ -154,6 +167,8 @@ def project(replay: dict,evidence: dict) -> tuple[dict,dict]:
             "symbol":key[0],"timeframe":key[1],"width":key[2],
             "status":x["status"],"reasons":x.get("reasons",[]),
             "sampleSize":x["sampleSize"],
+            "spotLongOnlyAudited":x.get("spotLongOnlyAudited") is True,
+            "spotLongOnlySampleSize":x.get("spotLongOnlySampleSize"),
             "netStressMeanR":x["netStressMeanR"],
             "holdout5thPercentileBaseR":x.get("holdout5thPercentileBaseR"),
             "gapFreeFiveYearDataVerified":x["gapFreeFiveYearDataVerified"]
