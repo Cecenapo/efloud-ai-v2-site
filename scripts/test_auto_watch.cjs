@@ -60,6 +60,15 @@ test("strictly rejects current open candle and missing intervals",()=>{
  assert.throws(()=>engine.scan({symbol:"FAKEUSDT",timeframe:"5m",bars:b}));
  assert.throws(()=>engine.scan({symbol:"BTCUSDT",timeframe:"2h",bars:b}));
 });
+test("auto-watch never presents a candidate without showing historical evidence gate",()=>{
+ const ui=fs.readFileSync(path.join(__dirname,"..","auto-watch-ui.js"),"utf8");
+ assert.ok(ui.includes('fetch("./auto_structure_evidence.json"'));
+ assert.ok(ui.includes('ev.sourceReportUtc!==hist.updatedUtc'));
+ assert.ok(ui.includes('ev.assessments.length!==64'));
+ assert.ok(ui.includes('5 YILLIK BACKTEST · BU DENEY MALİYET TESTİNİ GEÇMEDİ'));
+ assert.ok(ui.includes('Tarihsel kanıt raporu doğrulanmadı'));
+ assert.ok(ui.includes('card.append(h,sub,gate,levels,targets,reason,btn,note)'));
+});
 test("source catalog includes all user-note IDs used by candidate families",()=>{
  const d=JSON.parse(fs.readFileSync(path.join(__dirname,"..","instructor_rules.json"),"utf8"));
  const ids=new Set(d.rules.map(x=>x.id));
