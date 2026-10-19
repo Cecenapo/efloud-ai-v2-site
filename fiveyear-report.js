@@ -39,6 +39,32 @@ async function init(){
      z.independentlyProvenStrategies!==0||z.realOrders!==0)
       throw Error("Kaynak güvenlik ve bütünlük kontrolü başarısız");
   data=z;
+  const evidenceNode=$("fiveyear-evidence");
+  if(evidenceNode){
+    try{
+      const er=await fetch("./auto_structure_evidence.json",{cache:"no-store"});
+      if(!er.ok)throw Error("HTTP "+er.status);
+      const e=await er.json();
+      if(e.kind!=="EFLOUD_447_RESEARCH_EVIDENCE_GATE_V1"||
+         e.sourceReportUtc!==z.updatedUtc||
+         e.historicalCoverage?.experimentalVariantsSeen!==64||
+         e.historicalCoverage?.all32ChronologicalReplaysCompleted!==true||
+         e.certifiedPositiveNetEVStrategies!==0||
+         e.teacherApprovedStrategies!==0||e.ordersEnabled!==false)
+         throw Error("Kanıt kaynağı ile test tarihi veya koruma koşulları uyuşmuyor");
+      const losses=e.verdictCounts?.HISTORICAL_COST_FAIL;
+      const low=e.verdictCounts?.INSUFFICIENT_SAMPLES;
+      if(!Number.isInteger(losses)||!Number.isInteger(low)||losses+low!==64)
+        throw Error("64 varyantın kontrol toplamı uyuşmuyor");
+      txt(evidenceNode,"Bağımsız araştırma elemesi: "+losses+
+        " varyant maliyet/istikrar sınavından geçemedi; "+low+
+        " varyantın örneklemi yetersiz. Çoklu test düzeltmesiyle %95 kâr kanıtı yok. "+
+        "Kaynak mum verisi tüm serilerde kesintisiz doğrulanmadı; gerçek emir kapalı.");
+    }catch(e){
+      txt(evidenceNode,"Kanıt raporu eşleşmedi veya okunamadı: "+
+        String(e.message||e)+". Sonuçları onaylı strateji saymıyoruz.");
+    }
+  }
   const absent=(z.seriesStillMissing||[]).map(x=>x.symbol.replace("USDT","")+"/"+x.timeframe);
   const damaged=(z.seriesCoverage||[]).filter(x=>x.gapCount>0).length;
   const uncertain=(z.seriesCoverage||[]).filter(x=>x.coverageMetadataMissing).length;
