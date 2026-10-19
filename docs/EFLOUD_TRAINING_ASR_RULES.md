@@ -477,7 +477,6 @@ Botun önceliği eğitmenin sırasıyla **Range+EQ → Order Block → Imbalance
 **K25.3 · 00:02:56–00:03:03, 00:05:52–00:06:05 · F** — **Short-term trading**: **günlük (veya 4 saat)**; **1–7 gün, en fazla 9–10 gün**. Model: **haftalık grafikte range belirle**, **günlük ve 4 saatlikte** işlem ara.
 
 **K25.4 · 00:03:05–00:03:26, 00:06:06–00:06:20 · F** — **Day trading**: **4 saat ve altı** (1s, 15dk, 5dk). Forex'te **London/New York açılışı** saatleri. Eğitmen için ideal: **en fazla 3–4 parite, her birinde en fazla 3–4 setup**; 1s/15dk tercih ediyor.
-
 **K25.5 · 00:04:03–00:04:37 · Y** — **Zaman dilimi ile trader modeli uyuşmazsa** psikolojik sorun çıkar (erken çıkış, stop'u gevşetme). Önce **kendi modelini belirle**, ona uygun zaman dilimini kullan.
 
 **K25.6 · 00:04:50–00:04:57 · M** — **Trend trading**: HTF'in belirlediği yönde işlem; "trend her şeydir"; **karşı yönde pozisyon açma**.
@@ -597,6 +596,7 @@ Botun önceliği eğitmenin sırasıyla **Range+EQ → Order Block → Imbalance
 **K27.3 · 00:07:35–00:07:54 · Y** — **Başlangıçta 1:20, 1:30, 1:50 gibi "jackpot" RR kurma**; gerçekleşmesi çok zor.
 
 **K27.4 · 00:08:16–00:10:03 · M** — **Amaç win-rate değil R toplamak.** **Başabaş win-rate = 1 / (1 + RR)**: **1:1 → %50**, **1,5:1 → %40**, **2:1 → %33**, **3:1 → %25**; **0,3:1 → %75**. (Komisyon/spread dahil edilmemiş.) *(Botumdaki "breakeven_win_rate" hesabıyla aynı mantık.)*
+
 **K27.5 · 00:09:22–00:10:15 · Y** — **1:1 RR yalnızca başlangıçta** (öğrenirken); sonra **1,5–3:1**'e geçilir; "ileride 1:1 kullanmamayı tercih ederim".
 
 **K27.6 · 00:11:23–00:12:11 · M (rakamlar ASR)** — **Örnek**: 1000 USD hesapta **işlem başına ≈%1,5 risk (≈15 USD)**, RR 1:1 → haftada 1 işlem → **aylık ≈%6**. **Aylık hedef ≈%6** (zorunlu değil; bazı aylar +%20, bazı aylar −%3/−%5 olabilir), **yıllık hedef ≈2×**.
@@ -956,7 +956,6 @@ Botun önceliği eğitmenin sırasıyla **Range+EQ → Order Block → Imbalance
 **K37.1 · 00:00:00–00:01:37 · Y** — **Backtest yöntemi**: **TradingView bar replay**; ağırlıklı **order block, fair value gap (FVG), breaker, likidite** (4 konsept); **yakın geçmişe** (≈2016–2019) bak, 2002'ye kadar gitme; **4 saat ağırlıklı**, önce **aylık→haftalık→günlük** önemli alanları işaretle. **Amaç**: kaç pozisyon başarılı/başarısız; "gerekiyorsa 10 kez stop olalım, 3–4 tanesi tutsun, **overall karlıysak başarılı**"; **başarısızları nedenleriyle not et**.
 
 **K37.2 · 00:04:40–00:05:11, 00:08:11–00:08:26, 00:47:12 · Y** — **Sezon (mevsimsellik) bakışı**: eğitmen yılı **4 aylık sezonlara** bölüyor (örn. **Eylül'de yeni sezon başlıyor; Ocak–Nisan, Mayıs–Ağustos…**), grafikte **dikey çizgilerle** işaretliyor; **yeni sezonda yön değişebileceğini** hesaba katıyor. *(Mekanik kural değil; botta zaman filtresi olarak denenebilir ama **eğitmenin kanıtı yok**, kendi gözlemi.)*
-
 **K37.3 · 00:12:18–00:12:22 · M** — **Swing trade mentalitesi**: **konsolidasyonda trade'ten kaçın**; **trend görülen yerlerde** pozisyon ara.
 
 **K37.4 · 00:13:29–00:14:41, 00:27:38–00:27:50, 00:45:19 · M** — **İlk take profit sonrası stop'u girişe (BE) çek**; "pozisyonunu erken kapatmaya güvenmiyorsan **stop'u entry'ye al**". **OTE'den girilen işlemde FVG dolup fiyat hızla geri dönüyorsa "çanlar çalmalı"** (zayıflık) → fikri gözden geçir.
@@ -1060,4 +1059,344 @@ Botun önceliği eğitmenin sırasıyla **Range+EQ → Order Block → Imbalance
 
 **K40.2 · 00:01:17–00:01:43 · M** — **S/R flip + bölge hafızası**: breakout mumlarıyla **terk edilen** seviye **tekrar destek olur**, yükseliş; **eskiden birçok kez destek olup sonra kaybedilen ve yeni low başlatan** kırmızı kutu, **tekrar ziyaret edilince direnç** olarak çalışır.
 
-**K40.3 · 00:01:46–00:01:59 · M** — **Kısa vadeli short**: **supply (imbalance/likidite) bölgesi**, **swing high likiditesi alındıktan sonra bölgenin kaybı** görülürse **kısa düşüş**; **stop bölgenin üstü**, **hedef en yakın swing
+**K40.3 · 00:01:46–00:01:59 · M** — **Kısa vadeli short**: **supply (imbalance/likidite) bölgesi**, **swing high likiditesi alındıktan sonra bölgenin kaybı** görülürse **kısa düşüş**; **stop bölgenin üstü**, **hedef en yakın swing low'lar**.
+
+**K40.4 · 00:02:17–00:03:06 · M** — **Long kurulum**: düzeltme dibi → **seri yükseliş (origin noktası)** → **dibin likiditesi temizlenir**; giriş buradan, **stop = likiditesi alınan swing low'un altı** ("imbalance'ın tekrar tekrar doğmayacağını umarak"); **narrative ve BTC yukarı** olması ek veri.
+
+**K40.5 · 00:03:06–00:03:32 · Y** — **Alışılmadık zaman dilimi**: **34 dakika** (30 yerine) kullanıyor; "**herkesin kullandığı zaman dilimi olmaması**" nedeniyle OB/supply yapıları farklı çıkabilir; **hedef = 15 dakikadaki supply gövdesinin tepesi**. *(Kişisel keşif; kural değil.)*
+
+**K40.6 · 00:04:25–00:04:34 · M** — **Hedefte erken çık**: bölgenin **tamamını beklemek yerine** **minimal imbalance bölgesinde** pozisyonu finalize et ("buraya uğramama ihtimali" için).
+
+**K40.7 · 00:04:10–00:04:25 · F** — **4 saatlik kırmızı kutu (önemli supply/S-R)**: **likiditesini temizleyip düşünce** direnç olur; küçük zaman dilimi işlemlerini **4s bölgeleri** belirler.
+
+**K40.8 · 00:04:48–00:05:00 · M** — **Yeni short düşüncesi**: **yeni high yapıp üstüne çıkamayan** yapı, **bölgenin kaybı** → short; **güvenli stop = üstü**, **RR artırmak için daha sıkı stop** da seçilebilir (riskli).
+
+### Ders 40'tan çıkan sonuç
+- Yeni mekanik kural yok; **zaten bilinen** kuralların (S/R flip, likidite hedefi, imbalance girişi, yapısal stop) **scalp uygulaması**. **Hedefe tam varmadan çıkma** (K40.6) bir **yönetim** kuralı adayı.
+
+
+---
+
+## Ders 41 — COMP/USDT: hafta sonu manipülasyonu sonrası gün içi işlem + "Winning Trade Mentality"
+
+**K41.1 · 00:01:15–00:01:23 · M** — **"Tepeyi aşmak" tanımı (eğitmenin kendi tanımı)**: fiyatın eski high'ın **üzerine fitil bırakıp düşmesi değil**, **eski high'ın üzerinde mum KAPANIŞI** gerçekleştirmesidir. ("Böylece daha yüksek yüzdeyle çalıştığını düşünüyorum.") *(Botun "kırılım = kapanış" kuralını doğrudan destekler.)*
+
+**K41.2 · 00:09:11–00:09:37 · F** — **Hafta sonu manipülasyonu**: likidite temizlikleri **Cuma günü sonu/Cumartesi/Pazar** denk geliyorsa genellikle **manipülasyon** olarak sonuçlanır; sonra **fiyat hızla istediği hedefe** gider. Örnek: Pazar günü oluşan yapı, **Pazartesi sabahı** (07–09 civarı) emir doldu, **aynı gün birkaç saat içinde** kapandı.
+
+**K41.3 · 00:06:22–00:06:38 · M** — **İki range türü**: **(1)** çok temaslı klasik range; **(2)** **geçerli swing low ile swing high arasına Fibonacci** çekilerek oluşan range. Gün içi işlemlerde **geçici swing low/high arasına Fibonacci** çek; **0,5 ve altı ucuzluk**, tersi çizimde **0,5 üstü pahalılık**.
+
+**K41.4 · 00:05:20–00:05:32 · M** — **Range davranışı**: RL ve EQ **destek**, EQ ve RH **direnç** olarak çalışması beklenir (**deviation görülmediği sürece**).
+
+**K41.5 · 00:06:40–00:07:50, 00:08:12–00:09:09 · M** — **Kurulum zinciri**: **(a)** LTF'de range, **(b)** **deviation + likidite temizliği**, **(c)** önemli bölgenin **kırılımı** (range pozitifleşir), **(d)** mikro LTF'deki açık likiditeler temizlenir, **(e)** **breaker** (hızlı kırılım mumuyla terk edilen konsolidasyon), **(f)** içte küçük range → fiyat **0,5'in altına (ucuzluk)** iner, **büyük range EQ'su ile kesişir**, **(g)** giriş; **stop = likiditesi alınan dibin altı**, **hedef = range high'ın likiditesi**.
+
+**K41.6 · 00:07:20–00:07:28 · F** — **LTF'de belirlenen seviyelerde küçük sapmalar olacaktır**; "mükemmel çalışması beklenmez".
+
+**K41.7 · 00:12:49–00:12:58, 00:11:04–00:11:22 · M** — **Sonuç**: ≈**1,41R** kâr, **birkaç saatte** kapandı. "Kısa vadeli işlem diyorsan **kurallarına hâkim ol ve bitir**." Komisyon dahil net ≈ biraz daha düşük (eğitmen: "komisyon yüzünden ~1,36R").
+
+**K41.8 · 00:13:14–00:14:33 · M/F** — **"Winning Trade Mentality" (eğitmenin kısmi çıkış + birikim yöntemi)**: **pozisyonun %80–90'ında hedefte kâr al, %10–20'sini açık bırak** (stop'u girişe taşırsan stop olabilirsin, taşımazsan **%10 uzun vadeli koşar**); örnekte **%90'dan ≈1,41R + %10'dan ≈14R'ye varan koşu** ile toplam kâr ≈2 katı; ayrıca **kazancın %10'unu spot (uzun vade) olarak aynı varlığa yatır**. *(Sayısal örnekler ASR'de bozuk; **yapı**: büyük kısım hedefte, küçük kısım (runner) + spot birikim.)*
+
+**K41.9 · 00:10:38–00:11:02 · Y** — **%100 çalışan setup yok**; "setup %70–80 çalışıyorsa ateş edebilirsin"; **10 denemede 3 çalışsa bile RR iyiyse** kârlı olabilir; "istatistik bilimine dayanarak" işlem.
+
+**K41.10 · 00:12:49–00:12:56 · Y** — Gün içi işlemi **birkaç saat** tut; "arkasında yılların deneyimi var".
+
+### Ders 41'den çıkan sonuç
+- **Kırılım = mum kapanışı** (K41.1): eğitmenin **açık tanımı**; botun `retest` ve `sweep` stratejilerinde zaten kapanış kullanıyorum → **doğrulandı**.
+- **Hafta sonu manipülasyonu** (K41.2) bota **zaman bazlı filtre/etiket** olarak eklenebilir (Cumartesi/Pazar sweep'leri) — **eğitmenin gözlemi**, test edilmeli.
+- **Runner (%10–20) + spot birikim** botun işlem yönetimine **opsiyonel** eklenebilir; spot birikim bot dışı.
+
+
+---
+
+## Ders 42 — ZEC/USDT: short'tan long'a dönüş, kısmi kâr, trailing stop, mum yapısı (gövde/fitil)
+
+**K42.1 · 00:03:44–00:04:50 · M** — **HTF destek bölgesinde short'u TAMAMEN kapatma**: önce **%50 kâr al**; **konfirmasyon (breaker / mitigation)** görmeden pozisyonu **komple kapatıp long'a dönme**. Gerekçe: **piyasa trendi ayı**; "destekler kırılmak için vardır"; "tek seferde kapatmam".
+
+**K42.2 · 00:17:19–00:17:23, 00:18:25 · M** — **Kapat ve dön = konfirmasyon sonrası**: "konfirmasyon gördükten sonra pozisyonu tamamen kapattım ve long'a döndüm."
+
+**K42.3 · 00:06:27–00:08:18 · M** — **Gövde (body) vs fitil (wick)**: **gövde** = o periyodun **karar anı özeti**, kimin kontrol aldığı (büyük bull gövde = alıcılar baskın; **giderek küçülen gövdeler = momentum kaybı**); **fitil** = **reddedilen fiyat seviyeleri** (uzun alt fitil = alıcılar güçlü reaksiyon; uzun üst fitil = satıcı baskısı). **Kullanım**: **trend yönü ve momentum için gövde**; **seviye geçerliliği, stop hesabı, likidite analizi için fitil**; **önemli seviyede oluşan fitil gövdeden daha fazla bilgi** taşır; **dönüş (reversal) sinyallerinde ikisi de** değerli.
+
+**K42.4 · 00:10:24–00:10:33 · M** — **Breaker long kurulumu**: **stop = likiditeyi temizleyen fitilin altı**; **giriş = breaker tepesi veya imbalance noktası** (veya **ikisine birden emir**); hedef daha yüksek yerler.
+
+**K42.5 · 00:10:33–00:10:52, 00:15:44–00:15:58 · M** — **Trailing stop yöntemi**: hedef seviyelerinde **%25 kâr al**, **stop'u güncel swing low bölgesinin altına çek**; sonraki seviyede **tekrar %25 al, stop'u yeni swing low'un altına çek**; **parça parça kâr + takip eden stop** ile trendi taşı.
+
+**K42.6 · 00:11:40–00:12:05, 00:14:27–00:14:33 · M** — **Net trend yokken / emin değilsen**: **alarm + konfirmasyon**; direkt almak isteyen **yarım riskle (örn. 50 USD)** girer, **konfirmasyondan sonra tam riske (100 USD)** tamamlar (spot olarak da). *(22/30/31/32. derslerdeki "yarım risk" kuralı.)*
+
+**K42.7 · 00:16:00–00:16:30 · Y** — **Stop = sermayeyi koruma, kâr alma = sermayeyi büyütme**; trend bozulmamışsa **mantıklı yerlerde stop taşıyarak ve parçalı kâr alarak** swing pozisyonu taşı. Eğitmen **pozisyon taşımanın kendisi için en zor kısım** olduğunu söylüyor.
+
+**K42.8 · 00:17:00–00:17:08, 00:11:05–00:11:08 · F** — Örnek pozisyon **≈10R'lik** (kâr ≈%70–80'i büyük kısmıyla major bölgede kapatılır); eğitmen **kapatma bölgelerini önceden** ilan ediyor.
+
+**K42.9 · 00:14:20–00:14:27 · M** — **Eski tepeyi kırmadıkça tekrar tekrar yeni long kurma**; kuracaksan **yapı oluştuktan sonra pullback bekle, stop'u onun altına koy** veya **yarım riskle spot** ilerle.
+
+**K42.10 · 00:14:55–00:15:08 · M** — **Dönüş sonrası long'u kapatma**: **imbalance / S-R flip** bölgesinde finalize.
+
+**K42.11 · 00:17:30–00:18:09 · F** — **1 saatlik konfirmasyon örneği**: **likidite temizlenir → altta güzel fitil → ardından istekli mumlar (sert alıcı kitlesi) → küçük geri çekilme → tekrar sert alıcılık**; "satış adam akıllı yok, neden girmiyorsun" → **price action kendini anlatır**; isim önemli değil.
+
+**K42.12 · 00:09:10–00:09:14 · F** — **Ardışık büyük gövdeli mumlar** trendin devam ettiğini, **küçük/kararsız mumlar** duraklamayı gösterir.
+
+### Ders 42'den çıkan sonuç
+- **Kısmi çıkış + trailing stop yapısı**: hedefte **%25'lik dilimler**, **stop her dilimden sonra güncel swing low'un altına** → botta **"swing-bazlı trailing"** kuralı olarak kodlanabilir (swing tanımı 14. dersteki belirsizliğe bağlı).
+- **Gövde/fitil kullanım ayrımı** (K42.3) bot parametresi için net bir yönerge: **trend/momentum = gövde**, **seviye/stop/likidite = fitil**.
+- **Yön değiştirme (kapat-ve-dön) yalnız konfirmasyonla**: botun reversal'ı konfirmasyonsuz yapmaması gerekir.
+
+
+---
+
+## Ders 43 — Pozisyon yönetimi: zaman dilimine göre risk büyüklüğü (ZEC/USDT, "Mixed Price Action Art" 9. video)
+
+**K43.1 · 00:03:36–00:03:53 · M** — **Short örneği**: giriş ≈24,96; **stop = 0,705 seviyesinin (OTE orta noktası) üstü**; LTF'de daha iyi swing bulunabilir ama swing pozisyon büyük miktarda olduğu için **daha geniş stop** seçmiş (RR etkilenir). **0,618'in kaybı + retest + düşüş** onay sayılıyor.
+
+**K43.2 · 00:03:54–00:04:30 · M** — **Pozisyonun %90'ını origin bölgesinde kapat**, **%10'u açık bırak** ("Winning Trade Mentality"); kalan için **stop girişe**; eğitmen önceki işlemde **tamamını kapattığı için büyük kârdan feragat ettiğini** itiraf ediyor.
+
+**K43.3 · 00:05:33–00:06:55 · M** — **Long girişinin 3 sebebi (üst üste binmeli)**: **(1)** **4 saatlik imbalance**, **(2)** **OTE (0,618–0,786) başlangıcına retest** (Fibonacci), **(3)** **15 dakikada breaker** (low–high–yeni low, kırılım, geri çekilme, breaker'a temas ve seri yükseliş). **Mum yapıları ancak HTF/önemli bölgelerde (supply/demand) anlamlıdır**, alakasız yerde değil. Alt fitilli mum **beyaz (yukarı) kapanırsa daha emin**.
+
+**K43.4 · 00:07:19–00:07:42 · M** — **Kısmi kâr planı (long)**: **ilk imbalance'ta %25**, sonraki bölgede **toplam %50**, son bölgede **%25** alıp **komple kapat**; örnekte ≈**2,1R**.
+
+**K43.5 · 00:07:53–00:10:49 · M/Y** — **Risk miktarı zaman dilimine/süresine göre ayarlanır**: **bir günlük pozisyon için alınan risk, bir aylık swing pozisyonla aynı olmamalı**. Örnek: **büyük zaman diliminde 10 USD risk, küçük zaman diliminde 2–3 USD**. Gerekçe: **küçük zaman diliminde ayda ≈30 işlem** yapılır; **hepsinde büyük risk** kullanılırsa **ardışık kayıp serisinde (losing streak) hesap ciddi zarar görür**; ayrıca **psikolojik/kimyasal** etkiler (sabırsızlık, kararların bozulması). *(Eğitmen: "deneyim kazanana kadar minimal risk".)*
+
+**K43.6 · 00:10:30–00:10:45 · M** — **Küçük zaman diliminde açılan pozisyonu uzak HTF hedefe taşıma**: stop küçük, hedef büyükse "**mantıksız kurgu**"; **küçük pozisyonlarla küçük hedefleri, büyük pozisyonlarla büyük hedefleri** hedefle. "Küçük yerleri spot koyup büyük yerleri hedeflememiz gerekiyor." *(ASR belirsiz; yön: işlemin boyutu ve hedefi zaman dilimiyle uyumlu olmalı.)*
+
+**K43.7 · 00:10:05–00:10:28 · Y** — **Oyun planı önceden belli**: stop, hedef, ne yapacağım belli olduğu için pozisyona **sağlıklı** kalınabiliyor; **plana sadık kalmak** psikolojiyi korur.
+
+**K43.8 · 00:04:34–00:04:46 · F** — **Doğru swing'ler arasına çekilen Fibonacci (0,705 / 0,618 / 0,5 / 0,38) doğru bölgelerde çalışır**; "doğru Fibonacci kullanımı".
+
+### Ders 43'ten çıkan sonuç — botun risk modülü için kritik
+- **Risk büyüklüğü sabit %1 değil, işlem süresine/zaman dilimine bağlı olmalı** (K43.5): **uzun vadeli swing = daha büyük risk**, **kısa vadeli işlem = daha küçük risk** (örnekte 10 USD vs 2–3 USD, yani ≈1/3–1/5). Bu, **karşı-trend yarım risk** kuralına ek ikinci bir **risk ölçekleyici**; botun risk modülü **iki çarpana** sahip olmalı: **zaman dilimi çarpanı** ve **trend/konfirmasyon çarpanı**.
+- **Kısmi çıkış planı** tutarlı: **%25–%50–%25** (43. Ders), **%90 + %10 runner** (41, 43), **%25 dilimli trailing** (42). Hepsi **işleme göre değişen oran**; botta **konfigüre edilebilir çıkış merdiveni** olmalı, sabit tek oran değil.
+
+
+---
+
+## Ders 1 — Zaman döngüsü (lookback) ve HTF–LTF farkı  *(eğitmen "3. konu" diyor; kitapta Bölüm 1)*
+
+**K1.1 · 00:02:16–00:03:53 · M** — **Her zaman dilimi için bakış penceresi (seviye çizerken geriye gidilecek süre)**:
+- **Aylık**: **10–12 yıl** (5 yıldan az olmasın)
+- **Haftalık**: **4–5 yıl** (2,5 yıldan az olmasın)
+- **Günlük**: **12–15 ay** (6 aydan az olmasın)
+- **4 saatlik**: **3–4 ay**
+- **1 saatlik**: **3–4 hafta**
+- **15 dakikalık**: **3–5 gün**
+
+Daha geriye gitmek **noise (kirlilik)** üretir ve yanıltıcı seviyeler çıkarır. *(Kesin kural değil, "optimal aralık"; eğitmen "bulduğun çok iyi çalışan noktayı kullan" diyor.)*
+
+**K1.2 · 00:04:12–00:04:31, 00:13:21–00:13:34 · M** — **Tümden gelim**: **aylık → haftalık → günlük → 4s → 1s → 15dk** sırasıyla, **her zaman diliminde o dilimin penceresiyle** seviye işaretle ve **zaman dilimi etiketi** koy (M, W, D, 4H, 1H); kırmızı = direnç, yeşil = destek, mavi = EQ.
+
+**K1.3 · 00:11:00–00:11:12, 00:22:47 · F** — **Farklı zaman dilimlerinden gelen seviyelerin üst üste binmesi** (aylık + haftalık fitil seviyesi) **kesinlikle güçlü bölge**. **Bir seviye hangi zaman diliminde çizildiyse o zaman diliminde çalışma ihtimali daha yüksektir.**
+
+**K1.4 · 00:23:43–00:24:29 · M** — **Hedef, seviyenin çizildiği zaman diliminde belirlenir**: 15dk'da çizilen seviye için 15dk hedef; **4s'te çizilen seviyenin hedefi 4–6 saatlik bölgeler**. **15dk'da long kurup aylık dirençi hedeflersen yanılma ihtimali çok yüksek**; fiyat o bölgeye gitse bile **önce seni stop eder**. *(Risk yönetimi dersinde "farklı kullanım" var — 43. dersle tutarlı.)*
+
+**K1.5 · 00:27:12–00:27:45, 00:31:12–00:31:21, 00:33:05–00:33:48 · M/F** — **HTF–LTF ilişkisi**: **küçük zaman dilimindeki aksiyonlar büyük zaman dilimini değiştirebilir, ama bir-iki emare yetmez; ardışık 1–5 emare gerekir**. **Günlükte kırılım + 15dk'da küçük deviation** büyük sorun değil; **ama 15dk → 1s → 4s hepsi aynı yönde evriliyorsa kırdığın direnç "yalancı" (fake) olabilir**, yani **LTF emareleri zamanla HTF kırılımının sahte olduğunu gösterir**. **HTF koşulları LTF koşullarından her zaman daha önemlidir; trendi HTF belirler.**
+
+**K1.6 · 00:15:35–00:18:04 · M** — **EQ çizimi**: RH ile RL arasına **Fibonacci 0 ve 1, tam 0,5 = EQ**; EQ'ya **ince ayar** yapılabilir ("bu alan spesifik nokta değil **alan**"). **4s RH/EQ çok iyi çalışırken 1s'te daha az verimli** çalışabiliyor.
+
+**K1.7 · 00:25:05–00:27:00 · F** — **Büyük kurumlar** (merkez bankaları, JP Morgan, fon yöneticileri) **aylık/haftalık (en düşük günlük)** grafikte pozisyon alır (positional); **hedge fon yöneticileri** onların bünyesinde **LTF salınımlarında** işlem yapar; **retail** LTF'e yönelir. **Fiyat X'ten 2X'e giderken lineer gitmez**: arada 1,5X–1,3X–1,6X–1,4X salınımları olur; kurumlar bu aradaki salınımları kaçırmamak için LTF trader'ları kullanır.
+
+**K1.8 · 00:33:48–00:34:07 · F** — Sonraki konu: **haftalık açılış / haftalık high-low / önceki haftalık açılış / günlük açılış / günlük high-low / aylık açılış / yıllık açılış** seviyeleri (zaman bazlı seviyeler). *(39. dersteki WO/PWO'nun temeli.)*
+
+### Ders 1'den çıkan sonuç — botun veri/penceresi için doğrudan kural
+- **Pencere kuralları mekanik** (K1.1): bot, her zaman diliminde seviye (swing, range, OB) aramasını **o dilimin penceresiyle sınırlamalı** (4s için **≈3–4 ay ≈ 700–1000 mum**, 1s için 3–4 hafta ≈ 500–700 mum, 15dk için 3–5 gün ≈ 300–500 mum, günlük için 12–15 ay ≈ 360–450 mum). Benim botum **tüm geçmişi** kullanıyordu → **düzeltilmeli** (eski pivotları pencere dışına at).
+- **Hedef = giriş zaman diliminin seviyeleri** (K1.4): botumda "en yakın likidite" zaman dilimi ayrımı yok.
+- **Çoklu zaman dilimi seviye çakışması** puanlama kriteri (K1.3).
+
+
+---
+
+## Ders 2 — Günlük / haftalık / aylık açılışların (DO, WO, MO, PWO) ve Pazartesi High/Low'un önemi  *(eğitmen "4. konu" diyor; kitapta Bölüm 2)*
+
+**K2.1 · 00:03:16–00:06:03 · M** — **Seviyeler**: **MO** (monthly open, aylık mumun açılış fiyatı), **WO** (weekly open), **PWO** (previous weekly open, geçen haftanın açılışı), **günlük açılış**, **günlük high/low**, **Monday High / Monday Low** (pazartesinin en yüksek/en düşük seviyesi). Hepsi **mum açılış/uç fiyatlarından mekanik** hesaplanır.
+
+**K2.2 · 00:01:30–00:02:53 · F** — **Gerekçe**: fiyat **smart money** (kurumlar, fon yöneticileri) tarafından kontrol edilir; onların işlem yaptığı zaman dilimleri **M, W, D**. Bu seviyeler geçmişte bulundukları yerlerde önem kazanır; **price action konseptleriyle kesiştiğinde önemi artar**. **Günlük/haftalık high-low** seviyeleri, **gün içi ve 3–5 günlük kısa vadeli** trader'lar için önemli.
+
+**K2.3 · 00:05:54–00:06:03 · M** — **Monday High/Low**: **hafta içi işlem atacaksan ve piyasa sığ/küçük aralıkta ilerliyorsa** işaretle.
+
+**K2.4 · 00:07:53–00:10:14 · M** — **Davranış örüntüsü**: fiyat **MO/WO'ya bearish retest** yapıp **alıcı bulamazsa** daha aşağı gider; sonra **breakout mumuyla MO/WO'yu delerse** yön değişir; MO'dan başlayan hareketin **Fibonacci 0,5'i** çoğu zaman bir seviyeyle çakışır.
+
+**K2.5 · 00:11:59–00:12:31 · M** — **Trende yönelik kullanım (en önemli ilke)**: **trend bearish ise bearish formasyonlara, bullish ise bullish formasyonlara bak**; "trend sana o formasyonu direkt elinle verir"; "her şeyi bir kenara bırak, **trend çok önemli**."
+
+**K2.6 · 00:16:10–00:18:06 · M** — **Haftalık mum PWO'nun üstünde kapanırsa**: "**gelecek haftalarda bullish emare olması bearish emare olmasından daha büyük ihtimal**" (bir veri daha). Haftalık bias için kapanışa bak.
+
+**K2.7 · 00:19:19–00:19:51 · M** — **Kısa vadeli long için anahtar seviye = WO**: "fiyat 61.500'ü kaybederse WO, kısa vadeli long inşa etmek için en optimal alan."
+
+**K2.8 · 00:21:34–00:21:58 · M** — **Kâr alma**: arz bölgesine yükselince **en uygun yer PWO**; **pozisyonun bir kısmı PWO'da kapatılır**.
+
+**K2.9 · 00:22:41–00:23:10 · F** — **PWO/WO geçmişte çalıştıysa** (sweep sonrası destek) tekrar kullanılabilir; "doğru belirlenmiş seviye, etkisini kaybetse bile **kendi price action'ını oluşturmanı sağlar**."
+
+**K2.10 · 00:15:12–00:15:22 · M** — **Deviation tanımı**: fiyat range'in dışına düştüğünde **henüz "deviation yaptı" denmez**; **istekli bir breakout mumuyla range içine geri girdikten SONRA** deviation (fake) denir; fiyat oraya geri gelirse alım değerlendirilir. *(Botta deviation = sapma + güçlü geri dönüş mumu.)*
+
+**K2.11 · 00:20:53–00:21:06 · M** — **Hedefin tam bölgesini beklememe**: "ufacık bir alan için eldeki kârı bırakmak istemedim" (40. Ders K40.6 ile tutarlı).
+
+**K2.12 · 00:17:13–00:17:46 · F** — **EUR/USD ve DXY** en yüksek korelasyon; MS'leri birbirini etkiler; "sadece bu yetmez, ekstra veriler lazım".
+
+### Ders 2'den çıkan sonuç
+- **MO, WO, PWO, günlük açılış, Pazartesi H/L mekanik olarak hesaplanabilir** → botta **seviye + confluence puanı** olarak eklenmeli; **kripto için "haftanın başlangıcı" tanımı** (Pazartesi 00:00 UTC mı?) dersten **net değil**, parametre olarak bırakılmalı.
+- **Trende yönelik kullanım** botun **tüm sinyallerinde HTF trend uyumu** gerektiren bir ilke olarak tekrar doğrulandı (K2.5).
+- **Deviation tanımı** botun sweep stratejisinde "kapanışla geri dönüş" yerine **"istekli breakout mumuyla range içine giriş"** olarak revize edilmeli.
+
+
+---
+
+## Ders 5 — Konsolidasyon, akümülasyon ve distribüsyon  *(eğitmen "6. konu" diyor; kitapta Bölüm 5)*
+
+**K5.1 · 00:01:21–00:02:21 · F** — **Konsolidasyon**: büyük trendi **ne sürdüren ne tersine çeviren** fiyat; **sınırlı range'de** işlem görür. Trend takipçileri bunu **kararsızlık** sayar ve **yeni emare görene kadar işlem almaz**. Fiyat alanı terk edince konsolidasyon biter; **ama deviation payı vardır**.
+
+**K5.2 · 00:02:21–00:02:35 · F** — Konsolidasyon alanına **tekrar tekrar girilmesi**, **EQ ve diğer range bölgelerinin test edilme olasılığını** artırır.
+
+**K5.3 · 00:03:54–00:04:55 · F** — **Akümülasyon**: **uzun düşüş trendinden sonra** fiyatın yataya bağlaması; smart money fiyatı çok yukarı çekmeden **pozisyon biriktirir**; fiyatı "top gibi oynatıp" **stop'ları patlatır, likidite yaratır**. **Distribüsyon**: **uzun yükselişten sonra** yatay; smart money **dağıtır/short açar**. **Zaman diliminden bağımsız**, her yerde işler (30dk'da da günlükte de).
+
+**K5.4 · 00:05:59–00:06:14 · M** — **Deviation sonrası istekli mumla içeri girişte** fiyat **ilk olarak EQ'yu test eder**; **EQ (0,5) bölgesinden yeni pozisyon inşa** fikri her zaman akılda olmalı. Sonra **range high'ı test eder**.
+
+**K5.5 · 00:07:24–00:07:45 · M/Y** — **Aynı deviation'ın 5–6 kez tekrarı eğitmene göre mantıklı değil**; deviation kırıldıktan sonra **pullback'te (0,5 civarı) optimal long** kurulur (akümülasyon fazı varsayımıyla); **imbalance'ın altına inmemesi** ve **breakout mumunun önceki high'ı retest etmesi** güçlü işaret.
+
+**K5.6 · 00:09:36–00:10:28, 00:11:34–00:11:52 · M** — **Distribüsyon kurulumu**: **range low'u breakout mumuyla kaybeden yapı + retest** → düşüş (örnekte **1,5 saatte ≈%0,56 / 70 pip**). **Breakout mumu sonrası piyasa düşüş yönündeyse** önce **EQ'yu**, sonra **range high'ı** test etmesi beklenir; **breakout sonrası ≈%50 (0,5) testi** ve sonrasında düşüşler olabilir; o bölge **direnç olarak çalışma ihtimali yüksek**.
+
+**K5.7 · 00:10:41–00:11:31 · F** — **Tek parametreye bakma**: kripto için **DXY, futures, BTC** korelasyonlarını da kontrol et; **confluence arttıkça gerçekleşme ihtimali yüzdesel olarak artar** ("elinizde ne kadar fazla veri varsa").
+
+**K5.8 · 00:03:03–00:03:28 · F** — **Indecision candle** = konsolidasyonun **tek mumluk hali** (bir mum da bir range sayılabilir); 20. ders konusu.
+
+**K5.9 · 00:11:59–00:15:16 · Y** — **Wyckoff/formasyon isimleri**: karşı değil, ama **önce fiyatın kendisini oku**; isim takıp kalıplara uydurmaya çalışmak kuralların içinde yorar; **bol bol backtest** (farklı market, zaman dilimi, parite).
+
+### Ders 5'ten çıkan sonuç
+- **Akümülasyon/distribüsyon** botun **rejim bilgisi** olarak kullanılabilir: **uzun düşüş sonrası range = akümülasyon (long bias)**, **uzun yükseliş sonrası range = distribüsyon (short bias)** (K5.3). "Uzun" için sayısal eşik **dersten yok**.
+- **Deviation sonrası EQ → range high** sırası (K5.4, K5.6) botun hedef kademelendirmesinde (4. Ders K4.13 ile) tutarlı.
+
+
+---
+
+## Ders 6 — Breakout candle ve Return to Origin (RTO)  *(eğitmen "7. konu" diyor; kitapta Bölüm 6)*
+
+**K6.1 · 00:01:18–00:02:08 · M** — **Breakout candle**: fiyatın **bir denge seviyesinden (EQ) veya range'in altından/üstünden (RL/RH) HIZLICA** ayrılmasıyla oluşan mum. **Önemi**: fiyat hızla bir seviyeden ayrılırsa smart money'nin **yeniden fiyatlama modeli** ortaya koymak istediğini, yani **yeni yapı / trend başlangıcı / trend değişimi** olabileceğini gösterir. **Yatay çizgi, supply/demand bölgesinin kırılması** da breakout sayılır (yalnız diagonal formasyon kırılımı değil).
+
+**K6.2 · 00:02:09–00:02:21, 00:02:44–00:03:02 · M** — **Eylem**: breakout sonrası **Order Block veya EQ'ya geri çekilme** gözlemlenir; **fiyat kümesinin mantıklı bölgelerinden düşük riskle giriş** aranır. **Anahtar soru: "ne zaman ve nerede?"** — aynı yapı her yerde oluşur, **nerede/ne zaman oluştuğu** kaliteyi belirler.
+
+**K6.3 · 00:04:22–00:07:06 · M** — **Örnek kurulum**: range low'un altına fitil (deviation) → **aynı gün sert mumla range içine geri giriş** (yerel dibin likiditesi temizlenir) → fiyat range low'u test eder → **bir breakout mumu daha** → breakout mumunun dibine geri çekilince **alım**: **range low + order block + breakout candle + likidite temizliği + imbalance** = çok veri.
+
+**K6.4 · 00:09:52–00:13:26 · F** — **Retracement vermeyen breakout'lar**: **BTC gibi manipülatif ve hacmi global piyasalardan (S&P, forex) zayıf** marketlerde **akümülasyon sonrası breakout mumu retest vermeden gidebilir**; "flag" gibi chart pattern'leri beklemeden uçar. **Akümülasyon teşhisi**: **(1)** önemli tarihsel destek, **(2)** **lower high'lar** (ASR: "lower highlar belli ediyor"), **(3)** **On-Balance Volume (OBV) divergence** (fiyat dar range'de, OBV yükseliyor). **Geri çekilirse** EQ (%50) veya range high'tan alım; **ama geri çekilmeme ihtimali her zaman gözlenmeli.**
+
+**K6.5 · 00:13:35–00:18:56 · M** — **RTO (Return to Origin) örneği (EUR/USD)**: **günlükte likidite temizliği** → **LTF'de range low'da deviation** → **breakout mumuyla range içine giriş** → fiyat **EQ'da bekler**, **2 geçerli breakout mumuyla EQ'yu kırar** → range high'ın likiditesini temizleyip kapatamaz, aşağı döner, **imbalance'ı kapatır** → **başlangıç noktasına (origin) döner = order block** → **long, order block'tan RTO ile**; **stop OB altı**, hedef **≈5–6R** ("6–7 kez stop olma imkânı verir").
+
+**K6.6 · 00:16:44–00:17:00 · F** — **EUR/USD işleminde** ayrıca **EUR futures** ve **DXY** (dolardaki güçsüzlük emaresi) kontrol edilir; çok veri = "bedavadan para".
+
+**K6.7 · 00:14:27–00:14:35, 00:17:35–00:17:49 · F** — **Range low'a çarptıkça yükselen dipler** (1., 2., 3. temas giderek yukarıda) ve likidite alındıktan sonra aşağı gidememe = yükseliş emaresi.
+
+**K6.8 · 00:09:33–00:09:47 · M** — **Stop her zaman**: "market beni de yanıltıyor olabilir, haber gelebilir"; **marketle inatlaşma, zararı gereken yerde kes.**
+
+**K6.9 · 00:07:36–00:08:06 · Y** — Konseptleri **chart pattern gibi kullanma**; önce **gerçek parayla işlem yapmadan** işleyişi keşfet, **kendi price action'ını** oluştur.
+
+### Ders 6'dan çıkan sonuç
+- **Breakout candle = "hızlı/istekli ayrılma"**, sayısal tanımı **yok**; botta **gövde/ATR eşiği** bizim varsayımımız olacak (20. dersteki "hacimli mum" sorunuyla aynı).
+- **RTO = impulsive hareketin origin'ine (OB) geri dönüş**; **OB (18. Ders) + RTO** birleşik bir giriş modeli olarak botta **tek durum makinesi** halinde kodlanabilir: *range low deviation → breakout mumu → retracement → origin/OB girişi*.
+- **BTC'de retest beklemeyen breakout'lar** (K6.4; 4. Ders K4.14 ile aynı) → **retest girişi için "NO_FILL" oranı BTC'de yüksek olacak**; bu **beklenen bir sonuç**, hata değil.
+
+
+---
+
+## Ders 7 — Retracement (düzeltme/pullback) ve "veri sayımı" (confluence)  *(eğitmen "8. konu"; kitapta Bölüm 7)*
+
+**K7.1 · 00:00:00–00:01:10 · M** — **Retracement = trend dışı fiyat hareketi** (düzeltme): fiyatın **yakın zamanda oluşan range'e/fiyat kümesine geri dönmesi**; **reversal DEĞİLDİR**. Smart money, trend yönünde yeni seviyeler için yeni alıcı/satıcı bulmak üzere düzeltmelerden yararlanır. **Eylem**: **trend yönündeki en belirgin swing high/low'un İHLAL EDİLMEDİĞİNİ** gözle (trend değişmedi verisi); fiyat **price action metodolojisiyle belirlenmiş alanlara** geri çekilince alım/satım düşün.
+
+**K7.2 · 00:02:09–00:04:30 · M** — **Düzeltme range'inde Fibonacci**: **0,5 altı ucuzluk**, **0,618** düzeltmenin temel noktası, **OTE = 0,618–0,786 (0,705 aslında 0,707)**; "range'in kuralı yoktur, subjektif; ama **doğru zamanda ve doğru yerde** bulunmalı".
+
+**K7.3 · 00:05:27–00:07:29 · M (confluence sayımı — çok önemli)** — Örnek short, **"veri sayımı"** ile anlatılıyor:
+- **Başlangıçta 2 veri** (tarihsel haftalık dirençten rejection + "range varsayımıyla pahalı bölgede") → **yetersiz**; "şortlamak yerine bekleyebilirim".
+- **Swing low ihlal edilince 5 veriye çıkıyor**: **(1)** haftalık tarihsel dirençten rejection, **(2)** **lower high → lower low** (yapı bozulması), **(3)** yapı kırılımıyla oluşan **yeni range + pahalılık bölgesi**, **(4)** **OTE'ye giriş (0,618 retest)**, **(5)** **daha önce test edilmemiş order block'a geri dönüş**.
+- **İç içe range** (range içinde range) ile **6. veri**: iç range'in OTE'si. "5 gerçek + 1 farazi veri" → **düşük riskli short**.
+
+**K7.4 · 00:08:39–00:08:46 · Y** — "**Order block gördüm, short'luyorum**" diyen kaybeder; metodolojiyi **chart pattern/harmonik/Wyckoff/tek Fibonacci**'dan ayıran **çok veri** (confluence) olmasıdır.
+
+**K7.5 · 00:04:44–00:05:20, 00:08:14–00:08:20 · M** — **Dönüş tetikleyicisi**: önemli **swing low'un ihlali** (yapı değişimi) sonrası **pullback**, **bearish piyasadaki en optimal short bölgesini** sunar.
+
+### Ders 7'den çıkan sonuç — botun giriş izni için kritik
+- **Eğitmen giriş için "veri sayısı" arıyor: 2 veri yetersiz, ≈5 veri (+1 farazi) = düşük risk.** Bu, botumun **"puanlama/confluence eşiği"** tasarımını destekler: **giriş izni = en az N bağımsız teyit** (N≈5; ders net sayı vermiyor, örnekte 5). **N eğitmenin kesin kuralı değil, örnekten çıkarılmış bir eşik** olarak etiketlenmeli ve backtest'le denenmeli.
+- **Trend yönündeki en önemli swing'in ihlal edilmemesi** (K7.1) düzeltme girişinin **ön şartı**.
+
+
+---
+
+## Ders 8 — Reversal (marketin dönüş emareleri)  *(eğitmen "9. konu"; kitapta Bölüm 8)*
+
+**K8.1 · 00:00:03–00:00:42 · F** — **Reversal** = fiyatın **ana yönünün tersine** hareket etmesi. Smart money fiyat yönünü çevirirken **stop'ların yoğun olduğu bölgeye** (old high'ın hemen üstü / old low'un hemen altı = **likidite**) hareket ettirir. İki temel soru: **emirler nereden dolar? Likidite (en çok işlem yapılabilecek yer) nerede?**
+
+**K8.2 · 00:01:12–00:02:33 · M (veri sayımı — 7. dersle aynı mantık)** — **BTC 14K tepesi örneği**: tek bir emareyle (tarihsel dirençten rejection) **direkt short'lama**; **emare sayısı** önce **2** (1 gerçek: tarihsel seviye rejection; 1 farazi: varsayımsal range'de pahalılık + OTE), **yapı kırıldıktan sonra 7** (6 gerçek + 1 farazi):
+1. Tarihsel seviyeden rejection
+2. **Rejection sonrası oluşan son low'un ihlali**
+3. Yeni range'de **0,5 üstü (pahalılık) bölgesine giriş**
+4. **0,618'e (OTE başlangıcı) net temas**
+5. **Alçalan tepeler** (önceki tepeyi geçememe)
+6. **Order block**
+7. Range içindeki range'de **OTE + pahalılık** (farazi)
+"Elimizdeki veri arttıkça kurduğumuz setup'ın kazanç ihtimali de o oranda artar."
+
+**K8.3 · 00:02:33–00:02:46 · Y** — **Amaç en tepeyi/dibi yakalamak değil**: **en doğru yerde giriş, en az risk, en yüksek ödül**. "Kimse sana tepeyi yakaladın diye kupa vermeyecek."
+
+**K8.4 · 00:03:00–00:05:33 · F** — **Her market, parite ve zaman diliminin kendi karakteri vardır**: USD/JPY kısa zaman diliminde **insanları yormaya yönelik (manipülatif)** hareketler yapar; BTC **günlükte daha olgun/keskin**, kısa zaman diliminde daha manipülatif ve belirsiz. **Kripto ve forex, BTC ve ETH, EUR/USD farklı karakterde** → **her pariteyi ve zaman dilimini ayrı ayrı test et**; "price action'ı kendin yaratmalısın".
+
+**K8.5 · 00:03:37–00:04:43 · M** — **Sürekli deviation (sapma) paterni**: likidite alındıktan sonra **fiyatın yeni likidite bölgelerine gitmesi** beklenirken **altına/üstüne kapatıp aniden range'e geri giriyorsa** bu **tuzak/dönüş emaresi**; fiyat **EQ'ya ve range'in karşı ucuna** gider. Aynı yapı sürekli tekrar eder ("iki tarafı kesip biçiyor").
+
+**K8.6 · 00:04:45–00:05:04 · F** — **Lokal tepe**: 4 saatlikte görülen bir tepe, 15 dakikada **yüzlerce küçük dönüş** içerir; her zaman diliminin **kendi lokal tepe/dibi** vardır; "hangi zaman diliminde baktığını bil".
+
+**K8.7 · 00:06:20–00:06:52 · M/Y** — **Tuzağa düşme ve yeniden giriş**: "range içine girdim" diye long açan, **likidite alımıyla stop olur**; **stop olup, fiyat tekrar kapanışla geri dönünce yeniden dahil ol**. Bu tür hareketler **haftada/ayda bir mutlaka çıkar**; **trading journal**'a not al; **3–4 stop'un acısını tek pozisyonla çıkarabilirsin** ("akıllı düş, akıllı kalk").
+
+### Ders 8'den çıkan sonuç
+- **Dönüş (reversal) girişi çok-teyitli**: eğitmen **6–7 emareyi** sayıyor; ancak **bunların çoğu "gerçek" yargı** (tarihsel seviye, OB, alçalan tepe) ve **sayısal eşik yok**. Botta **teyit puanı** (7. ders K7.3 ile birlikte) tasarlanırken **"N ≥ 5" varsayımı kullanıcı onaylı bir parametre** olmalı.
+- **Stop → yeniden giriş** (8, 12, 26, 28, 30, 31, 34. dersler) kuralı **toplamda 8 derste** tekrarlandı.
+
+
+---
+
+## Ders 9 — Fiyat döngüsü mekanizmasının özeti (4 element)  *(eğitmen "10. konu"; kitapta Bölüm 9)*
+
+**K9.1 · 00:01:42–00:03:35 · M (durum makinesi)** — **Fiyat döngüsü 4 elementten oluşur**: **(1) Konsolidasyon** (akümülasyon / distribüsyon, range dahil), **(2) Breakout**, **(3) Düzeltme (retracement)**, **(4) Reversal**. **Zincir**: *konsolidasyon, breakout mumuyla terk edilir* → *terk yönü ana yapıya göre ya devam ya reversal* → *reversal/breakout sonrası fiyat çoğu zaman **düzeltme** yapar (RTO: origin'e, swing high'a veya EQ'ya dönüş)* → *yeni konsolidasyon*. "Aslında her şey bir konsolidasyondan ibaret"; **tüm sonraki konseptler (OB, imbalance, breaker, mitigation, OTE, uzantı) bu 4 elementin üzerine oturur.**
+
+**K9.2 · 00:04:24–00:05:31 · Y** — **Amaç sadece para kazanmak değil, konseptin felsefesini ve en yüksek olasılıkla çalıştığı koşulu keşfetmek**. "On işlemde altısını kazanıp dördünü kaybetmek" yerine **on işlemde sekiz–dokuzunu/mümkünse hepsini kazanma** hedefi; **stop olması sorun değil ama stop'ları minimize etmenin yolu temel konulardır**. **Risk (para) sabit**, **işlemin kazanma ihtimalini maksimize etmek** hedef.
+
+**K9.3 · 00:05:35–00:06:11 · F** — **Önceki örneklerin hepsi dört elementi kapsıyor**: range (konsolidasyon) → **range low kaybı + deviation** (fake-out) → **istekli breakout mumuyla range'e geri giriş** → düzeltme (order block / range low'a dönüş) → hedef range high; "bir pozisyonda fiyatın dört temelini üstüne inşa ederek kurduk".
+
+**K9.4 · 00:00:24–00:01:00 · F** — Eğitim yapısı: **ilk 12 konu temel/felsefe**, sonraki **≈17 konu konsept ve metodoloji**, **27.–32. konular psikoloji ve risk yönetimi**. Eğitmen, konuları **düşündürerek ve boşluk bırakarak** anlatıyor; bu yüzden tek bir ders **tam kural vermeyebilir**.
+
+### Ders 9'dan çıkan sonuç — **bot mimarisinin iskeleti eğitmenin kendi modelinden gelmeli**
+Botun çekirdeği **4 elementli bir faz makinesi** olmalı (**konsolidasyon → breakout → düzeltme/RTO → reversal**) ve tüm konseptler (**OB, imbalance, breaker/mitigation, OTE/ucuz-pahalı, likidite hedefi, PWO/WO, SFP**) bu fazlara **teyit verisi** olarak bağlanmalı (7. ve 8. ders "veri sayımı").
+
+---
+
+# GENEL SENTEZ (42 dersin ortak sonucu)
+
+> **Okunan ders sayısı: 42 / 44.** Okunamayanlar: **Ders 35 ve 36** (DOCX'te döküm bağlantısı yok). **Kısmi (döküm kesik)**: Ders 3 (~08:26'da biter) ve Ders 29 (~04:05'te biter). Ders 16'nın anlatıcısı belirsiz.
+
+## A. Eğitmenin tekrar eden, **kesin** kuralları (≥3 derste)
+1. **Trend/HTF her şeyden önemli** (1, 2, 14, 17, 18, 19, 22, 25, 28, 29, 38, 42): işlemler HTF trend yönünde; HTF > LTF.
+2. **Konfirmasyonsuz giriş yok** (19, 22, 23, 25, 26, 28, 31, 32, 37, 42): LTF konfirmasyonu (breaker/MSB/SFP onay mumu) beklenir.
+3. **Karşı-trend veya konfirmasyonsuz işlemde yarım risk** (22, 29, 30, 31, 32, 42).
+4. **Stop her zaman, yapısal yerde** (tüm derslerde); **sabit stop yok, yapı ötesi**.
+5. **Hedef = temizlenmemiş likidite / imbalance / HTF seviyesi**; hedefe tam gelmeden çıkma (2, 22, 28, 40, 15).
+6. **Kısmi çıkış + stop'u girişe taşıma** (30, 31, 37, 39, 41, 42, 43); oranlar işleme göre değişir (%25/%50/%90).
+7. **Stop sonrası yeniden giriş** (8, 12, 26, 28, 30, 31, 34): yarım risk, ≥2R hedef.
+8. **Giriş rafinesi (HTF bölge → LTF konfirmasyon)** RR'yi 1 → 2,2 → 4,7'ye çıkarır (28, 33).
+9. **Risk işlemden önce sabit tutar**, lot stop mesafesine göre (17, 27).
+10. **Kırılım = mum KAPANIŞI** (19, 41).
+11. **Confluence/veri sayımı** (7: 2 veri yetersiz, 5+ iyi; 8: 7 veri; 13, 23).
+
+## B. **Yargı ağırlıklı / sayısal tanımı olmayan** (botta bizim varsayımımız olacaklar — açıkça etiketlenmeli)
+- "İstekli/hacimli mum" (breakout, OB, IC): sayısal eşik **yok**.
+- Swing tanımı: **4. mum kuralı** (belirsiz) **veya breakout mum kuralı**; 3. kural açıklanmadı.
+- "Önemli imbalance", "yüksek önemli likidite/bölge", "kurumsal bölge": göz kararı.
+- Range sınır seçimi (fitil/gövde), range temas sayısı (1–2 vs ≥3, çelişki 16 vs 3/24).
+- Kaç veri yeterli (N): örnekte 5; kesin değil.
+- Sezonluk bakış, haber, korelasyon (DXY/BTC.D), kurumsal ayak izi: bot dışı veri.
+
+## C. Botum için **yanlış çıkan** varsayımlar (düzeltilecek)
+1. Sabit pivot k=3 → eğitmenin swing'i fiyat hareketine bağlı (4. mum / breakout mumu).
+2. Giriş = kırılan seviyeye tek limit → **bölge/OB/imbalance'a kademeli** (breaker ise kırılan bölge, mitigation ise LH bloğu).
+3. Stop = LH + ATR → **yapısal flip bölgesi / likiditenin ötesi**.
+4. Hedef = en yakın pivot → **temizlenmemiş likidite, imbalance, Fib uzantı (1,272/1,618)**.
+5. Min RR = 2 → eğitmende **sabit eşik yok**; RR **giriş rafinesinden** doğar.
+6. Tüm geçmişi kullanma → **zaman dilimine göre pencere** (4s: 3–4 ay; 1s: 3–4 hafta; 15dk: 3–5 gün; günlük: 12–15 ay).
+7. Sweep'te market girişi → **konfirmasyonlu giriş** (onay mumu).
+8. Tek tip %1 risk → **zaman dilimi ve trend/konfirmasyon çarpanları** (43, 22/30).
+9. Seviye listesinde **MO/WO/PWO/Pazartesi H/L** yok → eklenmeli.
+
+## D. Önerilen bot mimarisi (eğitmenin 4 elementli modelinden)
+**Faz makinesi**: `KONSOLİDASYON(range + EQ, akümülasyon/distribüsyon) → BREAKOUT → (DÜZELTME/RTO | REVERSAL)`.
+**Teyit verisi (confluence puanı)**: HTF trend uyumu · HTF bölge tepkisi · likidite temizliği/SFP · deviation + istekli giriş mumu · MSB/breaker veya mitigation · OB/EFLOUD OB · imbalance · OTE (0,618–0,786) + ucuz/pahalı bölge · EQ · MO/WO/PWO · onay mumu.
+**Giriş**: puan ≥ N **ve** HTF trend yönü (karşı yönde **yarım risk**) **ve** LTF onay mumu; **kademeli emir** (%30/50/20 veya %10/20/30/40).
+**Stop**: yapısal (likiditenin / flip bölgesinin ötesi). **Hedef**: temizlenmemiş likidite/imbalance/Fib uzantı; **kısmi çıkış merdiveni** + BE/trailing (swing altı).
+**Risk**: sabit tutar; **zaman dilimi çarpanı** + **trend/konfirmasyon çarpanı**; **stop sonrası yeniden giriş** (yarım risk, azami 3 deneme).
+**Veri**: her TF için **kendi penceresi**; HTF kapanış sonrası erişim.
