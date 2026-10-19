@@ -44,10 +44,12 @@ function pivots(b,k,end=b.length){
 }
 function events(b,high,low){
  const a=b.at(-2),z=b.at(-1),out=[];
- if(low.length&&a.l<low.at(-1).price&&a.c>low.at(-1).price&&z.c>z.o)
+ if(low.length&&a.l<low.at(-1).price&&a.c>low.at(-1).price&&z.c>z.o&&
+    !b.slice(low.at(-1).i+1,-2).some(x=>x.l<=low.at(-1).price))
   out.push({type:"SFP+NEXT_GREEN",side:"LONG",stop:a.l,sourceRuleIds:SOURCE.sfp,
     why:"Süpürülen önceki onaylı swing low, kapanışla geri kazanıldı; sonraki kapanmış mum yeşil."});
- if(high.length&&a.h>high.at(-1).price&&a.c<high.at(-1).price&&z.c<z.o)
+ if(high.length&&a.h>high.at(-1).price&&a.c<high.at(-1).price&&z.c<z.o&&
+    !b.slice(high.at(-1).i+1,-2).some(x=>x.h>=high.at(-1).price))
   out.push({type:"SFP+NEXT_RED",side:"SHORT",stop:a.h,sourceRuleIds:SOURCE.sfp,
     why:"Süpürülen önceki onaylı swing high geri kaybedildi; sonraki kapanmış mum kırmızı."});
  if(high.length>=2&&low.length>=2){
