@@ -8,6 +8,8 @@ on:
       - 'auto_structure_evidence.json'
       - 'scripts/test_5year_evidence.cjs'
       - 'fiveyear-report.js'
+      - 'fiveyear-coverage.js'
+      - 'fiveyear-coverage.css'
       - 'fiveyear-report.css'
       - 'auto_structure_5y_backtest.json'
       - 'scripts/test_5year_report.cjs scripts/test_5year_evidence.cjs'
@@ -53,6 +55,7 @@ jobs:
         run: |
           node --check fiveyear-evidence.js
           node --check fiveyear-report.js
+          node --check fiveyear-coverage.js
           node --check auto-watch-engine.js
           node --check auto-watch-ui.js
           node --check catalogue-context.js
