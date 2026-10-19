@@ -1,4 +1,4 @@
-/* All 358 user-supplied ASR lesson rules. Searchable evidence desk only.
+/* All 447 user-supplied ASR lesson rules. Searchable evidence desk only.
  * Never turn educator paraphrases or discretionary statements into orders. */
 (()=>{
 "use strict";
@@ -32,16 +32,16 @@ async function load(){
   const response=await fetch("./instructor_rules.json",{cache:"no-store"});
   if(!response.ok)throw Error("HTTP "+response.status);
   const data=await response.json();
-  if(data.kind!=="EFLOUD_ASR_INSTRUCTOR_NOTE_ATLAS"||data.rule_count!==358
-    ||data.lesson_count!==32||data.orders_enabled!==false
-    ||!Array.isArray(data.rules)||data.rules.length!==358
+  if(data.kind!=="EFLOUD_ASR_INSTRUCTOR_NOTE_ATLAS"||data.rule_count!==447
+    ||data.lesson_count!==42||data.orders_enabled!==false
+    ||!Array.isArray(data.rules)||data.rules.length!==447
     ||data.rules.some(r=>r.approved_signal!==false||r.approved_order!==false)){
     throw Error("Kural atlasının bütünlük kontrolü başarısız");
   }
   rules=data.rules;
   lessonNames=new Map(data.lessons.map(l=>[l.lesson,"Ders "+l.lesson+" — "+l.title]));
   const picker=$("atlas-lesson");
-  picker.innerHTML='<option value="">Tüm dersler (32)</option>'+
+  picker.innerHTML='<option value="">Tüm dersler (42)</option>'+
     [...lessonNames].sort((a,b)=>a[0]-b[0]).map(([n,v])=>
       '<option value="'+n+'">'+escape(v)+'</option>').join("");
   render();
