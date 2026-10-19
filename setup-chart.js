@@ -296,7 +296,10 @@ function showAutoWatch(candidateId){
  // closed candles visible now; caller cannot inject fabricated price levels.
  if(!manualMarketReady||!candles||verifiedCount||!window.EfloudAutoWatch)return false;
  let report;
- try{report=window.EfloudAutoWatch.scan(getResearchSnapshot())}catch(e){return false}
+ try{
+  const snap=getResearchSnapshot();
+  report=window.EfloudAutoWatch.scan({...snap,bars:snap.bars.filter(x=>x.closed===true)});
+ }catch(e){return false}
  const c=report.items.find(x=>x.id===candidateId);
  if(!c||c.ordersEnabled!==false||c.tradeAllowed!==false||
     c.orderPlaced!==false||c.sourceVerified!==false||
@@ -415,6 +418,7 @@ function setPoint(p){
   else{currentBars.push(bar);if(currentBars.length>1001)currentBars.shift()}
   lastTime=bar.time;lastBar=bar;
   updateOhlc(bar,currentBars[currentBars.length-2]);
+  if(bar.closed)window.dispatchEvent(new Event("efloud:market-ready"));
   el("chart-candle-status").textContent=currentBars.length+" gerçek mum · "+
     (bar.closed?"son mum kapandı":"son mum oluşuyor");
   if(bar.closed)window.dispatchEvent(new Event("efloud:market-ready"));
