@@ -39,6 +39,46 @@ function render(){
    cell.colSpan=14;txt(cell,"Bu zaman dilimi için doğrulanmış yeni-motor raporu henüz yok.");
    row.appendChild(cell);tbody.appendChild(row);
  }
+ const riskBody=$("fiveyear-risk-rows");
+ if(riskBody){
+   riskBody.replaceChildren();
+   let confirmed=0;
+   for(const m of rows){
+      const a=m.spotLongOnlyAudit;
+      const p=a?.paperRiskProfileStress;
+      const usable=a?.unresolvedPaperExposureNotIgnored===true&&
+        a?.sameBarCloseAndNewTouchBlocked===true&&
+        a?.onePaperPositionPerMarketAndPivot===true&&
+        p?.sampleSize===a.nonOverlappingResolvedPaperOutcomes&&
+        p?.realAccountPnL===null&&
+        p?.notionalAndPortfolioCapitalSimulated===false;
+      const r=document.createElement("tr");
+      const values=[m.symbol.replace("USDT",""),m.timeframe,
+        "k="+m.pivotWidth,m.split];
+      if(usable){
+        confirmed++;
+        values.push(p.sampleSize,fmt(p.cumulativeEstimatedR),
+          fmt(p.peakToTroughMaxDrawdownR),
+          p.estimatedPaperProfitFactor===null?"Tanımlanamaz":fmt(p.estimatedPaperProfitFactor),
+          p.worstConsecutiveNetLosses);
+      }else{
+        values.push("—","—","—","—","—");
+      }
+      for(const value of values){
+        const td=document.createElement("td");
+        td.textContent=String(value);
+        r.appendChild(td);
+      }
+      riskBody.appendChild(r);
+   }
+   if(!rows.length){
+      const tr=document.createElement("tr"),td=document.createElement("td");
+      td.colSpan=9;td.textContent="Bu filtrelerde tarihsel Spot LONG risk verisi bulunamadı.";
+      tr.appendChild(td);riskBody.appendChild(tr);
+   }
+   txt($("fiveyear-risk-status"),"Risk analizi doğrulanmış araştırma grubu: "+
+       confirmed+"/"+rows.length+". Veri yoksa kâr veya güven düzeyi varsayılmaz.");
+ }
  txt($("fiveyear-count"),rows.length+" araştırma grubu gösteriliyor");
 }
 async function init(){
