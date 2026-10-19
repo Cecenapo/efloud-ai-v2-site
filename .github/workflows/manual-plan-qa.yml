@@ -4,10 +4,14 @@ on:
   push:
     branches: [main]
     paths:
+      - 'fiveyear-report.js'
+      - 'fiveyear-report.css'
+      - 'auto_structure_5y_backtest.json'
+      - 'scripts/test_5year_report.cjs'
       - 'auto-watch-engine.js'
       - 'auto-watch-ui.js'
       - 'auto-watch.css'
-      - 'scripts/test_auto_watch.cjs'
+      - 'scripts/test_auto_watch.cjs scripts/test_5year_report.cjs'
       - 'catalogue-context.js'
       - 'catalogue-context-ui.js'
       - 'scripts/test_catalogue_context.cjs'
@@ -44,6 +48,7 @@ jobs:
           python-version: '3.11'
       - name: Validate JavaScript syntax
         run: |
+          node --check fiveyear-report.js
           node --check auto-watch-engine.js
           node --check auto-watch-ui.js
           node --check catalogue-context.js
