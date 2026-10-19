@@ -14,6 +14,7 @@ let chart=null,candles=null,volumes=null,started=false,ws=null,loadId=0;
 let symbol="BTCUSDT",interval="4h",lastTime=0,lastBar=null,currentBars=[],volumeVisible=true;
 let refreshTimer=0,canLive=false,markerView=null,priceLines=[],experimentalLines=[],verifiedCount=0;
 let manualLines=[],activeManualPlan=null,manualRequestToken=0,manualMarketReady=false;
+let autoWatchLines=[],activeAutoWatchId=null;
 const el=id=>document.getElementById(id);
 const fPrice=n=>{
  if(!Number.isFinite(Number(n)))return "—";
@@ -285,6 +286,51 @@ async function showManualPlan(raw){
  activeManualPlan=plan;
  return renderManualPlan(plan);
 }
+function clearAutoWatch(){
+ if(candles)for(const l of autoWatchLines){try{candles.removePriceLine(l)}catch(e){}}
+ autoWatchLines=[];
+ activeAutoWatchId=null;
+}
+function showAutoWatch(candidateId){
+ // A chart overlay can ONLY reflect a re-computed candidate on authentic
+ // closed candles visible now; caller cannot inject fabricated price levels.
+ if(!manualMarketReady||!candles||verifiedCount||!window.EfloudAutoWatch)return false;
+ let report;
+ try{report=window.EfloudAutoWatch.scan(getResearchSnapshot())}catch(e){return false}
+ const c=report.items.find(x=>x.id===candidateId);
+ if(!c||c.ordersEnabled!==false||c.tradeAllowed!==false||
+    c.orderPlaced!==false||c.sourceVerified!==false||
+    c.createdClosedBarTime!==report.lastClosedBarTime)return false;
+ if(activeManualPlan)clearManualPlan();
+ clearAutoWatch();
+ clearResearchOverlay();
+ const lines=[
+  {price:c.zone.low,color:"#b98ae8",title:"DENEY · BÖLGE ALT"},
+  {price:c.zone.high,color:"#b98ae8",title:"DENEY · BÖLGE ÜST"},
+  {price:c.stop,color:"#ef5350",title:"DENEY · GEÇERSİZLİK"},
+  ...c.targets.map((x,i)=>({price:x.price,color:"#26a69a",title:"DENEY · TP"+(i+1)}))
+ ];
+ try{for(const x of lines)autoWatchLines.push(candles.createPriceLine({
+  price:x.price,color:x.color,lineWidth:1,lineStyle:2,
+  axisLabelVisible:true,title:x.title
+ }))}catch(e){clearAutoWatch();return false}
+ activeAutoWatchId=c.id;
+ el("chart-side").textContent=c.side+" · ARAŞTIRMA HİPOTEZİ / EMİR YOK";
+ el("chart-entry-price").textContent=fPrice(c.zone.low)+" – "+fPrice(c.zone.high);
+ el("chart-stop-price").textContent=fPrice(c.stop);
+ el("chart-tp-price").textContent=c.targets.map(x=>fPrice(x.price)+" / "+x.grossR.toFixed(2)+"R brüt varsayım").join(" | ");
+ el("chart-entry-why").textContent=c.whyEntry;
+ el("chart-stop-why").textContent=c.whyStop;
+ el("chart-tp-why").textContent=c.whyTarget;
+ el("chart-net-r").textContent="DOLUM YOK · NET R/EV YOK";
+ el("chart-arms").textContent="Deneysel pivot k="+c.width+" · ASR: "+c.sourceRuleIds.join(", ");
+ el("chart-observation").textContent="Katalog açıklamaları kaynak örneğidir. Pivot k="+c.width+
+  " ve zone-midpoint geliştirici hipotezidir. Borsa emri gönderilmedi.";
+ el("chart-source-note").textContent="GERÇEK BINANCE OHLC / DENEYSEL İZLEME · fiyat seviyesi yalnız "+
+  "henüz gerçekleşmemiş retest için; hacim/takas, dolum, net RR ve kârlılık kanıtı yok.";
+ changeStatus("OTOMATİK DENEYSEL GÖZLEM · AL/SAT DEĞİL");
+ return true;
+}
 function clearApprovedOverlays(){
  clearResearchOverlay();
  if(candles)for(const line of priceLines){
@@ -407,6 +453,7 @@ function openStream(requestId){
 }
 async function showMarket(s,t,options={}){
  if(!SYMBOLS.has(s)||!INTERVALS.has(t))return;
+ if(activeAutoWatchId&&(symbol!==s||interval!==t))clearAutoWatch();
  if(activeManualPlan&&(activeManualPlan.symbol!==s||activeManualPlan.timeframe!==t))clearManualPlan();
  manualMarketReady=false;
  const same=symbol===s&&interval===t&&currentBars.length>0;
@@ -433,6 +480,9 @@ async function showMarket(s,t,options={}){
   window.dispatchEvent(new Event("efloud:market-ready"));
   if(activeManualPlan&&!verifiedCount&&activeManualPlan.symbol===symbol&&activeManualPlan.timeframe===interval){
     renderManualPlan(activeManualPlan);
+  }else if(activeAutoWatchId&&!verifiedCount){
+    const oldId=activeAutoWatchId;
+    if(!showAutoWatch(oldId)){clearAutoWatch();changeStatus("GERÇEK OHLC HAZIR");}
   }else changeStatus("GERÇEK OHLC HAZIR");
   openStream(id);
  }catch(e){
@@ -482,7 +532,7 @@ function init(){
  window.addEventListener("beforeunload",()=>{closeStream();clearInterval(refreshTimer)});
 }
 function getResearchSnapshot(){return {symbol,timeframe:interval,bars:currentBars.map(({time,open,high,low,close,closed})=>({time,open,high,low,close,closed}))};}
-window.EfloudSetupChart={init,showMarket,getResearchSnapshot,showResearchObservation,showManualPlan,clearManualPlan,
+window.EfloudSetupChart={init,showMarket,getResearchSnapshot,showResearchObservation,showManualPlan,clearManualPlan,showAutoWatch,clearAutoWatch,
  debugState:()=>({ready:!!chart,symbol,interval,bars:currentBars.length,
  live:canLive,engine:window.LightweightCharts?.version?.()||null,lastTime,verifiedCount})};
 })();
