@@ -43,3 +43,24 @@ test("the 64 variant evidence guard preserves no-trade status and matches replay
  assert.ok(ui.includes('fetch("./auto_structure_evidence.json"'));
  assert.ok(ui.includes("e.sourceReportUtc!==z.updatedUtc"));
 });
+
+test("coverage table refuses to promote missing source bars as continuous data",()=>{
+ const d=JSON.parse(get("auto_structure_5y_backtest.json"));
+ const coverage=d.seriesCoverage;
+ assert.equal(d.historicalSeriesTested,32);
+ assert.ok(Array.isArray(coverage));
+ const unique=new Set(coverage.map(x=>x.symbol+"/"+x.timeframe));
+ assert.equal(unique.size,32);
+ assert.equal(coverage.length,32);
+ assert.ok(coverage.every(x=>x.coverageMetadataMissing===true||
+    (Number.isInteger(x.authenticBars)&&x.authenticBars>0)));
+ assert.ok(coverage.some(x=>x.gapCount>0));
+ assert.equal(d.fiveYearsGapFree,false);
+ const html=get("index.html"),ui=get("fiveyear-coverage.js");
+ assert.ok(html.includes('id="fiveyear-coverage-rows"'));
+ assert.ok(html.includes("./fiveyear-coverage.js?v=1"));
+ assert.ok(ui.includes('fetch("./auto_structure_5y_backtest.json"'));
+ assert.ok(ui.includes("c.coverageMetadataMissing"));
+ assert.ok(ui.includes("c.gapCount>0"));
+ assert.ok(ui.includes("c.fiveYearDataCoverageVerified===true"));
+});
