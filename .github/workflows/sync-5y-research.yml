@@ -1,0 +1,62 @@
+name: EFLOUD Free Five-Year Evidence Sync
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/sync_5y_backtest.py'
+      - 'scripts/test_sync_5y_backtest.py'
+      - '.github/workflows/sync-5y-research.yml'
+  schedule:
+    # Public repo GitHub Actions is free, 4 sync checks per day. It downloads
+    # only source-stamped public JSON; never starts a paid cloud service.
+    - cron: '43 1,7,13,19 * * *'
+permissions:
+  contents: write
+concurrency:
+  group: efloud-site-five-year-evidence-sync
+  cancel-in-progress: false
+jobs:
+  verify_and_publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Test strict 32 market / 64 variant source-locked no-order projection
+        run: |
+          PYTHONPATH=scripts python -m unittest discover -s scripts -p 'test_sync_5y_backtest.py' -v
+          python -m py_compile scripts/sync_5y_backtest.py
+      - name: Fetch two matching official research artifacts (fail on stale gate)
+        run: python scripts/sync_5y_backtest.py
+      - name: Publish only the two verified research JSON files
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          cp auto_structure_5y_backtest.json /tmp/efloud-site-fiveyear-backtest.json
+          cp auto_structure_evidence.json /tmp/efloud-site-fiveyear-evidence.json
+          for ATTEMPT in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            cp /tmp/efloud-site-fiveyear-backtest.json auto_structure_5y_backtest.json
+            cp /tmp/efloud-site-fiveyear-evidence.json auto_structure_evidence.json
+            git add auto_structure_5y_backtest.json auto_structure_evidence.json
+            if git diff --cached --quiet; then
+              echo "Site research already matches both source-stamped artifacts"
+              exit 0
+            fi
+            git commit -m "research: update 5y source-locked evidence snapshot"
+            if git push origin HEAD:main; then
+              echo "Source-matched historical results published"
+              exit 0
+            fi
+            sleep "$ATTEMPT"
+          done
+          echo "Source matched, but site GitHub push could not safely complete" >&2
+          exit 1
