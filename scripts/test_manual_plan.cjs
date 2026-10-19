@@ -115,6 +115,6 @@ test("HTML wires both calculator scripts and source chart",()=>{
  const ui=html.indexOf('src="./manual-plan-ui.js?v=1"');
  assert.ok(math>0&&ui>math);
  const chart=fs.readFileSync(path.join(__dirname,"..","setup-chart.js"),"utf8");
- assert.match(chart,/window\.EfloudSetupChart=\{init,showMarket,showResearchObservation,showManualPlan,clearManualPlan,/);
+ assert.match(chart,/window\.EfloudSetupChart=\{init,showMarket,getResearchSnapshot,showResearchObservation,showManualPlan,clearManualPlan,/);
  assert.match(chart,/verifiedCount/);
 });
