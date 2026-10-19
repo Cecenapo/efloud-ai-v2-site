@@ -8,7 +8,7 @@ on:
       - 'scripts/test_sync_5y_backtest.py'
       - '.github/workflows/sync-5y-research.yml'
   schedule:
-    # Public repo GitHub Actions is free, 4 sync checks per day. It downloads
+    # Public repo GitHub Actions is free, 4 sync checks per day when a scoped, read-only GitHub Actions repository secret is configured. It downloads
     # only source-stamped public JSON; never starts a paid cloud service.
     - cron: '43 1,7,13,19 * * *'
 permissions:
@@ -20,6 +20,8 @@ jobs:
   verify_and_publish:
     runs-on: ubuntu-latest
     timeout-minutes: 12
+    env:
+      EFLOUD_RESEARCH_READ_TOKEN: ${{ secrets.EFLOUD_RESEARCH_READ_TOKEN }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -32,9 +34,14 @@ jobs:
         run: |
           PYTHONPATH=scripts python -m unittest discover -s scripts -p 'test_sync_5y_backtest.py' -v
           python -m py_compile scripts/sync_5y_backtest.py
-      - name: Fetch two matching official research artifacts (fail on stale gate)
+      - name: State private source read-access boundary
+        if: env.EFLOUD_RESEARCH_READ_TOKEN == ''
+        run: echo "::notice::Private research has no configured scoped read access; no upstream sync attempted. Existing public report remains unchanged."
+      - name: Fetch two matching authenticated research artifacts
+        if: env.EFLOUD_RESEARCH_READ_TOKEN != ''
         run: python scripts/sync_5y_backtest.py
       - name: Publish only the two verified research JSON files
+        if: env.EFLOUD_RESEARCH_READ_TOKEN != ''
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
