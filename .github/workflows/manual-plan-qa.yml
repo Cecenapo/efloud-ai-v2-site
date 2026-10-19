@@ -4,10 +4,13 @@ on:
   push:
     branches: [main]
     paths:
+      - 'fiveyear-evidence.js'
+      - 'auto_structure_evidence.json'
+      - 'scripts/test_5year_evidence.cjs'
       - 'fiveyear-report.js'
       - 'fiveyear-report.css'
       - 'auto_structure_5y_backtest.json'
-      - 'scripts/test_5year_report.cjs'
+      - 'scripts/test_5year_report.cjs scripts/test_5year_evidence.cjs'
       - 'auto-watch-engine.js'
       - 'auto-watch-ui.js'
       - 'auto-watch.css'
@@ -48,6 +51,7 @@ jobs:
           python-version: '3.11'
       - name: Validate JavaScript syntax
         run: |
+          node --check fiveyear-evidence.js
           node --check fiveyear-report.js
           node --check auto-watch-engine.js
           node --check auto-watch-ui.js
