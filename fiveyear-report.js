@@ -39,13 +39,28 @@ async function init(){
      z.independentlyProvenStrategies!==0||z.realOrders!==0)
       throw Error("Kaynak güvenlik ve bütünlük kontrolü başarısız");
   data=z;
-  txt($("fiveyear-source"),"Son doğrulanmış tarihsel araştırma: "+z.updatedUtc+
-    " · kapsanan "+z.historicalSeriesTested+" parite/periyot · "+
-    z.totalFrozenResearchWatches+" aday · doğrulanmış avantaj: 0");
-  txt($("fiveyear-method"),"Kaynak geçmiş mumlarına yürütme · "+
-    "kaynak teyidi olmayan pivot k=2/4 · %"+fmt(z.feeScenarioPct.baseRoundTripPct)+
-    " / %"+fmt(z.feeScenarioPct.stressRoundTripPct)+" varsayımsal gidiş-dönüş maliyet. "+
-    "Bu raporda 4s ve 1g sonuçları vardır; diğer periyotlarda eski rakamlar gösterilmez.");
+  const absent=(z.seriesStillMissing||[]).map(x=>x.symbol.replace("USDT","")+"/"+x.timeframe);
+  const damaged=(z.seriesCoverage||[]).filter(x=>x.gapCount>0).length;
+  const uncertain=(z.seriesCoverage||[]).filter(x=>x.coverageMetadataMissing).length;
+  const holdout=z.metrics.filter(x=>x.split==="holdout");
+  const measured=holdout.filter(x=>x.netBase!==null);
+  const positive=measured.filter(x=>x.netBase>0).length;
+  const certified=holdout.filter(x=>x.bootstrapLower!==null&&x.bootstrapLower>0).length;
+  txt($("fiveyear-source"),"Kaynak geçmiş test: "+z.updatedUtc+
+    " · "+z.historicalSeriesTested+"/32 parite/periyot · "+
+    Number(z.totalFrozenResearchWatches).toLocaleString("tr-TR")+
+    " deneysel aday · onaylı kârlı strateji: 0");
+  txt($("fiveyear-method"),"Kaynak teyidi olmayan pivot k=2/4 · %"+
+    fmt(z.feeScenarioPct.baseRoundTripPct)+" / %"+
+    fmt(z.feeScenarioPct.stressRoundTripPct)+" varsayımsal toplam işlem maliyeti. "+
+    "Son %20 testte baz net R pozitif gözlenen grup: "+positive+
+    "/"+measured.length+" (bağımsız kanıt değil). "+
+    (certified>0?"Baz senaryoda alt güven sınırı pozitif grup: "+certified+
+      " — araştırma düzeyi; canlı doğrulama yok. ":"")+
+    "Eksik periyot: "+(absent.join(", ")||"yok")+
+    " · Mum boşluğu kaydedilen seri: "+damaged+
+    " · Kapsam metaverisi eksik eski seri: "+uncertain+
+    " · Gerçek emir yok; geçmiş test sonuçları geleceği garanti etmez.");
   for(const field of ["fiveyear-tf","fiveyear-split","fiveyear-width"]){
     $(field).addEventListener("change",render);
   }
