@@ -2,7 +2,7 @@
 
 Two matched, complete, independently generated public read-only reports are
 required. No orders, no trade promotion, no stale-downgrade, no made-up data.
-Uses GitHub public raw endpoints; no Binance API, paid service or secret key.
+Uses GitHub authenticated Contents read-only endpoint; no Binance API or paid service. No credential is created or requested by this script.
 """
 from __future__ import annotations
 
@@ -10,10 +10,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 import json
 import os
+from base64 import b64decode
 from urllib.request import Request, urlopen
 
 ROOT=Path(__file__).resolve().parent.parent
-UPSTREAM="https://raw.githubusercontent.com/Cecenapo/efloud-ai-cloud/main/public/data/binance_v2/"
+UPSTREAM="https://api.github.com/repos/Cecenapo/efloud-ai-cloud/contents/public/data/binance_v2/"
 REPLAY="auto_structure_5y_backtest.json"
 EVIDENCE="auto_structure_evidence.json"
 SYMBOLS=("BTCUSDT","ETHUSDT","SOLUSDT","DODOUSDT")
@@ -35,12 +36,26 @@ def _date(value):
 def _fetch(name):
     if name not in (REPLAY,EVIDENCE):
         raise ValueError("Unapproved upstream file")
-    request=Request(UPSTREAM+name,headers={"User-Agent":"EFLOUD-Research-Sync-ReadOnly/1"})
+    token=os.environ.get("EFLOUD_RESEARCH_READ_TOKEN")
+    if not token:
+        raise RuntimeError("A repository-scoped read-only token is required; private research was NOT exposed.")
+    request=Request(UPSTREAM+name+"?ref=main",headers={
+        "User-Agent":"EFLOUD-Research-Sync-ReadOnly/1",
+        "Authorization":"Bearer "+token,
+        "Accept":"application/vnd.github+json",
+        "X-GitHub-Api-Version":"2022-11-28",
+    })
     with urlopen(request,timeout=30) as response:
-        body=response.read(3500000)
-    if len(body)>3000000:
+        body=response.read(4500000)
+    data=json.loads(body)
+    if (not isinstance(data,dict) or data.get("type")!="file" or
+            data.get("encoding")!="base64" or
+            not isinstance(data.get("content"),str)):
+        raise ValueError("Private source did not return a verified GitHub Contents file")
+    decoded=b64decode(data["content"],validate=False)
+    if len(decoded)>3000000:
         raise ValueError("Unusually large upstream report")
-    return json.loads(body)
+    return json.loads(decoded)
 
 
 def project(replay: dict,evidence: dict) -> tuple[dict,dict]:
