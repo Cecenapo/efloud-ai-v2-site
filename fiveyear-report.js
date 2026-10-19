@@ -14,13 +14,18 @@ function render(){
  const tbody=$("fiveyear-rows");tbody.replaceChildren();
  for(const m of rows){
   const r=document.createElement("tr");
+  const audited=m.overlapAudit?.unresolvedPaperExposureNotIgnored===true&&
+    m.overlapAudit?.sameBarCloseAndNewTouchBlocked===true;
+  const verifiedLower=audited&&m.overlapAudit.overlappingOutcomesExcluded===0&&
+    m.overlapAudit.unresolvedOrAmbiguousOccupancyBlocks===0;
   for(const val of [m.symbol.replace("USDT",""),m.timeframe,"k="+m.pivotWidth,
     m.split,m.frozenWatches,m.resolved,
-    m.overlapAudit?.nonOverlappingResolvedPaperOutcomes??"—",
-    m.overlapAudit?.overlappingOutcomesExcluded??"—",
+    audited?m.overlapAudit.nonOverlappingResolvedPaperOutcomes:"—",
+    audited?m.overlapAudit.overlappingOutcomesExcluded:"—",
     fmt(m.netBase),fmt(m.netStress),
-    fmt(m.overlapAudit?.nonOverlappingMeanEstimatedNetRStress),
-    m.bootstrapLower===null?"Ölçülemedi":fmt(m.bootstrapLower)]){
+    audited?fmt(m.overlapAudit.nonOverlappingMeanEstimatedNetRStress):"—",
+    !verifiedLower?"Yeniden hesaplanmalı":
+      (m.bootstrapLower===null?"Ölçülemedi":fmt(m.bootstrapLower))]){
     const cell=document.createElement("td");txt(cell,val);r.appendChild(cell);
   }
   tbody.appendChild(r);
@@ -56,14 +61,20 @@ async function init(){
          e.certifiedPositiveNetEVStrategies!==0||
          e.teacherApprovedStrategies!==0||e.ordersEnabled!==false)
          throw Error("Kanıt kaynağı ile test tarihi veya koruma koşulları uyuşmuyor");
-      const losses=e.verdictCounts?.HISTORICAL_COST_FAIL;
-      const low=e.verdictCounts?.INSUFFICIENT_SAMPLES;
-      if(!Number.isInteger(losses)||!Number.isInteger(low)||losses+low!==64)
-        throw Error("64 varyantın kontrol toplamı uyuşmuyor");
-      txt(evidenceNode,"Bağımsız araştırma elemesi: "+losses+
-        " varyant maliyet/istikrar sınavından geçemedi; "+low+
-        " varyantın örneklemi yetersiz. Çoklu test düzeltmesiyle %95 kâr kanıtı yok. "+
-        "Kaynak mum verisi tüm serilerde kesintisiz doğrulanmadı; gerçek emir kapalı.");
+      const checks=Object.entries(e.verdictCounts||{});
+      if(checks.length===0||checks.some(([name,n])=>!name||
+         !Number.isInteger(n)||n<0)||
+         checks.reduce((sum,[name,n])=>sum+n,0)!==64)
+         throw Error("64 varyantın kontrol toplamı uyuşmuyor");
+      const names={HISTORICAL_COST_FAIL:"maliyet/istikrar başarısız",
+        INSUFFICIENT_SAMPLES:"örneklem yetersiz",
+        OVERLAP_AUDIT_PENDING:"çakışma denetimi bekliyor",
+        DATA_COVERAGE_REVIEW:"veri kapsamı inceleniyor",
+        UNVERIFIED_EXPERIMENTAL_WATCH_ONLY:"deneysel/güvenilirliği kanıtlanmadı"};
+      txt(evidenceNode,"Araştırma elemesi: "+
+        checks.map(([name,n])=>n+" "+(names[name]||name)).join("; ")+
+        ". Çoklu test düzeltmesiyle %95 kâr kanıtı yok. "+
+        "Veri kesintileri, çakışan pozisyonlar ve gerçek emir dolumu doğrulanmadıkça otomatik işlem kapalı.");
     }catch(e){
       txt(evidenceNode,"Kanıt raporu eşleşmedi veya okunamadı: "+
         String(e.message||e)+". Sonuçları onaylı strateji saymıyoruz.");
@@ -75,6 +86,8 @@ async function init(){
   const holdout=z.metrics.filter(x=>x.split==="holdout");
   const measured=holdout.filter(x=>x.netBase!==null);
   const positive=measured.filter(x=>x.netBase>0).length;
+  const causalAudited=holdout.filter(x=>x.overlapAudit?.unresolvedPaperExposureNotIgnored===true&&
+    x.overlapAudit?.sameBarCloseAndNewTouchBlocked===true).length;
   const certified=holdout.filter(x=>x.bootstrapLower!==null&&x.bootstrapLower>0).length;
   txt($("fiveyear-source"),"Kaynak geçmiş test: "+z.updatedUtc+
     " · "+z.historicalSeriesTested+"/32 parite/periyot · "+
@@ -85,6 +98,8 @@ async function init(){
     fmt(z.feeScenarioPct.stressRoundTripPct)+" varsayımsal toplam işlem maliyeti. "+
     "Son %20 testte baz net R pozitif gözlenen grup: "+positive+
     "/"+measured.length+" (bağımsız kanıt değil). "+
+    "Açık pozisyon blokajını içeren denetim: "+causalAudited+"/"+holdout.length+
+    " grup. Eski çakışma sonuçları gizlenir. "+
     (certified>0?"Baz senaryoda alt güven sınırı pozitif grup: "+certified+
       " — araştırma düzeyi; canlı doğrulama yok. ":"")+
     "Eksik periyot: "+(absent.join(", ")||"yok")+
