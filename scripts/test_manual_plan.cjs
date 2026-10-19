@@ -103,8 +103,8 @@ test("notes catalog really contains referenced rule IDs",()=>{
  for(const group of [["K18.7","K26.7","K28.4"],["K22.2","K22.9","K28.8"],
    ["K10.7","K19.6"],["K22.6","K30.1"]])
   for(const id of group)assert.ok(ids.has(id),"Missing note ID "+id);
- assert.equal(atlas.source_truncated,true);
- assert.deepEqual(atlas.incomplete_rule_ids,["K40.3"]);
+ assert.equal(atlas.source_truncated,false);
+ assert.deepEqual(atlas.unavailable_lessons,[35,36]);
 });
 
 test("HTML wires both calculator scripts and source chart",()=>{
