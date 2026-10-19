@@ -15,7 +15,11 @@ function render(){
  for(const m of rows){
   const r=document.createElement("tr");
   for(const val of [m.symbol.replace("USDT",""),m.timeframe,"k="+m.pivotWidth,
-    m.split,m.frozenWatches,m.resolved,fmt(m.netBase),fmt(m.netStress),
+    m.split,m.frozenWatches,m.resolved,
+    m.overlapAudit?.nonOverlappingResolvedPaperOutcomes??"—",
+    m.overlapAudit?.overlappingOutcomesExcluded??"—",
+    fmt(m.netBase),fmt(m.netStress),
+    fmt(m.overlapAudit?.nonOverlappingMeanEstimatedNetRStress),
     m.bootstrapLower===null?"Ölçülemedi":fmt(m.bootstrapLower)]){
     const cell=document.createElement("td");txt(cell,val);r.appendChild(cell);
   }
@@ -23,7 +27,7 @@ function render(){
  }
  if(!rows.length){
    const row=document.createElement("tr"),cell=document.createElement("td");
-   cell.colSpan=9;txt(cell,"Bu zaman dilimi için doğrulanmış yeni-motor raporu henüz yok.");
+   cell.colSpan=12;txt(cell,"Bu zaman dilimi için doğrulanmış yeni-motor raporu henüz yok.");
    row.appendChild(cell);tbody.appendChild(row);
  }
  txt($("fiveyear-count"),rows.length+" araştırma grubu gösteriliyor");
