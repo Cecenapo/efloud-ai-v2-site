@@ -97,5 +97,31 @@ class FiveYearEvidenceMirrorTests(unittest.TestCase):
             project(src,e)
 
 
+
+    def test_spot_long_only_audit_is_preserved_and_never_promoted(self):
+        src,e=fixture()
+        src["metrics"][0]["spotLongOnlyResolvedWithinSplit"]=2
+        src["metrics"][0]["spotLongOnlyAudit"]={
+            "nonOverlappingResolvedPaperOutcomes":1,
+            "nonOverlappingMeanEstimatedNetRStress":-.40,
+            "unresolvedPaperExposureNotIgnored":True,
+            "sameBarCloseAndNewTouchBlocked":True,
+            "onePaperPositionPerMarketAndPivot":True,
+            "realOrderFills":0,"independentEvidenceEstablished":False}
+        result,gate=project(src,e)
+        spot=result["metrics"][0]["spotLongOnlyAudit"]
+        self.assertEqual(spot["nonOverlappingResolvedPaperOutcomes"],1)
+        self.assertEqual(spot["nonOverlappingMeanEstimatedNetRStress"],-.40)
+        self.assertEqual(result["realOrders"],0)
+
+    def test_fake_spot_long_fills_fail_closed(self):
+        src,e=fixture()
+        src["metrics"][0]["spotLongOnlyResolvedWithinSplit"]=3
+        src["metrics"][0]["spotLongOnlyAudit"]={
+            "nonOverlappingResolvedPaperOutcomes":3,
+            "realOrderFills":1,"independentEvidenceEstablished":False}
+        with self.assertRaisesRegex(ValueError,"LONG-only"):
+            project(src,e)
+
 if __name__=="__main__":
     unittest.main()
