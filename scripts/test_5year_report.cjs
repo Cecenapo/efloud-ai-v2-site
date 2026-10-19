@@ -62,3 +62,22 @@ test("coverage table refuses to promote missing source bars as continuous data",
  assert.ok(ui.includes("c.gapCount>0"));
  assert.ok(ui.includes("c.fiveYearDataCoverageVerified===true"));
 });
+
+test("UI conceals obsolete paper overlap results until unresolved exposure is audited",()=>{
+ const source=get("fiveyear-report.js");
+ assert.ok(source.includes("unresolvedPaperExposureNotIgnored===true"));
+ assert.ok(source.includes("sameBarCloseAndNewTouchBlocked===true"));
+ assert.ok(source.includes('audited?m.overlapAudit.nonOverlappingResolvedPaperOutcomes:"—"'));
+ assert.ok(source.includes("audited?fmt(m.overlapAudit.nonOverlappingMeanEstimatedNetRStress)"));
+ assert.ok(source.includes('"Yeniden hesaplanmalı"'));
+ const data=JSON.parse(get("auto_structure_5y_backtest.json"));
+ const inspected=data.metrics.filter(m=>m.overlapAudit);
+ assert.ok(inspected.length>=0);
+ for(const m of inspected){
+   // Audit flags are read from immutable source data, never inferred from
+   // a positive P&L or guessed from the existence of an overlapAudit object.
+   const good=m.overlapAudit.unresolvedPaperExposureNotIgnored===true&&
+     m.overlapAudit.sameBarCloseAndNewTouchBlocked===true;
+   if(!good)assert.notEqual(m.overlapAudit.independentEvidenceEstablished,true);
+ }
+});
