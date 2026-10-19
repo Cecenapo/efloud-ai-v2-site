@@ -1,4 +1,4 @@
-"""Guard the 358 imported ASR notes from being mislabeled as trade signals."""
+"""Guard the 447 imported ASR notes from being mislabeled as trade signals."""
 from pathlib import Path
 import json
 import re
@@ -11,18 +11,18 @@ class InstructorAtlasTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.data = json.loads((ROOT/"instructor_rules.json").read_text(encoding="utf-8"))
-        cls.source = (ROOT/"docs"/"EFLOUD_TRAINING_ASR_RULES.md").read_text(encoding="utf-8")
+        cls.source = (ROOT/"docs"/"EFLOUD_TRAINING_ASR_RULES_42_LESSONS.md").read_text(encoding="utf-8")
 
     def test_full_source_exact_index(self):
         rows=self.data["rules"]
-        self.assertEqual(self.data["rule_count"], 358)
-        self.assertEqual(self.data["lesson_count"], 32)
-        self.assertEqual(len(rows), 358)
-        self.assertTrue(self.data["source_truncated"])
-        self.assertEqual(self.data["incomplete_rule_ids"], ["K40.3"])
-        self.assertFalse(rows[-1]["note_complete"])
-        self.assertEqual(len({r["id"] for r in rows}), 358)
-        self.assertEqual(len(re.findall(r"^\*\*K\d+\.\d+\s*·", self.source, re.M)), 358)
+        self.assertEqual(self.data["rule_count"], 447)
+        self.assertEqual(self.data["lesson_count"], 42)
+        self.assertEqual(len(rows), 447)
+        self.assertFalse(self.data["source_truncated"])
+        self.assertEqual(self.data["unavailable_lessons"], [35, 36])
+        self.assertIn("K9.1", {r["id"] for r in rows})
+        self.assertEqual(len({r["id"] for r in rows}), 447)
+        self.assertEqual(len(re.findall(r"^\*\*K\d+\.\d+\s*·", self.source, re.M)), 447)
         self.assertEqual(len(self.source), self.data["original_markdown_characters"])
         self.assertTrue(all(r["id"] in self.source for r in rows))
 
