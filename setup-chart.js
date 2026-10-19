@@ -371,6 +371,7 @@ function setPoint(p){
   updateOhlc(bar,currentBars[currentBars.length-2]);
   el("chart-candle-status").textContent=currentBars.length+" gerçek mum · "+
     (bar.closed?"son mum kapandı":"son mum oluşuyor");
+  if(bar.closed)window.dispatchEvent(new Event("efloud:market-ready"));
  }catch(e){changeStatus("MUM VERİSİ HATASI","error")}
 }
 function closeStream(){
@@ -429,6 +430,7 @@ async function showMarket(s,t,options={}){
   await loadApprovedSetups(id);
   if(id!==loadId)return;
   manualMarketReady=true;
+  window.dispatchEvent(new Event("efloud:market-ready"));
   if(activeManualPlan&&!verifiedCount&&activeManualPlan.symbol===symbol&&activeManualPlan.timeframe===interval){
     renderManualPlan(activeManualPlan);
   }else changeStatus("GERÇEK OHLC HAZIR");
@@ -479,7 +481,8 @@ function init(){
    showMarket(symbol,interval,{preserve:true})},180000);
  window.addEventListener("beforeunload",()=>{closeStream();clearInterval(refreshTimer)});
 }
-window.EfloudSetupChart={init,showMarket,showResearchObservation,showManualPlan,clearManualPlan,
+function getResearchSnapshot(){return {symbol,timeframe:interval,bars:currentBars.map(({time,open,high,low,close,closed})=>({time,open,high,low,close,closed}))};}
+window.EfloudSetupChart={init,showMarket,getResearchSnapshot,showResearchObservation,showManualPlan,clearManualPlan,
  debugState:()=>({ready:!!chart,symbol,interval,bars:currentBars.length,
  live:canLive,engine:window.LightweightCharts?.version?.()||null,lastTime,verifiedCount})};
 })();
