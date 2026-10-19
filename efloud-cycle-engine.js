@@ -80,7 +80,10 @@ function cycle(rows,{rangeLow,rangeHigh}={}){
   const above=b.close>high,below=b.close<low,inside=!above&&!below;
   const newSide=above?"ABOVE":below?"BELOW":"INSIDE";
   let kind=null,rules=[];
-  if(inside&&b.high>high&&b.low<low){kind="AMBIGUOUS_DUAL_WICK";rules=["K4.1"];}
+  if(inside&&side!=="INSIDE"){
+   kind="RETURN_INSIDE_RANGE";rules=["K8.5","K9.1"];
+   phase="REVERSAL_CANDIDATE_UNCONFIRMED";lastBreak=null;
+  }else if(inside&&b.high>high&&b.low<low){kind="AMBIGUOUS_DUAL_WICK";rules=["K4.1"];}
   else if(inside&&b.high>high){kind="HIGH_SWEEP_RECLAIM";rules=["K4.1","K4.6"];}
   else if(inside&&b.low<low){kind="LOW_SWEEP_RECLAIM";rules=["K4.1","K4.6"];}
   else if(newSide==="ABOVE"&&side!=="ABOVE"){
@@ -89,9 +92,6 @@ function cycle(rows,{rangeLow,rangeHigh}={}){
   }else if(newSide==="BELOW"&&side!=="BELOW"){
    kind="CLOSE_BELOW_RL";rules=["K41.1","K6.1","K9.1"];
    lastBreak={side:"BELOW",time:b.time};phase="BREAKOUT";
-  }else if(newSide==="INSIDE"&&side!=="INSIDE"){
-   kind="RETURN_INSIDE_RANGE";rules=["K8.5","K9.1"];
-   phase="REVERSAL_CANDIDATE_UNCONFIRMED";lastBreak=null;
   }else if((side==="ABOVE"&&newSide==="ABOVE"&&b.low<=high)||
             (side==="BELOW"&&newSide==="BELOW"&&b.high>=low)){
    kind="BOUNDARY_RETEST_OBSERVED";rules=["K6.2","K9.1"];
