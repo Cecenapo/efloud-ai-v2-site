@@ -1,0 +1,831 @@
+{
+  "schema": 1,
+  "kind": "EFLOUD_V2_PUBLIC_HISTORICAL_5Y_SNAPSHOT",
+  "origin": "Cecenapo/efloud-ai-cloud",
+  "engine": "EFLOUD_447_RULE_FIVE_YEAR_CAUSAL_REPLAY_V1",
+  "updatedUtc": "2026-10-19T13:29:38.769000+00:00",
+  "requestedFromUtc": "2021-10-19T13:29:38.769000+00:00",
+  "reportStatus": "HISTORICAL_DEVELOPER_HYPOTHESES_NOT_LIVE_VALIDATION",
+  "historicalSeriesTested": 8,
+  "totalFrozenResearchWatches": 2089,
+  "reportedTimeframes": [
+    "4h",
+    "1d"
+  ],
+  "availableTimeframes": [
+    "5m",
+    "15m",
+    "1h",
+    "4h",
+    "6h",
+    "1d",
+    "1w",
+    "1M"
+  ],
+  "feeScenarioPct": {
+    "baseRoundTripPct": 0.3,
+    "stressRoundTripPct": 0.6
+  },
+  "teacherApprovedStrategies": 0,
+  "independentlyProvenStrategies": 0,
+  "realOrders": 0,
+  "validationNote": "Only 4h and 1d 2026-10-19 source result is currently included; other frames remain pending until confirmed test jobs persist.",
+  "metrics": [
+    {
+      "symbol": "BTCUSDT",
+      "timeframe": "4h",
+      "pivotWidth": 2,
+      "split": "train",
+      "frozenWatches": 167,
+      "resolved": 76,
+      "netBase": -0.11348,
+      "netStress": -0.32723,
+      "bootstrapLower": null,
+      "counts": {
+        "STOP_FIRST": 52,
+        "MISSED_TARGET_BEFORE_ENTRY": 76,
+        "TARGET_FIRST": 24,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 15
+      }
+    },
+    {
+      "symbol": "BTCUSDT",
+      "timeframe": "4h",
+      "pivotWidth": 2,
+      "split": "validation",
+      "frozenWatches": 59,
+      "resolved": 36,
+      "netBase": -0.29358,
+      "netStress": -0.54522,
+      "bootstrapLower": null,
+      "counts": {
+        "MISSED_TARGET_BEFORE_ENTRY": 17,
+        "STOP_FIRST": 25,
+        "TARGET_FIRST": 12,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 5
+      }
+    },
+    {
+      "symbol": "BTCUSDT",
+      "timeframe": "4h",
+      "pivotWidth": 2,
+      "split": "holdout",
+      "frozenWatches": 52,
+      "resolved": 25,
+      "netBase": 0.34384,
+      "netStress": 0.08938,
+      "bootstrapLower": null,
+      "counts": {
+        "MISSED_TARGET_BEFORE_ENTRY": 22,
+        "STOP_FIRST": 13,
+        "TARGET_FIRST": 12,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 4,
+        "CENSORED_HISTORY_END": 1
+      }
+    },
+    {
+      "symbol": "BTCUSDT",
+      "timeframe": "4h",
+      "pivotWidth": 4,
+      "split": "train",
+      "frozenWatches": 113,
+      "resolved": 49,
+      "netBase": 0.14949,
+      "netStress": -0.02822,
+      "bootstrapLower": null,
+      "counts": {
+        "MISSED_TARGET_BEFORE_ENTRY": 54,
+        "STOP_FIRST": 30,
+        "TARGET_FIRST": 19,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 10
+      }
+    },
+    {
+      "symbol": "BTCUSDT",
+      "timeframe": "4h",
+      "pivotWidth": 4,
+      "split": "validation",
+      "frozenWatches": 51,
+      "resolved": 29,
+      "netBase": -0.42753,
+      "netStress": -0.61578,
+      "bootstrapLower": null,
+      "counts": {
+        "MISSED_TARGET_BEFORE_ENTRY": 18,
+        "TARGET_FIRST": 9,
+        "STOP_FIRST": 20,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 4
+      }
+    },
+    {
+      "symbol": "BTCUSDT",
+      "timeframe": "4h",
+      "pivotWidth": 4,
+      "split": "holdout",
+      "frozenWatches": 44,
+      "resolved": 31,
+      "netBase": 0.22284,
+      "netStress": 0.03088,
+      "bootstrapLower": -0.37422,
+      "counts": {
+        "STOP_FIRST": 18,
+        "MISSED_TARGET_BEFORE_ENTRY": 12,
+        "TARGET_FIRST": 13,
+        "CENSORED_HISTORY_END": 1
+      }
+    },
+    {
+      "symbol": "BTCUSDT",
+      "timeframe": "1d",
+      "pivotWidth": 2,
+      "split": "train",
+      "frozenWatches": 22,
+      "resolved": 9,
+      "netBase": -0.5942,
+      "netStress": -0.70207,
+      "bootstrapLower": null,
+      "counts": {
+        "STOP_FIRST": 7,
+        "MISSED_TARGET_BEFORE_ENTRY": 12,
+        "TARGET_FIRST": 2,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 1
+      }
+    },
+    {
+      "symbol": "BTCUSDT",
+      "timeframe": "1d",
+      "pivotWidth": 2,
+      "split": "validation",
+      "frozenWatches": 5,
+      "resolved": 2,
+      "netBase": -1.05577,
+      "netStress": -1.11153,
+      "bootstrapLower": null,
+      "counts": {
+        "STOP_FIRST": 2,
+        "MISSED_TARGET_BEFORE_ENTRY": 2,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 1
+      }
+    },
+    {
+      "symbol": "BTCUSDT",
+      "timeframe": "1d",
+      "pivotWidth": 2,
+      "split": "holdout",
+      "frozenWatches": 4,
+      "resolved": 3,
+      "netBase": -1.03442,
+      "netStress": -1.06884,
+      "bootstrapLower": null,
+      "counts": {
+        "STOP_FIRST": 3,
+        "MISSED_TARGET_BEFORE_ENTRY": 1
+      }
+    },
+    {
+      "symbol": "BTCUSDT",
+      "timeframe": "1d",
+      "pivotWidth": 4,
+      "split": "train",
+      "frozenWatches": 13,
+      "resolved": 5,
+      "netBase": -1.0634,
+      "netStress": -1.1268,
+      "bootstrapLower": null,
+      "counts": {
+        "MISSED_TARGET_BEFORE_ENTRY": 8,
+        "STOP_FIRST": 5
+      }
+    },
+    {
+      "symbol": "BTCUSDT",
+      "timeframe": "1d",
+      "pivotWidth": 4,
+      "split": "validation",
+      "frozenWatches": 8,
+      "resolved": 4,
+      "netBase": -0.1011,
+      "netStress": -0.14471,
+      "bootstrapLower": null,
+      "counts": {
+        "STOP_FIRST": 2,
+        "TARGET_FIRST": 2,
+        "MISSED_TARGET_BEFORE_ENTRY": 4
+      }
+    },
+    {
+      "symbol": "BTCUSDT",
+      "timeframe": "1d",
+      "pivotWidth": 4,
+      "split": "holdout",
+      "frozenWatches": 9,
+      "resolved": 4,
+      "netBase": -0.27546,
+      "netStress": -0.31456,
+      "bootstrapLower": null,
+      "counts": {
+        "MISSED_TARGET_BEFORE_ENTRY": 5,
+        "TARGET_FIRST": 2,
+        "STOP_FIRST": 2
+      }
+    },
+    {
+      "symbol": "ETHUSDT",
+      "timeframe": "4h",
+      "pivotWidth": 2,
+      "split": "train",
+      "frozenWatches": 163,
+      "resolved": 77,
+      "netBase": -0.063,
+      "netStress": -0.22045,
+      "bootstrapLower": null,
+      "counts": {
+        "STOP_FIRST": 48,
+        "MISSED_TARGET_BEFORE_ENTRY": 77,
+        "TARGET_FIRST": 29,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 9
+      }
+    },
+    {
+      "symbol": "ETHUSDT",
+      "timeframe": "4h",
+      "pivotWidth": 2,
+      "split": "validation",
+      "frozenWatches": 55,
+      "resolved": 29,
+      "netBase": -0.28143,
+      "netStress": -0.46272,
+      "bootstrapLower": null,
+      "counts": {
+        "MISSED_TARGET_BEFORE_ENTRY": 23,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 3,
+        "TARGET_FIRST": 9,
+        "STOP_FIRST": 20
+      }
+    },
+    {
+      "symbol": "ETHUSDT",
+      "timeframe": "4h",
+      "pivotWidth": 2,
+      "split": "holdout",
+      "frozenWatches": 55,
+      "resolved": 25,
+      "netBase": 0.49485,
+      "netStress": 0.25819,
+      "bootstrapLower": null,
+      "counts": {
+        "MISSED_TARGET_BEFORE_ENTRY": 23,
+        "STOP_FIRST": 14,
+        "TARGET_FIRST": 11,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 6,
+        "CENSORED_HISTORY_END": 1
+      }
+    },
+    {
+      "symbol": "ETHUSDT",
+      "timeframe": "4h",
+      "pivotWidth": 4,
+      "split": "train",
+      "frozenWatches": 117,
+      "resolved": 60,
+      "netBase": 0.01384,
+      "netStress": -0.11575,
+      "bootstrapLower": null,
+      "counts": {
+        "STOP_FIRST": 38,
+        "MISSED_TARGET_BEFORE_ENTRY": 51,
+        "TARGET_FIRST": 23,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 5
+      }
+    },
+    {
+      "symbol": "ETHUSDT",
+      "timeframe": "4h",
+      "pivotWidth": 4,
+      "split": "validation",
+      "frozenWatches": 35,
+      "resolved": 17,
+      "netBase": -0.38961,
+      "netStress": -0.51701,
+      "bootstrapLower": null,
+      "counts": {
+        "MISSED_TARGET_BEFORE_ENTRY": 17,
+        "TARGET_FIRST": 6,
+        "STOP_FIRST": 11,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 1
+      }
+    },
+    {
+      "symbol": "ETHUSDT",
+      "timeframe": "4h",
+      "pivotWidth": 4,
+      "split": "holdout",
+      "frozenWatches": 38,
+      "resolved": 19,
+      "netBase": 0.38767,
+      "netStress": 0.2426,
+      "bootstrapLower": null,
+      "counts": {
+        "MISSED_TARGET_BEFORE_ENTRY": 14,
+        "STOP_FIRST": 12,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 5,
+        "TARGET_FIRST": 7
+      }
+    },
+    {
+      "symbol": "ETHUSDT",
+      "timeframe": "1d",
+      "pivotWidth": 2,
+      "split": "train",
+      "frozenWatches": 20,
+      "resolved": 6,
+      "netBase": -0.87014,
+      "netStress": -0.99306,
+      "bootstrapLower": null,
+      "counts": {
+        "MISSED_TARGET_BEFORE_ENTRY": 11,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 2,
+        "STOP_FIRST": 6,
+        "TARGET_FIRST": 1
+      }
+    },
+    {
+      "symbol": "ETHUSDT",
+      "timeframe": "1d",
+      "pivotWidth": 2,
+      "split": "validation",
+      "frozenWatches": 11,
+      "resolved": 5,
+      "netBase": -0.20223,
+      "netStress": -0.25482,
+      "bootstrapLower": null,
+      "counts": {
+        "MISSED_TARGET_BEFORE_ENTRY": 6,
+        "TARGET_FIRST": 2,
+        "STOP_FIRST": 3
+      }
+    },
+    {
+      "symbol": "ETHUSDT",
+      "timeframe": "1d",
+      "pivotWidth": 2,
+      "split": "holdout",
+      "frozenWatches": 7,
+      "resolved": 6,
+      "netBase": -0.09979,
+      "netStress": -0.16674,
+      "bootstrapLower": null,
+      "counts": {
+        "TARGET_FIRST": 2,
+        "STOP_FIRST": 4,
+        "MISSED_TARGET_BEFORE_ENTRY": 1
+      }
+    },
+    {
+      "symbol": "ETHUSDT",
+      "timeframe": "1d",
+      "pivotWidth": 4,
+      "split": "train",
+      "frozenWatches": 11,
+      "resolved": 7,
+      "netBase": -1.06331,
+      "netStress": -1.12661,
+      "bootstrapLower": null,
+      "counts": {
+        "MISSED_TARGET_BEFORE_ENTRY": 4,
+        "STOP_FIRST": 7
+      }
+    },
+    {
+      "symbol": "ETHUSDT",
+      "timeframe": "1d",
+      "pivotWidth": 4,
+      "split": "validation",
+      "frozenWatches": 4,
+      "resolved": 0,
+      "netBase": null,
+      "netStress": null,
+      "bootstrapLower": null,
+      "counts": {
+        "MISSED_TARGET_BEFORE_ENTRY": 4
+      }
+    },
+    {
+      "symbol": "ETHUSDT",
+      "timeframe": "1d",
+      "pivotWidth": 4,
+      "split": "holdout",
+      "frozenWatches": 4,
+      "resolved": 2,
+      "netBase": 1.025,
+      "netStress": 0.90689,
+      "bootstrapLower": null,
+      "counts": {
+        "MISSED_TARGET_BEFORE_ENTRY": 2,
+        "TARGET_FIRST": 1,
+        "STOP_FIRST": 1
+      }
+    },
+    {
+      "symbol": "SOLUSDT",
+      "timeframe": "4h",
+      "pivotWidth": 2,
+      "split": "train",
+      "frozenWatches": 150,
+      "resolved": 78,
+      "netBase": 0.01603,
+      "netStress": -0.09953,
+      "bootstrapLower": null,
+      "counts": {
+        "MISSED_TARGET_BEFORE_ENTRY": 64,
+        "STOP_FIRST": 49,
+        "TARGET_FIRST": 29,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 8
+      }
+    },
+    {
+      "symbol": "SOLUSDT",
+      "timeframe": "4h",
+      "pivotWidth": 2,
+      "split": "validation",
+      "frozenWatches": 57,
+      "resolved": 34,
+      "netBase": 0.00557,
+      "netStress": -0.09397,
+      "bootstrapLower": null,
+      "counts": {
+        "MISSED_TARGET_BEFORE_ENTRY": 20,
+        "STOP_FIRST": 19,
+        "TARGET_FIRST": 16,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 2
+      }
+    },
+    {
+      "symbol": "SOLUSDT",
+      "timeframe": "4h",
+      "pivotWidth": 2,
+      "split": "holdout",
+      "frozenWatches": 62,
+      "resolved": 32,
+      "netBase": 0.1067,
+      "netStress": -0.04667,
+      "bootstrapLower": -0.58496,
+      "counts": {
+        "STOP_FIRST": 18,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 6,
+        "MISSED_TARGET_BEFORE_ENTRY": 23,
+        "TARGET_FIRST": 14,
+        "CENSORED_HISTORY_END": 1
+      }
+    },
+    {
+      "symbol": "SOLUSDT",
+      "timeframe": "4h",
+      "pivotWidth": 4,
+      "split": "train",
+      "frozenWatches": 108,
+      "resolved": 59,
+      "netBase": -0.10438,
+      "netStress": -0.18759,
+      "bootstrapLower": null,
+      "counts": {
+        "TARGET_FIRST": 23,
+        "MISSED_TARGET_BEFORE_ENTRY": 43,
+        "STOP_FIRST": 37,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 5
+      }
+    },
+    {
+      "symbol": "SOLUSDT",
+      "timeframe": "4h",
+      "pivotWidth": 4,
+      "split": "validation",
+      "frozenWatches": 47,
+      "resolved": 27,
+      "netBase": -0.0462,
+      "netStress": -0.13236,
+      "bootstrapLower": null,
+      "counts": {
+        "MISSED_TARGET_BEFORE_ENTRY": 18,
+        "TARGET_FIRST": 13,
+        "STOP_FIRST": 14,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 2
+      }
+    },
+    {
+      "symbol": "SOLUSDT",
+      "timeframe": "4h",
+      "pivotWidth": 4,
+      "split": "holdout",
+      "frozenWatches": 48,
+      "resolved": 26,
+      "netBase": -0.22122,
+      "netStress": -0.34177,
+      "bootstrapLower": null,
+      "counts": {
+        "TARGET_FIRST": 10,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 3,
+        "MISSED_TARGET_BEFORE_ENTRY": 19,
+        "STOP_FIRST": 16
+      }
+    },
+    {
+      "symbol": "SOLUSDT",
+      "timeframe": "1d",
+      "pivotWidth": 2,
+      "split": "train",
+      "frozenWatches": 29,
+      "resolved": 14,
+      "netBase": -0.83326,
+      "netStress": -0.88913,
+      "bootstrapLower": null,
+      "counts": {
+        "MISSED_TARGET_BEFORE_ENTRY": 12,
+        "STOP_FIRST": 13,
+        "TARGET_FIRST": 2,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 2
+      }
+    },
+    {
+      "symbol": "SOLUSDT",
+      "timeframe": "1d",
+      "pivotWidth": 2,
+      "split": "validation",
+      "frozenWatches": 10,
+      "resolved": 3,
+      "netBase": -0.59722,
+      "netStress": -0.64093,
+      "bootstrapLower": null,
+      "counts": {
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 2,
+        "MISSED_TARGET_BEFORE_ENTRY": 5,
+        "TARGET_FIRST": 1,
+        "STOP_FIRST": 2
+      }
+    },
+    {
+      "symbol": "SOLUSDT",
+      "timeframe": "1d",
+      "pivotWidth": 2,
+      "split": "holdout",
+      "frozenWatches": 9,
+      "resolved": 3,
+      "netBase": 0.03654,
+      "netStress": 0.00302,
+      "bootstrapLower": null,
+      "counts": {
+        "MISSED_TARGET_BEFORE_ENTRY": 6,
+        "TARGET_FIRST": 1,
+        "STOP_FIRST": 2
+      }
+    },
+    {
+      "symbol": "SOLUSDT",
+      "timeframe": "1d",
+      "pivotWidth": 4,
+      "split": "train",
+      "frozenWatches": 12,
+      "resolved": 7,
+      "netBase": 0.14352,
+      "netStress": 0.08695,
+      "bootstrapLower": null,
+      "counts": {
+        "TARGET_FIRST": 2,
+        "MISSED_TARGET_BEFORE_ENTRY": 4,
+        "STOP_FIRST": 5,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 1
+      }
+    },
+    {
+      "symbol": "SOLUSDT",
+      "timeframe": "1d",
+      "pivotWidth": 4,
+      "split": "validation",
+      "frozenWatches": 7,
+      "resolved": 3,
+      "netBase": 1.25475,
+      "netStress": 1.23353,
+      "bootstrapLower": null,
+      "counts": {
+        "MISSED_TARGET_BEFORE_ENTRY": 2,
+        "TARGET_FIRST": 3,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 2
+      }
+    },
+    {
+      "symbol": "SOLUSDT",
+      "timeframe": "1d",
+      "pivotWidth": 4,
+      "split": "holdout",
+      "frozenWatches": 4,
+      "resolved": 1,
+      "netBase": 1.41983,
+      "netStress": 1.39724,
+      "bootstrapLower": null,
+      "counts": {
+        "MISSED_TARGET_BEFORE_ENTRY": 3,
+        "TARGET_FIRST": 1
+      }
+    },
+    {
+      "symbol": "DODOUSDT",
+      "timeframe": "4h",
+      "pivotWidth": 2,
+      "split": "train",
+      "frozenWatches": 136,
+      "resolved": 70,
+      "netBase": -0.14865,
+      "netStress": -0.22124,
+      "bootstrapLower": null,
+      "counts": {
+        "MISSED_TARGET_BEFORE_ENTRY": 50,
+        "STOP_FIRST": 46,
+        "TARGET_FIRST": 25,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 15
+      }
+    },
+    {
+      "symbol": "DODOUSDT",
+      "timeframe": "4h",
+      "pivotWidth": 2,
+      "split": "validation",
+      "frozenWatches": 49,
+      "resolved": 19,
+      "netBase": 0.4859,
+      "netStress": 0.40971,
+      "bootstrapLower": null,
+      "counts": {
+        "MISSED_TARGET_BEFORE_ENTRY": 25,
+        "STOP_FIRST": 8,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 5,
+        "TARGET_FIRST": 11
+      }
+    },
+    {
+      "symbol": "DODOUSDT",
+      "timeframe": "4h",
+      "pivotWidth": 2,
+      "split": "holdout",
+      "frozenWatches": 47,
+      "resolved": 21,
+      "netBase": 0.99528,
+      "netStress": 0.90779,
+      "bootstrapLower": null,
+      "counts": {
+        "TARGET_FIRST": 11,
+        "MISSED_TARGET_BEFORE_ENTRY": 21,
+        "STOP_FIRST": 10,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 5
+      }
+    },
+    {
+      "symbol": "DODOUSDT",
+      "timeframe": "4h",
+      "pivotWidth": 4,
+      "split": "train",
+      "frozenWatches": 106,
+      "resolved": 63,
+      "netBase": -0.0706,
+      "netStress": -0.13465,
+      "bootstrapLower": null,
+      "counts": {
+        "STOP_FIRST": 44,
+        "MISSED_TARGET_BEFORE_ENTRY": 37,
+        "TARGET_FIRST": 21,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 4
+      }
+    },
+    {
+      "symbol": "DODOUSDT",
+      "timeframe": "4h",
+      "pivotWidth": 4,
+      "split": "validation",
+      "frozenWatches": 41,
+      "resolved": 23,
+      "netBase": 0.06837,
+      "netStress": 0.02567,
+      "bootstrapLower": null,
+      "counts": {
+        "TARGET_FIRST": 10,
+        "STOP_FIRST": 13,
+        "MISSED_TARGET_BEFORE_ENTRY": 15,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 3
+      }
+    },
+    {
+      "symbol": "DODOUSDT",
+      "timeframe": "4h",
+      "pivotWidth": 4,
+      "split": "holdout",
+      "frozenWatches": 28,
+      "resolved": 14,
+      "netBase": 1.06908,
+      "netStress": 0.98396,
+      "bootstrapLower": null,
+      "counts": {
+        "STOP_FIRST": 8,
+        "MISSED_TARGET_BEFORE_ENTRY": 12,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 2,
+        "TARGET_FIRST": 6
+      }
+    },
+    {
+      "symbol": "DODOUSDT",
+      "timeframe": "1d",
+      "pivotWidth": 2,
+      "split": "train",
+      "frozenWatches": 21,
+      "resolved": 7,
+      "netBase": -1.02404,
+      "netStress": -1.04808,
+      "bootstrapLower": null,
+      "counts": {
+        "STOP_FIRST": 7,
+        "MISSED_TARGET_BEFORE_ENTRY": 12,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 2
+      }
+    },
+    {
+      "symbol": "DODOUSDT",
+      "timeframe": "1d",
+      "pivotWidth": 2,
+      "split": "validation",
+      "frozenWatches": 11,
+      "resolved": 4,
+      "netBase": -0.65172,
+      "netStress": -0.67633,
+      "bootstrapLower": null,
+      "counts": {
+        "MISSED_TARGET_BEFORE_ENTRY": 6,
+        "STOP_FIRST": 3,
+        "TARGET_FIRST": 1,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 1
+      }
+    },
+    {
+      "symbol": "DODOUSDT",
+      "timeframe": "1d",
+      "pivotWidth": 2,
+      "split": "holdout",
+      "frozenWatches": 7,
+      "resolved": 2,
+      "netBase": 0.36574,
+      "netStress": 0.34124,
+      "bootstrapLower": null,
+      "counts": {
+        "STOP_FIRST": 1,
+        "TARGET_FIRST": 1,
+        "MISSED_TARGET_BEFORE_ENTRY": 3,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 2
+      }
+    },
+    {
+      "symbol": "DODOUSDT",
+      "timeframe": "1d",
+      "pivotWidth": 4,
+      "split": "train",
+      "frozenWatches": 18,
+      "resolved": 3,
+      "netBase": -1.03423,
+      "netStress": -1.06846,
+      "bootstrapLower": null,
+      "counts": {
+        "MISSED_TARGET_BEFORE_ENTRY": 13,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 2,
+        "STOP_FIRST": 3
+      }
+    },
+    {
+      "symbol": "DODOUSDT",
+      "timeframe": "1d",
+      "pivotWidth": 4,
+      "split": "validation",
+      "frozenWatches": 11,
+      "resolved": 6,
+      "netBase": -0.49206,
+      "netStress": -0.5049,
+      "bootstrapLower": null,
+      "counts": {
+        "MISSED_TARGET_BEFORE_ENTRY": 5,
+        "TARGET_FIRST": 2,
+        "STOP_FIRST": 4
+      }
+    },
+    {
+      "symbol": "DODOUSDT",
+      "timeframe": "1d",
+      "pivotWidth": 4,
+      "split": "holdout",
+      "frozenWatches": 4,
+      "resolved": 1,
+      "netBase": 1.75334,
+      "netStress": 1.7262,
+      "bootstrapLower": null,
+      "counts": {
+        "TARGET_FIRST": 1,
+        "MISSED_TARGET_BEFORE_ENTRY": 2,
+        "AMBIGUOUS_ENTRY_AND_EXIT_SAME_BAR": 1
+      }
+    }
+  ]
+}
