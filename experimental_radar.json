@@ -2,8 +2,368 @@
   "schema": 1,
   "version": "independent_lab_v1",
   "kind": "HOURLY_RESEARCH_RADAR_NO_ORDERS",
-  "updated_utc": "2026-11-28T03:54:48.994839Z",
+  "updated_utc": "2026-11-28T12:59:24.580925Z",
   "observations": [
+    {
+      "id": "BTCUSDT:1h:SWING_SWEEP:LONG:2:2:1795863600000",
+      "symbol": "BTCUSDT",
+      "timeframe": "1h",
+      "observed_utc": "2026-11-28T12:58:54.254472Z",
+      "status": "EXPERIMENTAL_OBSERVATION_ONLY",
+      "can_trade": false,
+      "order_placed": false,
+      "family": "SWING_SWEEP",
+      "side": "LONG",
+      "left": 2,
+      "right": 2,
+      "signal_closed_utc": "2026-11-28T11:59:59.999000+00:00",
+      "signal_open_ms": 1795863600000,
+      "indicative_entry": 59238.3,
+      "stop": 59082.35,
+      "target": 60266.01,
+      "rh": {
+        "value": 60266.01,
+        "pivot_i": 390,
+        "confirmed_i": 392
+      },
+      "rl": {
+        "value": 59188.34,
+        "pivot_i": 395,
+        "confirmed_i": 397
+      },
+      "reasons": {
+        "entry": "Wick swept confirmed swing low, closed back above it. Planned entry: first price of NEXT candle; signal close is not a fill.",
+        "stop": "Stop at signal wick low; breaks reclaim idea.",
+        "target": "Previously confirmed opposite swing high."
+      },
+      "research_hypothesis": true,
+      "source_class": "INDEPENDENT_EXPERIMENT_NOT_EFLOUD_INSTRUCTOR_RULE",
+      "redk_indicator_version": "redk_indicator_amplifier_mpl20_v1_adapter",
+      "redk_ablation_filters": {
+        "none": true,
+        "rsi_bias": false,
+        "stoch_flip_recent": false,
+        "cci_impulse": false,
+        "macd_expansion": false,
+        "rsi_macd_agree": false
+      },
+      "redk_gate_source": "USER_UPLOADED_RED_K_AMPLIFIER_RESEARCH_NOT_TEACHER_RULE",
+      "historical_gate": "NO_EVIDENCE",
+      "historical_oos": {
+        "n": 49,
+        "mean_r": -0.93648,
+        "win_rate": 0.2041,
+        "max_drawdown_r": 46.2835,
+        "lower_95_r": -1.39155
+      },
+      "stress_oos": {
+        "n": 49,
+        "mean_r": -2.22048,
+        "win_rate": 0.1633,
+        "max_drawdown_r": 108.8037,
+        "lower_95_r": -2.8823
+      },
+      "research_policy": "NEVER_AN_ORDER_RECOMMENDATION",
+      "redk_historical_ablation": {
+        "version": "redk_ablation_v1",
+        "arms": [
+          {
+            "arm": "none",
+            "n": 49,
+            "holdout_mean_r_10bps": -0.93648,
+            "holdout_lower95_10bps": -1.39155,
+            "holdout_mean_r_30bps": -2.22048,
+            "validation_gate": false,
+            "promote_to_real": false
+          },
+          {
+            "arm": "rsi_bias",
+            "n": 8,
+            "holdout_mean_r_10bps": -0.05958,
+            "holdout_lower95_10bps": -1.81966,
+            "holdout_mean_r_30bps": -1.9163,
+            "validation_gate": false,
+            "promote_to_real": false
+          },
+          {
+            "arm": "stoch_flip_recent",
+            "n": 4,
+            "holdout_mean_r_10bps": 1.30679,
+            "holdout_lower95_10bps": -1.00364,
+            "holdout_mean_r_30bps": 0.26723,
+            "validation_gate": false,
+            "promote_to_real": false
+          },
+          {
+            "arm": "cci_impulse",
+            "n": 2,
+            "holdout_mean_r_10bps": -0.58053,
+            "holdout_lower95_10bps": -1.84914,
+            "holdout_mean_r_30bps": -1.0586,
+            "validation_gate": false,
+            "promote_to_real": false
+          },
+          {
+            "arm": "macd_expansion",
+            "n": 4,
+            "holdout_mean_r_10bps": 0.60118,
+            "holdout_lower95_10bps": -1.38966,
+            "holdout_mean_r_30bps": 0.14625,
+            "validation_gate": false,
+            "promote_to_real": false
+          },
+          {
+            "arm": "rsi_macd_agree",
+            "n": 1,
+            "holdout_mean_r_10bps": 0.06672,
+            "holdout_lower95_10bps": null,
+            "holdout_mean_r_30bps": -0.43388,
+            "validation_gate": false,
+            "promote_to_real": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "DODOUSDT:4h:SWING_SWEEP:SHORT:2:2:1795852800000",
+      "symbol": "DODOUSDT",
+      "timeframe": "4h",
+      "observed_utc": "2026-11-28T12:58:54.254472Z",
+      "status": "EXPERIMENTAL_OBSERVATION_ONLY",
+      "can_trade": false,
+      "order_placed": false,
+      "family": "SWING_SWEEP",
+      "side": "SHORT",
+      "left": 2,
+      "right": 2,
+      "signal_closed_utc": "2026-11-28T11:59:59.999000+00:00",
+      "signal_open_ms": 1795852800000,
+      "indicative_entry": 0.04116,
+      "stop": 0.04261,
+      "target": 0.03848,
+      "rh": {
+        "value": 0.04133,
+        "pivot_i": 392,
+        "confirmed_i": 394
+      },
+      "rl": {
+        "value": 0.03848,
+        "pivot_i": 393,
+        "confirmed_i": 395
+      },
+      "reasons": {
+        "entry": "Wick swept confirmed swing high, closed back below it. Planned entry: first price of NEXT candle; signal close is not a fill.",
+        "stop": "Stop at signal wick high; breaks reclaim idea.",
+        "target": "Previously confirmed opposite swing low."
+      },
+      "research_hypothesis": true,
+      "source_class": "INDEPENDENT_EXPERIMENT_NOT_EFLOUD_INSTRUCTOR_RULE",
+      "redk_indicator_version": "redk_indicator_amplifier_mpl20_v1_adapter",
+      "redk_ablation_filters": {
+        "none": true,
+        "rsi_bias": false,
+        "stoch_flip_recent": false,
+        "cci_impulse": false,
+        "macd_expansion": false,
+        "rsi_macd_agree": false
+      },
+      "redk_gate_source": "USER_UPLOADED_RED_K_AMPLIFIER_RESEARCH_NOT_TEACHER_RULE",
+      "historical_gate": "NO_EVIDENCE",
+      "historical_oos": {
+        "n": 44,
+        "mean_r": -0.24719,
+        "win_rate": 0.2955,
+        "max_drawdown_r": 24.4498,
+        "lower_95_r": -0.86675
+      },
+      "stress_oos": {
+        "n": 44,
+        "mean_r": -0.72702,
+        "win_rate": 0.2727,
+        "max_drawdown_r": 42.7482,
+        "lower_95_r": -1.36139
+      },
+      "research_policy": "NEVER_AN_ORDER_RECOMMENDATION",
+      "redk_historical_ablation": {
+        "version": "redk_ablation_v1",
+        "arms": [
+          {
+            "arm": "none",
+            "n": 44,
+            "holdout_mean_r_10bps": -0.24719,
+            "holdout_lower95_10bps": -0.86675,
+            "holdout_mean_r_30bps": -0.72702,
+            "validation_gate": false,
+            "promote_to_real": false
+          },
+          {
+            "arm": "rsi_bias",
+            "n": 5,
+            "holdout_mean_r_10bps": -0.05273,
+            "holdout_lower95_10bps": -0.82447,
+            "holdout_mean_r_30bps": -0.30408,
+            "validation_gate": false,
+            "promote_to_real": false
+          },
+          {
+            "arm": "stoch_flip_recent",
+            "n": 4,
+            "holdout_mean_r_10bps": -0.52457,
+            "holdout_lower95_10bps": -1.83518,
+            "holdout_mean_r_30bps": -1.05486,
+            "validation_gate": false,
+            "promote_to_real": false
+          },
+          {
+            "arm": "cci_impulse",
+            "n": 4,
+            "holdout_mean_r_10bps": -0.51355,
+            "holdout_lower95_10bps": -1.30757,
+            "holdout_mean_r_30bps": -0.80194,
+            "validation_gate": false,
+            "promote_to_real": false
+          },
+          {
+            "arm": "macd_expansion",
+            "n": 2,
+            "holdout_mean_r_10bps": -0.68549,
+            "holdout_lower95_10bps": -1.46079,
+            "holdout_mean_r_30bps": -0.77614,
+            "validation_gate": false,
+            "promote_to_real": false
+          },
+          {
+            "arm": "rsi_macd_agree",
+            "n": 1,
+            "holdout_mean_r_10bps": -0.28992,
+            "holdout_lower95_10bps": null,
+            "holdout_mean_r_30bps": -0.30913,
+            "validation_gate": false,
+            "promote_to_real": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "DODOUSDT:4h:SWING_SWEEP:SHORT:3:3:1795852800000",
+      "symbol": "DODOUSDT",
+      "timeframe": "4h",
+      "observed_utc": "2026-11-28T12:58:54.254472Z",
+      "status": "EXPERIMENTAL_OBSERVATION_ONLY",
+      "can_trade": false,
+      "order_placed": false,
+      "family": "SWING_SWEEP",
+      "side": "SHORT",
+      "left": 3,
+      "right": 3,
+      "signal_closed_utc": "2026-11-28T11:59:59.999000+00:00",
+      "signal_open_ms": 1795852800000,
+      "indicative_entry": 0.04116,
+      "stop": 0.04261,
+      "target": 0.03848,
+      "rh": {
+        "value": 0.04133,
+        "pivot_i": 392,
+        "confirmed_i": 395
+      },
+      "rl": {
+        "value": 0.03848,
+        "pivot_i": 393,
+        "confirmed_i": 396
+      },
+      "reasons": {
+        "entry": "Wick swept confirmed swing high, closed back below it. Planned entry: first price of NEXT candle; signal close is not a fill.",
+        "stop": "Stop at signal wick high; breaks reclaim idea.",
+        "target": "Previously confirmed opposite swing low."
+      },
+      "research_hypothesis": true,
+      "source_class": "INDEPENDENT_EXPERIMENT_NOT_EFLOUD_INSTRUCTOR_RULE",
+      "redk_indicator_version": "redk_indicator_amplifier_mpl20_v1_adapter",
+      "redk_ablation_filters": {
+        "none": true,
+        "rsi_bias": false,
+        "stoch_flip_recent": false,
+        "cci_impulse": false,
+        "macd_expansion": false,
+        "rsi_macd_agree": false
+      },
+      "redk_gate_source": "USER_UPLOADED_RED_K_AMPLIFIER_RESEARCH_NOT_TEACHER_RULE",
+      "historical_gate": "NO_EVIDENCE",
+      "historical_oos": {
+        "n": 32,
+        "mean_r": -0.75438,
+        "win_rate": 0.2188,
+        "max_drawdown_r": 25.746,
+        "lower_95_r": -1.09455
+      },
+      "stress_oos": {
+        "n": 32,
+        "mean_r": -1.14349,
+        "win_rate": 0.1875,
+        "max_drawdown_r": 38.0855,
+        "lower_95_r": -1.56279
+      },
+      "research_policy": "NEVER_AN_ORDER_RECOMMENDATION",
+      "redk_historical_ablation": {
+        "version": "redk_ablation_v1",
+        "arms": [
+          {
+            "arm": "none",
+            "n": 32,
+            "holdout_mean_r_10bps": -0.75438,
+            "holdout_lower95_10bps": -1.09455,
+            "holdout_mean_r_30bps": -1.14349,
+            "validation_gate": false,
+            "promote_to_real": false
+          },
+          {
+            "arm": "rsi_bias",
+            "n": 2,
+            "holdout_mean_r_10bps": 0.17594,
+            "holdout_lower95_10bps": 0.01273,
+            "holdout_mean_r_30bps": 0.00522,
+            "validation_gate": false,
+            "promote_to_real": false
+          },
+          {
+            "arm": "stoch_flip_recent",
+            "n": 0,
+            "holdout_mean_r_10bps": null,
+            "holdout_lower95_10bps": null,
+            "holdout_mean_r_30bps": null,
+            "validation_gate": false,
+            "promote_to_real": false
+          },
+          {
+            "arm": "cci_impulse",
+            "n": 3,
+            "holdout_mean_r_10bps": -0.22895,
+            "holdout_lower95_10bps": -1.02811,
+            "holdout_mean_r_30bps": -0.36858,
+            "validation_gate": false,
+            "promote_to_real": false
+          },
+          {
+            "arm": "macd_expansion",
+            "n": 0,
+            "holdout_mean_r_10bps": null,
+            "holdout_lower95_10bps": null,
+            "holdout_mean_r_30bps": null,
+            "validation_gate": false,
+            "promote_to_real": false
+          },
+          {
+            "arm": "rsi_macd_agree",
+            "n": 0,
+            "holdout_mean_r_10bps": null,
+            "holdout_lower95_10bps": null,
+            "holdout_mean_r_30bps": null,
+            "validation_gate": false,
+            "promote_to_real": false
+          }
+        ]
+      }
+    },
     {
       "id": "BTCUSDT:5m:SWING_SWEEP:LONG:3:3:1795837500000",
       "symbol": "BTCUSDT",
@@ -6843,849 +7203,9 @@
           }
         ]
       }
-    },
-    {
-      "id": "ETHUSDT:4h:PIVOT_BREAK:SHORT:2:2:1795564800000",
-      "symbol": "ETHUSDT",
-      "timeframe": "4h",
-      "observed_utc": "2026-11-25T04:14:55.822984Z",
-      "status": "EXPERIMENTAL_OBSERVATION_ONLY",
-      "can_trade": false,
-      "order_placed": false,
-      "family": "PIVOT_BREAK",
-      "side": "SHORT",
-      "left": 2,
-      "right": 2,
-      "signal_closed_utc": "2026-11-25T03:59:59.999000+00:00",
-      "signal_open_ms": 1795564800000,
-      "indicative_entry": 1664.44,
-      "stop": 1845.07,
-      "target": 1648.35,
-      "rh": {
-        "value": 1845.07,
-        "pivot_i": 390,
-        "confirmed_i": 392
-      },
-      "rl": {
-        "value": 1669.0,
-        "pivot_i": 393,
-        "confirmed_i": 395
-      },
-      "reasons": {
-        "entry": "Closed below a confirmed swing low. Planned entry: first price of NEXT candle; signal close is not a fill.",
-        "stop": "Stop at confirmed opposing swing high.",
-        "target": "Closest known external swing low below price."
-      },
-      "research_hypothesis": true,
-      "source_class": "INDEPENDENT_EXPERIMENT_NOT_EFLOUD_INSTRUCTOR_RULE",
-      "redk_indicator_version": "redk_indicator_amplifier_mpl20_v1_adapter",
-      "redk_ablation_filters": {
-        "none": true,
-        "rsi_bias": true,
-        "stoch_flip_recent": false,
-        "cci_impulse": true,
-        "macd_expansion": true,
-        "rsi_macd_agree": true
-      },
-      "redk_gate_source": "USER_UPLOADED_RED_K_AMPLIFIER_RESEARCH_NOT_TEACHER_RULE",
-      "historical_gate": "NO_EVIDENCE",
-      "historical_oos": {
-        "n": 20,
-        "mean_r": -0.3746,
-        "win_rate": 0.4,
-        "max_drawdown_r": 8.543,
-        "lower_95_r": -0.65891
-      },
-      "stress_oos": {
-        "n": 20,
-        "mean_r": -0.51773,
-        "win_rate": 0.25,
-        "max_drawdown_r": 11.0856,
-        "lower_95_r": -0.83565
-      },
-      "research_policy": "NEVER_AN_ORDER_RECOMMENDATION",
-      "redk_historical_ablation": {
-        "version": "redk_ablation_v1",
-        "arms": [
-          {
-            "arm": "none",
-            "n": 20,
-            "holdout_mean_r_10bps": -0.3746,
-            "holdout_lower95_10bps": -0.65891,
-            "holdout_mean_r_30bps": -0.51773,
-            "validation_gate": false,
-            "promote_to_real": false
-          },
-          {
-            "arm": "rsi_bias",
-            "n": 20,
-            "holdout_mean_r_10bps": -0.3746,
-            "holdout_lower95_10bps": -0.65891,
-            "holdout_mean_r_30bps": -0.51773,
-            "validation_gate": false,
-            "promote_to_real": false
-          },
-          {
-            "arm": "stoch_flip_recent",
-            "n": 6,
-            "holdout_mean_r_10bps": -0.186,
-            "holdout_lower95_10bps": -0.55783,
-            "holdout_mean_r_30bps": -0.29839,
-            "validation_gate": false,
-            "promote_to_real": false
-          },
-          {
-            "arm": "cci_impulse",
-            "n": 19,
-            "holdout_mean_r_10bps": -0.39092,
-            "holdout_lower95_10bps": -0.68871,
-            "holdout_mean_r_30bps": -0.53917,
-            "validation_gate": false,
-            "promote_to_real": false
-          },
-          {
-            "arm": "macd_expansion",
-            "n": 12,
-            "holdout_mean_r_10bps": -0.53942,
-            "holdout_lower95_10bps": -0.85549,
-            "holdout_mean_r_30bps": -0.66595,
-            "validation_gate": false,
-            "promote_to_real": false
-          },
-          {
-            "arm": "rsi_macd_agree",
-            "n": 13,
-            "holdout_mean_r_10bps": -0.49087,
-            "holdout_lower95_10bps": -0.79679,
-            "holdout_mean_r_30bps": -0.61181,
-            "validation_gate": false,
-            "promote_to_real": false
-          }
-        ]
-      }
-    },
-    {
-      "id": "SOLUSDT:1h:SWING_SWEEP:LONG:4:4:1795575600000",
-      "symbol": "SOLUSDT",
-      "timeframe": "1h",
-      "observed_utc": "2026-11-25T04:14:55.822984Z",
-      "status": "EXPERIMENTAL_OBSERVATION_ONLY",
-      "can_trade": false,
-      "order_placed": false,
-      "family": "SWING_SWEEP",
-      "side": "LONG",
-      "left": 4,
-      "right": 4,
-      "signal_closed_utc": "2026-11-25T03:59:59.999000+00:00",
-      "signal_open_ms": 1795575600000,
-      "indicative_entry": 69.34,
-      "stop": 68.5,
-      "target": 78.48,
-      "rh": {
-        "value": 78.48,
-        "pivot_i": 362,
-        "confirmed_i": 366
-      },
-      "rl": {
-        "value": 68.57,
-        "pivot_i": 388,
-        "confirmed_i": 392
-      },
-      "reasons": {
-        "entry": "Wick swept confirmed swing low, closed back above it. Planned entry: first price of NEXT candle; signal close is not a fill.",
-        "stop": "Stop at signal wick low; breaks reclaim idea.",
-        "target": "Previously confirmed opposite swing high."
-      },
-      "research_hypothesis": true,
-      "source_class": "INDEPENDENT_EXPERIMENT_NOT_EFLOUD_INSTRUCTOR_RULE",
-      "redk_indicator_version": "redk_indicator_amplifier_mpl20_v1_adapter",
-      "redk_ablation_filters": {
-        "none": true,
-        "rsi_bias": false,
-        "stoch_flip_recent": false,
-        "cci_impulse": false,
-        "macd_expansion": true,
-        "rsi_macd_agree": false
-      },
-      "redk_gate_source": "USER_UPLOADED_RED_K_AMPLIFIER_RESEARCH_NOT_TEACHER_RULE",
-      "historical_gate": "NO_EVIDENCE",
-      "historical_oos": {
-        "n": 27,
-        "mean_r": -0.64798,
-        "win_rate": 0.2963,
-        "max_drawdown_r": 19.8625,
-        "lower_95_r": -1.41007
-      },
-      "stress_oos": {
-        "n": 27,
-        "mean_r": -1.7987,
-        "win_rate": 0.2593,
-        "max_drawdown_r": 48.5649,
-        "lower_95_r": -3.11869
-      },
-      "research_policy": "NEVER_AN_ORDER_RECOMMENDATION",
-      "redk_historical_ablation": {
-        "version": "redk_ablation_v1",
-        "arms": [
-          {
-            "arm": "none",
-            "n": 27,
-            "holdout_mean_r_10bps": -0.64798,
-            "holdout_lower95_10bps": -1.41007,
-            "holdout_mean_r_30bps": -1.7987,
-            "validation_gate": false,
-            "promote_to_real": false
-          },
-          {
-            "arm": "rsi_bias",
-            "n": 2,
-            "holdout_mean_r_10bps": 0.78002,
-            "holdout_lower95_10bps": -2.94344,
-            "holdout_mean_r_30bps": 0.28741,
-            "validation_gate": false,
-            "promote_to_real": false
-          },
-          {
-            "arm": "stoch_flip_recent",
-            "n": 1,
-            "holdout_mean_r_10bps": 3.52103,
-            "holdout_lower95_10bps": null,
-            "holdout_mean_r_30bps": 3.07923,
-            "validation_gate": false,
-            "promote_to_real": false
-          },
-          {
-            "arm": "cci_impulse",
-            "n": 1,
-            "holdout_mean_r_10bps": -1.11971,
-            "holdout_lower95_10bps": null,
-            "holdout_mean_r_30bps": -1.35912,
-            "validation_gate": false,
-            "promote_to_real": false
-          },
-          {
-            "arm": "macd_expansion",
-            "n": 3,
-            "holdout_mean_r_10bps": 1.21438,
-            "holdout_lower95_10bps": -1.4115,
-            "holdout_mean_r_30bps": 0.9029,
-            "validation_gate": false,
-            "promote_to_real": false
-          },
-          {
-            "arm": "rsi_macd_agree",
-            "n": 1,
-            "holdout_mean_r_10bps": -1.11971,
-            "holdout_lower95_10bps": null,
-            "holdout_mean_r_30bps": -1.35912,
-            "validation_gate": false,
-            "promote_to_real": false
-          }
-        ]
-      }
-    },
-    {
-      "id": "SOLUSDT:4h:SWING_SWEEP:LONG:3:3:1795564800000",
-      "symbol": "SOLUSDT",
-      "timeframe": "4h",
-      "observed_utc": "2026-11-25T04:14:55.822984Z",
-      "status": "EXPERIMENTAL_OBSERVATION_ONLY",
-      "can_trade": false,
-      "order_placed": false,
-      "family": "SWING_SWEEP",
-      "side": "LONG",
-      "left": 3,
-      "right": 3,
-      "signal_closed_utc": "2026-11-25T03:59:59.999000+00:00",
-      "signal_open_ms": 1795564800000,
-      "indicative_entry": 69.34,
-      "stop": 68.5,
-      "target": 78.48,
-      "rh": {
-        "value": 78.48,
-        "pivot_i": 390,
-        "confirmed_i": 393
-      },
-      "rl": {
-        "value": 68.74,
-        "pivot_i": 382,
-        "confirmed_i": 385
-      },
-      "reasons": {
-        "entry": "Wick swept confirmed swing low, closed back above it. Planned entry: first price of NEXT candle; signal close is not a fill.",
-        "stop": "Stop at signal wick low; breaks reclaim idea.",
-        "target": "Previously confirmed opposite swing high."
-      },
-      "research_hypothesis": true,
-      "source_class": "INDEPENDENT_EXPERIMENT_NOT_EFLOUD_INSTRUCTOR_RULE",
-      "redk_indicator_version": "redk_indicator_amplifier_mpl20_v1_adapter",
-      "redk_ablation_filters": {
-        "none": true,
-        "rsi_bias": false,
-        "stoch_flip_recent": false,
-        "cci_impulse": false,
-        "macd_expansion": false,
-        "rsi_macd_agree": false
-      },
-      "redk_gate_source": "USER_UPLOADED_RED_K_AMPLIFIER_RESEARCH_NOT_TEACHER_RULE",
-      "historical_gate": "NO_EVIDENCE",
-      "historical_oos": {
-        "n": 32,
-        "mean_r": 0.2064,
-        "win_rate": 0.2188,
-        "max_drawdown_r": 18.5086,
-        "lower_95_r": -0.79058
-      },
-      "stress_oos": {
-        "n": 32,
-        "mean_r": -0.19946,
-        "win_rate": 0.2188,
-        "max_drawdown_r": 27.0293,
-        "lower_95_r": -1.18875
-      },
-      "research_policy": "NEVER_AN_ORDER_RECOMMENDATION",
-      "redk_historical_ablation": {
-        "version": "redk_ablation_v1",
-        "arms": [
-          {
-            "arm": "none",
-            "n": 32,
-            "holdout_mean_r_10bps": 0.2064,
-            "holdout_lower95_10bps": -0.79058,
-            "holdout_mean_r_30bps": -0.19946,
-            "validation_gate": false,
-            "promote_to_real": false
-          },
-          {
-            "arm": "rsi_bias",
-            "n": 3,
-            "holdout_mean_r_10bps": 1.44806,
-            "holdout_lower95_10bps": -4.08889,
-            "holdout_mean_r_30bps": 0.81358,
-            "validation_gate": false,
-            "promote_to_real": false
-          },
-          {
-            "arm": "stoch_flip_recent",
-            "n": 0,
-            "holdout_mean_r_10bps": null,
-            "holdout_lower95_10bps": null,
-            "holdout_mean_r_30bps": null,
-            "validation_gate": false,
-            "promote_to_real": false
-          },
-          {
-            "arm": "cci_impulse",
-            "n": 0,
-            "holdout_mean_r_10bps": null,
-            "holdout_lower95_10bps": null,
-            "holdout_mean_r_30bps": null,
-            "validation_gate": false,
-            "promote_to_real": false
-          },
-          {
-            "arm": "macd_expansion",
-            "n": 2,
-            "holdout_mean_r_10bps": -1.12799,
-            "holdout_lower95_10bps": -1.14766,
-            "holdout_mean_r_30bps": -1.38398,
-            "validation_gate": false,
-            "promote_to_real": false
-          },
-          {
-            "arm": "rsi_macd_agree",
-            "n": 0,
-            "holdout_mean_r_10bps": null,
-            "holdout_lower95_10bps": null,
-            "holdout_mean_r_30bps": null,
-            "validation_gate": false,
-            "promote_to_real": false
-          }
-        ]
-      }
-    },
-    {
-      "id": "DODOUSDT:5m:PIVOT_BREAK:LONG:2:2:1795579500000",
-      "symbol": "DODOUSDT",
-      "timeframe": "5m",
-      "observed_utc": "2026-11-25T04:14:55.822984Z",
-      "status": "EXPERIMENTAL_OBSERVATION_ONLY",
-      "can_trade": false,
-      "order_placed": false,
-      "family": "PIVOT_BREAK",
-      "side": "LONG",
-      "left": 2,
-      "right": 2,
-      "signal_closed_utc": "2026-11-25T04:09:59.999000+00:00",
-      "signal_open_ms": 1795579500000,
-      "indicative_entry": 0.04372,
-      "stop": 0.04336,
-      "target": 0.04378,
-      "rh": {
-        "value": 0.04371,
-        "pivot_i": 393,
-        "confirmed_i": 395
-      },
-      "rl": {
-        "value": 0.04336,
-        "pivot_i": 395,
-        "confirmed_i": 397
-      },
-      "reasons": {
-        "entry": "Closed above a confirmed swing high. Planned entry: first price of NEXT candle; signal close is not a fill.",
-        "stop": "Stop at confirmed opposing swing low.",
-        "target": "Closest known external swing high above price."
-      },
-      "research_hypothesis": true,
-      "source_class": "INDEPENDENT_EXPERIMENT_NOT_EFLOUD_INSTRUCTOR_RULE",
-      "redk_indicator_version": "redk_indicator_amplifier_mpl20_v1_adapter",
-      "redk_ablation_filters": {
-        "none": true,
-        "rsi_bias": true,
-        "stoch_flip_recent": false,
-        "cci_impulse": true,
-        "macd_expansion": true,
-        "rsi_macd_agree": true
-      },
-      "redk_gate_source": "USER_UPLOADED_RED_K_AMPLIFIER_RESEARCH_NOT_TEACHER_RULE",
-      "historical_gate": "NO_EVIDENCE",
-      "historical_oos": {
-        "n": 32,
-        "mean_r": -0.07459,
-        "win_rate": 0.3125,
-        "max_drawdown_r": 3.6128,
-        "lower_95_r": -0.17075
-      },
-      "stress_oos": {
-        "n": 32,
-        "mean_r": -0.45825,
-        "win_rate": 0.0938,
-        "max_drawdown_r": 14.9242,
-        "lower_95_r": -0.5979
-      },
-      "research_policy": "NEVER_AN_ORDER_RECOMMENDATION",
-      "redk_historical_ablation": {
-        "version": "redk_ablation_v1",
-        "arms": [
-          {
-            "arm": "none",
-            "n": 32,
-            "holdout_mean_r_10bps": -0.07459,
-            "holdout_lower95_10bps": -0.17075,
-            "holdout_mean_r_30bps": -0.45825,
-            "validation_gate": false,
-            "promote_to_real": false
-          },
-          {
-            "arm": "rsi_bias",
-            "n": 32,
-            "holdout_mean_r_10bps": -0.07459,
-            "holdout_lower95_10bps": -0.17075,
-            "holdout_mean_r_30bps": -0.45825,
-            "validation_gate": false,
-            "promote_to_real": false
-          },
-          {
-            "arm": "stoch_flip_recent",
-            "n": 4,
-            "holdout_mean_r_10bps": -0.15407,
-            "holdout_lower95_10bps": -0.25001,
-            "holdout_mean_r_30bps": -0.60548,
-            "validation_gate": false,
-            "promote_to_real": false
-          },
-          {
-            "arm": "cci_impulse",
-            "n": 30,
-            "holdout_mean_r_10bps": -0.08955,
-            "holdout_lower95_10bps": -0.18792,
-            "holdout_mean_r_30bps": -0.48717,
-            "validation_gate": false,
-            "promote_to_real": false
-          },
-          {
-            "arm": "macd_expansion",
-            "n": 24,
-            "holdout_mean_r_10bps": -0.11038,
-            "holdout_lower95_10bps": -0.23039,
-            "holdout_mean_r_30bps": -0.48419,
-            "validation_gate": false,
-            "promote_to_real": false
-          },
-          {
-            "arm": "rsi_macd_agree",
-            "n": 24,
-            "holdout_mean_r_10bps": -0.11038,
-            "holdout_lower95_10bps": -0.23039,
-            "holdout_mean_r_30bps": -0.48419,
-            "validation_gate": false,
-            "promote_to_real": false
-          }
-        ]
-      }
-    },
-    {
-      "id": "DODOUSDT:5m:PIVOT_BREAK:LONG:3:3:1795579500000",
-      "symbol": "DODOUSDT",
-      "timeframe": "5m",
-      "observed_utc": "2026-11-25T04:14:55.822984Z",
-      "status": "EXPERIMENTAL_OBSERVATION_ONLY",
-      "can_trade": false,
-      "order_placed": false,
-      "family": "PIVOT_BREAK",
-      "side": "LONG",
-      "left": 3,
-      "right": 3,
-      "signal_closed_utc": "2026-11-25T04:09:59.999000+00:00",
-      "signal_open_ms": 1795579500000,
-      "indicative_entry": 0.04372,
-      "stop": 0.0431,
-      "target": 0.04378,
-      "rh": {
-        "value": 0.04371,
-        "pivot_i": 393,
-        "confirmed_i": 396
-      },
-      "rl": {
-        "value": 0.0431,
-        "pivot_i": 391,
-        "confirmed_i": 394
-      },
-      "reasons": {
-        "entry": "Closed above a confirmed swing high. Planned entry: first price of NEXT candle; signal close is not a fill.",
-        "stop": "Stop at confirmed opposing swing low.",
-        "target": "Closest known external swing high above price."
-      },
-      "research_hypothesis": true,
-      "source_class": "INDEPENDENT_EXPERIMENT_NOT_EFLOUD_INSTRUCTOR_RULE",
-      "redk_indicator_version": "redk_indicator_amplifier_mpl20_v1_adapter",
-      "redk_ablation_filters": {
-        "none": true,
-        "rsi_bias": true,
-        "stoch_flip_recent": false,
-        "cci_impulse": true,
-        "macd_expansion": true,
-        "rsi_macd_agree": true
-      },
-      "redk_gate_source": "USER_UPLOADED_RED_K_AMPLIFIER_RESEARCH_NOT_TEACHER_RULE",
-      "historical_gate": "VALIDATION_ONLY_EXPERIMENTAL",
-      "historical_oos": {
-        "n": 19,
-        "mean_r": 0.01235,
-        "win_rate": 0.3684,
-        "max_drawdown_r": 1.2158,
-        "lower_95_r": -0.08555
-      },
-      "stress_oos": {
-        "n": 19,
-        "mean_r": -0.34771,
-        "win_rate": 0.1579,
-        "max_drawdown_r": 7.0689,
-        "lower_95_r": -0.48986
-      },
-      "research_policy": "NEVER_AN_ORDER_RECOMMENDATION",
-      "redk_historical_ablation": {
-        "version": "redk_ablation_v1",
-        "arms": [
-          {
-            "arm": "none",
-            "n": 19,
-            "holdout_mean_r_10bps": 0.01235,
-            "holdout_lower95_10bps": -0.08555,
-            "holdout_mean_r_30bps": -0.34771,
-            "validation_gate": true,
-            "promote_to_real": false
-          },
-          {
-            "arm": "rsi_bias",
-            "n": 19,
-            "holdout_mean_r_10bps": 0.01235,
-            "holdout_lower95_10bps": -0.08555,
-            "holdout_mean_r_30bps": -0.34771,
-            "validation_gate": false,
-            "promote_to_real": false
-          },
-          {
-            "arm": "stoch_flip_recent",
-            "n": 2,
-            "holdout_mean_r_10bps": -0.11115,
-            "holdout_lower95_10bps": -0.27892,
-            "holdout_mean_r_30bps": -0.46294,
-            "validation_gate": false,
-            "promote_to_real": false
-          },
-          {
-            "arm": "cci_impulse",
-            "n": 19,
-            "holdout_mean_r_10bps": 0.01235,
-            "holdout_lower95_10bps": -0.08555,
-            "holdout_mean_r_30bps": -0.34771,
-            "validation_gate": true,
-            "promote_to_real": false
-          },
-          {
-            "arm": "macd_expansion",
-            "n": 14,
-            "holdout_mean_r_10bps": -0.06556,
-            "holdout_lower95_10bps": -0.12985,
-            "holdout_mean_r_30bps": -0.41832,
-            "validation_gate": true,
-            "promote_to_real": false
-          },
-          {
-            "arm": "rsi_macd_agree",
-            "n": 15,
-            "holdout_mean_r_10bps": -0.01627,
-            "holdout_lower95_10bps": -0.12991,
-            "holdout_mean_r_30bps": -0.36277,
-            "validation_gate": true,
-            "promote_to_real": false
-          }
-        ]
-      }
-    },
-    {
-      "id": "DODOUSDT:5m:PIVOT_BREAK:LONG:4:4:1795579500000",
-      "symbol": "DODOUSDT",
-      "timeframe": "5m",
-      "observed_utc": "2026-11-25T04:14:55.822984Z",
-      "status": "EXPERIMENTAL_OBSERVATION_ONLY",
-      "can_trade": false,
-      "order_placed": false,
-      "family": "PIVOT_BREAK",
-      "side": "LONG",
-      "left": 4,
-      "right": 4,
-      "signal_closed_utc": "2026-11-25T04:09:59.999000+00:00",
-      "signal_open_ms": 1795579500000,
-      "indicative_entry": 0.04372,
-      "stop": 0.0431,
-      "target": 0.04385,
-      "rh": {
-        "value": 0.04371,
-        "pivot_i": 393,
-        "confirmed_i": 397
-      },
-      "rl": {
-        "value": 0.0431,
-        "pivot_i": 391,
-        "confirmed_i": 395
-      },
-      "reasons": {
-        "entry": "Closed above a confirmed swing high. Planned entry: first price of NEXT candle; signal close is not a fill.",
-        "stop": "Stop at confirmed opposing swing low.",
-        "target": "Closest known external swing high above price."
-      },
-      "research_hypothesis": true,
-      "source_class": "INDEPENDENT_EXPERIMENT_NOT_EFLOUD_INSTRUCTOR_RULE",
-      "redk_indicator_version": "redk_indicator_amplifier_mpl20_v1_adapter",
-      "redk_ablation_filters": {
-        "none": true,
-        "rsi_bias": true,
-        "stoch_flip_recent": false,
-        "cci_impulse": true,
-        "macd_expansion": true,
-        "rsi_macd_agree": true
-      },
-      "redk_gate_source": "USER_UPLOADED_RED_K_AMPLIFIER_RESEARCH_NOT_TEACHER_RULE",
-      "historical_gate": "NO_EVIDENCE",
-      "historical_oos": {
-        "n": 14,
-        "mean_r": -0.00864,
-        "win_rate": 0.2143,
-        "max_drawdown_r": 1.0016,
-        "lower_95_r": -0.10892
-      },
-      "stress_oos": {
-        "n": 14,
-        "mean_r": -0.40897,
-        "win_rate": 0.0714,
-        "max_drawdown_r": 5.9636,
-        "lower_95_r": -0.57056
-      },
-      "research_policy": "NEVER_AN_ORDER_RECOMMENDATION",
-      "redk_historical_ablation": {
-        "version": "redk_ablation_v1",
-        "arms": [
-          {
-            "arm": "none",
-            "n": 14,
-            "holdout_mean_r_10bps": -0.00864,
-            "holdout_lower95_10bps": -0.10892,
-            "holdout_mean_r_30bps": -0.40897,
-            "validation_gate": false,
-            "promote_to_real": false
-          },
-          {
-            "arm": "rsi_bias",
-            "n": 14,
-            "holdout_mean_r_10bps": -0.00864,
-            "holdout_lower95_10bps": -0.10892,
-            "holdout_mean_r_30bps": -0.40897,
-            "validation_gate": false,
-            "promote_to_real": false
-          },
-          {
-            "arm": "stoch_flip_recent",
-            "n": 2,
-            "holdout_mean_r_10bps": -0.09862,
-            "holdout_lower95_10bps": -0.29096,
-            "holdout_mean_r_30bps": -0.53985,
-            "validation_gate": false,
-            "promote_to_real": false
-          },
-          {
-            "arm": "cci_impulse",
-            "n": 14,
-            "holdout_mean_r_10bps": -0.00864,
-            "holdout_lower95_10bps": -0.10892,
-            "holdout_mean_r_30bps": -0.40897,
-            "validation_gate": false,
-            "promote_to_real": false
-          },
-          {
-            "arm": "macd_expansion",
-            "n": 11,
-            "holdout_mean_r_10bps": -0.04084,
-            "holdout_lower95_10bps": -0.13641,
-            "holdout_mean_r_30bps": -0.40529,
-            "validation_gate": false,
-            "promote_to_real": false
-          },
-          {
-            "arm": "rsi_macd_agree",
-            "n": 12,
-            "holdout_mean_r_10bps": -0.05148,
-            "holdout_lower95_10bps": -0.14119,
-            "holdout_mean_r_30bps": -0.44144,
-            "validation_gate": false,
-            "promote_to_real": false
-          }
-        ]
-      }
-    },
-    {
-      "id": "DODOUSDT:1h:SWING_SWEEP:LONG:2:2:1795575600000",
-      "symbol": "DODOUSDT",
-      "timeframe": "1h",
-      "observed_utc": "2026-11-25T04:14:55.822984Z",
-      "status": "EXPERIMENTAL_OBSERVATION_ONLY",
-      "can_trade": false,
-      "order_placed": false,
-      "family": "SWING_SWEEP",
-      "side": "LONG",
-      "left": 2,
-      "right": 2,
-      "signal_closed_utc": "2026-11-25T03:59:59.999000+00:00",
-      "signal_open_ms": 1795575600000,
-      "indicative_entry": 0.04341,
-      "stop": 0.04304,
-      "target": 0.04411,
-      "rh": {
-        "value": 0.04411,
-        "pivot_i": 395,
-        "confirmed_i": 397
-      },
-      "rl": {
-        "value": 0.04311,
-        "pivot_i": 392,
-        "confirmed_i": 394
-      },
-      "reasons": {
-        "entry": "Wick swept confirmed swing low, closed back above it. Planned entry: first price of NEXT candle; signal close is not a fill.",
-        "stop": "Stop at signal wick low; breaks reclaim idea.",
-        "target": "Previously confirmed opposite swing high."
-      },
-      "research_hypothesis": true,
-      "source_class": "INDEPENDENT_EXPERIMENT_NOT_EFLOUD_INSTRUCTOR_RULE",
-      "redk_indicator_version": "redk_indicator_amplifier_mpl20_v1_adapter",
-      "redk_ablation_filters": {
-        "none": true,
-        "rsi_bias": true,
-        "stoch_flip_recent": false,
-        "cci_impulse": true,
-        "macd_expansion": false,
-        "rsi_macd_agree": false
-      },
-      "redk_gate_source": "USER_UPLOADED_RED_K_AMPLIFIER_RESEARCH_NOT_TEACHER_RULE",
-      "historical_gate": "NO_EVIDENCE",
-      "historical_oos": {
-        "n": 37,
-        "mean_r": -0.4429,
-        "win_rate": 0.3514,
-        "max_drawdown_r": 22.9412,
-        "lower_95_r": -1.00025
-      },
-      "stress_oos": {
-        "n": 37,
-        "mean_r": -1.0926,
-        "win_rate": 0.2162,
-        "max_drawdown_r": 43.0653,
-        "lower_95_r": -1.71361
-      },
-      "research_policy": "NEVER_AN_ORDER_RECOMMENDATION",
-      "redk_historical_ablation": {
-        "version": "redk_ablation_v1",
-        "arms": [
-          {
-            "arm": "none",
-            "n": 37,
-            "holdout_mean_r_10bps": -0.4429,
-            "holdout_lower95_10bps": -1.00025,
-            "holdout_mean_r_30bps": -1.0926,
-            "validation_gate": false,
-            "promote_to_real": false
-          },
-          {
-            "arm": "rsi_bias",
-            "n": 17,
-            "holdout_mean_r_10bps": -0.32636,
-            "holdout_lower95_10bps": -0.82837,
-            "holdout_mean_r_30bps": -0.70144,
-            "validation_gate": false,
-            "promote_to_real": false
-          },
-          {
-            "arm": "stoch_flip_recent",
-            "n": 3,
-            "holdout_mean_r_10bps": -0.56709,
-            "holdout_lower95_10bps": -2.15238,
-            "holdout_mean_r_30bps": -1.20127,
-            "validation_gate": false,
-            "promote_to_real": false
-          },
-          {
-            "arm": "cci_impulse",
-            "n": 7,
-            "holdout_mean_r_10bps": -0.12051,
-            "holdout_lower95_10bps": -0.70948,
-            "holdout_mean_r_30bps": -0.4824,
-            "validation_gate": false,
-            "promote_to_real": false
-          },
-          {
-            "arm": "macd_expansion",
-            "n": 2,
-            "holdout_mean_r_10bps": -0.68537,
-            "holdout_lower95_10bps": -2.05599,
-            "holdout_mean_r_30bps": -1.17238,
-            "validation_gate": false,
-            "promote_to_real": false
-          },
-          {
-            "arm": "rsi_macd_agree",
-            "n": 4,
-            "holdout_mean_r_10bps": -0.16881,
-            "holdout_lower95_10bps": -1.01036,
-            "holdout_mean_r_30bps": -0.57053,
-            "validation_gate": false,
-            "promote_to_real": false
-          }
-        ]
-      }
     }
   ],
-  "new_events": 11,
+  "new_events": 3,
   "errors": [],
   "real_orders": false,
   "notice": "Independent experimental event detection, not EFLOUD instructor signal, validated edge or actual trade."
